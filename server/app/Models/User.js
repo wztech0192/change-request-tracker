@@ -28,6 +28,9 @@ class User extends Model {
     return {
       email: 'required|email|unique:users',
       password: 'required|min:6|max:30',
+      mid_init: 'max:4',
+      first_name:'required|max:60',
+      last_name:'required|max:60'
     }
   }
    /**

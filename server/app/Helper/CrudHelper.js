@@ -10,20 +10,20 @@ class CrudHelper{
 
     /**
      * get all resource from database
-     * @returns {Model}
+     * @returns {Model[]}
      */
-    async getAll(resource,callback){
-        const resourceList=Database.from(resource);
+    async getAll(Model,callback){
+        const resourceQuery=await Model.query().fetch();
         //call back function
         if(callback){
             //verification
             if(callback.verify)
-                callback.verify(resource);
+                callback.verify(resourceQuery.rows);
             //work
             if(callback.work)
-                callback.work(resource);
+                callback.work(resourceQuery.rows);
         }
-        return resourceList;
+        return resourceQuery.rows;
     }
 
     /**

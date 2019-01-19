@@ -15,6 +15,9 @@ class UserSchema extends Schema {
       table.string('password', 60).notNullable()
       table.string('role',30).defaultTo("Client")
       table.boolean('isDev').defaultTo(false)
+      table.string('first_name',30).notNullable()
+      table.string('last_name',30).notNullable()
+      table.string('mid_initial',5)
       table.timestamps()
     })
   }

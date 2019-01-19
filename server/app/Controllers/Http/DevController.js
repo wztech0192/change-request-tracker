@@ -1,5 +1,10 @@
 'use strict'
 
+/**
+ * @author Wei Zheng
+ * @description create, read, update, and delete for developer todo, developer task, and developer reference
+ */
+
 const DevRef = use('App/Models/Dev/DevRef')
 const DevTask = use('App/Models/Dev/DevTask')
 const DevTodo = use('App/Models/Dev/DevTodo')
@@ -15,9 +20,14 @@ class DevController {
         const user= await auth.getUser();
         AuthorizationService.verifyRole(user, ['Developer']); 
 
-        return CrudHelper.getAll('dev_todos', (parentList)=>{
-           console.log(parentList[1]);
-          
+        return CrudHelper.getAll(DevTodo, {
+            work: async (parentList)=>{
+                for( let i in parentList){
+                    var p = parentList[i];
+                    var tasks= await p.devTask().fetch();
+                    p.tasks=tasks.rows;
+                }
+            }
         });
         
     }
@@ -126,7 +136,7 @@ class DevController {
      */
     async getRef({auth}){
         const user= await auth.getUser();
-        return CrudHelper.getAll('dev_refs',{
+        return CrudHelper.getAll(DevRef,{
             verify: ()=>AuthorizationService.verifyRole(user, ['Developer']) 
         });
     }

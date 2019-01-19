@@ -1,10 +1,14 @@
 'use strict'
 
+/**
+ * @author Wei Zheng
+ * @description register, login, 
+ */
+
 const User=use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService')
 const Hash = use('Hash')
 const Validator = use('Validator')
-
 
 class UserController {
 
@@ -23,16 +27,22 @@ class UserController {
      * @return {login}
      */
     async register({request}){
-        const {email,password} = request.all();
-        const validation =  await Validator.validateAll({email,password}, User.registerRules);
+        const {email, password , first_name, last_name, mid_initial} = request.all();
+        //validate all request data
+        const validation =  await Validator.validateAll(
+            {email, password, first_name, last_name, mid_initial}
+            , User.registerRules);
 
+        //return validation fail message if failed
         if (validation.fails()) { 
             return validation.messages();
         }
         await User.create({
-            email,
-            password,
-            username:email
+            email, 
+            password, 
+            username:email,
+            first_name, last_name, mid_initial
+
         })
         //pass arguments from this method
         return this.login(...arguments)
@@ -55,6 +65,17 @@ class UserController {
         const targetUser =await User.find(params.id);
         AuthorizationService.verifyPermissionForUser(targetUser, user, null, true)
         return targetUser;
+    }
+
+    /**
+     * Get All User
+     * @return {user[]}
+     */
+    async getAll({auth}){
+        const user=await auth.getUser();
+        AuthorizationService.verifyRole(user, ['Developer','Admin'])
+        const userQuery=await User.query().fetch();
+        return userQuery.rows;
     }
 
     /**

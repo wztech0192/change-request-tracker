@@ -1,5 +1,10 @@
 'use strict'
 
+/**
+ * @author Wei Zheng
+ * @description create, read, update, and delete for change requests
+ */
+
 
 const ChangeRequest = use('App/Models/ChangeRequest')
 const AuthorizationService = use('App/Service/AuthorizationService')
@@ -22,7 +27,7 @@ class ChangeRequestController {
      */
     async getAll({auth}){
         const user= await auth.getUser();
-        return CrudHelper.getAll('change_requests',{
+        return CrudHelper.getAll(ChangeRequest,{
             verify:()=>AuthorizationService.verifyRole(user, ['Developer','Admin'])
         });
     }

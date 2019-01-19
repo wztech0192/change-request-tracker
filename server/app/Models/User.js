@@ -7,7 +7,7 @@ const Model = use('Model')
 const Hash = use('Hash')
 
 class User extends Model {
-  static boot () {
+  static boot() {
     super.boot()
 
     /**
@@ -22,6 +22,34 @@ class User extends Model {
   }
 
   /**
+   * set require rules for validator
+   */
+  static get registerRules () { 
+    return {
+      email: 'required|email|unique:users',
+      password: 'required|min:6|max:30',
+    }
+  }
+   /**
+   * set require rules for validator
+   */
+  static get changeRules () { 
+    return {
+      username:'unique:users',
+      email: 'email|unique:users',
+      password: 'min:6|max:30',
+    }
+  }
+  
+
+  /**
+   * Hide password field
+   */
+  static get hidden() {
+    return ['password']
+  }
+
+  /**
    * A relationship on tokens is required for auth to
    * work. Since features like `refreshTokens` or
    * `rememberToken` will be saved inside the
@@ -31,14 +59,14 @@ class User extends Model {
    *
    * @return {Object}
    */
-  tokens () {
+  tokens() {
     return this.hasMany('App/Models/Token')
   }
 
   /**
    * return all change request belongs to this user
    */
-  change_requests () {
+  change_requests() {
     return this.hasMany('App/Models/ChangeRequest')
   }
 }

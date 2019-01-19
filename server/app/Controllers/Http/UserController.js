@@ -3,6 +3,8 @@
 const User=use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService')
 const Hash = use('Hash')
+const Validator = use('Validator')
+
 
 class UserController {
 
@@ -12,8 +14,8 @@ class UserController {
      */
     async login({ request , auth }){
         const {email,password} = request.all();
-        
-        return await auth.attempt(email,password);
+        const user= await auth.attempt(email,password);
+        return user;
     }
 
     /**
@@ -22,24 +24,60 @@ class UserController {
      */
     async register({request}){
         const {email,password} = request.all();
+        const validation =  await Validator.validateAll({email,password}, User.registerRules);
 
+        if (validation.fails()) { 
+            return validation.messages();
+        }
         await User.create({
             email,
             password,
             username:email
         })
+        //pass arguments from this method
         return this.login(...arguments)
     };
+
+   /**
+     * Get Self Information
+     * @return {user}
+     */
+    async self({auth}){
+        return await auth.getUser();
+    }
+
+    /**
+     * Get User
+     * @return {user}
+     */
+    async get({auth, params}){
+        const user=await auth.getUser();
+        const targetUser =await User.find(params.id);
+        AuthorizationService.verifyPermissionForUser(targetUser, user, null, true)
+        return targetUser;
+    }
+
+    /**
+     * Remove User
+     * @return {user}
+     */
+    async destroy({auth, params}){
+        const user=await auth.getUser();
+        const targetUser =await User.find(params.id);
+        //permission verify
+        AuthorizationService.verifyPermissionForDeleteUser(targetUser, user, ['Developer','Admin'])
+        await targetUser.delete();
+        return targetUser;
+    };
+
 
     /**
      * Update user's information
      * @return {user}
      */
     async update({auth, request, params}){
-
         const user=await auth.getUser();
-        const {id}=params;
-        const targetUser =await User.find(id);
+        const targetUser =await User.find(params.id);
         var data=request.all();
 
         //if request a role change, verify current user's role then update target user
@@ -55,14 +93,21 @@ class UserController {
         else{
             //allow self update
             AuthorizationService.verifyPermissionForUser(targetUser, user, null, true)
-            data=request.except(['id','role','isDev','created_at']);
-            //if has password request, hash the password
-            if(data.password){
-                data.password=await Hash.make(data.password);
+            data=request.except(['username','email','password']);
+
+            if(data.passworld || data.email){
+                //validate password or email
+                const validation =  await Validator.validateAll(data, User.changeRules);
+                if(validation.fails()) return validation.messages();
+                
+                //if has password request, hash the password
+                if(data.password){
+                    data.password=await Hash.make(data.password);  
+                } 
             }
+            
             targetUser.merge(data);
         }
-        
         await targetUser.save();
         return targetUser;
     };

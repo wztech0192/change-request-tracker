@@ -8,8 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 * Install Node.js and the npm come with it - https://nodejs.org/en/download/current/
 * Download xampp - https://www.apachefriends.org/index.html
 
-## Deployment
--- for local database --
+## Deployment -- for local database --
 
 * Run xampp apache and mysql 
 * Create a database named crt_capstone

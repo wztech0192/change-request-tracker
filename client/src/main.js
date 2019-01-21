@@ -11,5 +11,5 @@ sync(store, router);
 new Vue({
   router,
   store,
-  render(h) { return h(App); },
+  render(h) { return h(App); }
 }).$mount('#app');

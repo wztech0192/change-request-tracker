@@ -13,7 +13,7 @@ These instructions will get you a copy of the project up and running on your loc
 * Run xampp apache and mysql 
 * Create a database named crt_capstone
 * Install adonis cml -- npm install adonis
-* Under server folder - type in "adonis run --dev" in command line to deploy server api
+* Under server folder - type in "adonis serve --dev" in command line to deploy server api
 * Under client folder - type in "npm run serve" in command line to deploy client side interface
 * Run localhost:8080 in modern browser
 

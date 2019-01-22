@@ -18,8 +18,8 @@ class UserController {
      */
     async login({ request , auth }){
         const {email,password} = request.all();
-        const user= await auth.attempt(email,password);
-        return user;
+        const token= await auth.attempt(email,password);
+        return token;
     }
 
     /**
@@ -53,7 +53,9 @@ class UserController {
      * @return {user}
      */
     async self({auth}){
-        return await auth.getUser();
+        const user= await auth.getUser();
+       // console.log("hey");
+        return user;
     }
 
     /**

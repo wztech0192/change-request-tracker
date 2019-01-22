@@ -1,16 +1,23 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import DevTodo from "./views/Dev/Todo.vue";
-import Login from './components/Auth/Login.vue';
-import Register from './components/Auth/Register.vue';
+import Login from './views/Auth/Login.vue';
+import Register from './views/Auth/Register.vue';
+import store from './store/index';
+
 
 Vue.use(Router);
 
-/* function AuthenicationRoute() {
-  if(userNotLogedIn) {
+// redirect if not logged in
+function Authenication(to, from, next) {
+  if (!store.getters['authentication/isLoggedIn']) {
     next('/login');
-  }
-} */
+  } else next();
+}
+function resetToken(to, from, next) {
+  store.dispatch('authentication/logoutToken');
+  next();
+}
 
 export default new Router({
   mode: 'history',
@@ -18,17 +25,20 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: DevTodo
+      component: DevTodo,
+      beforeEnter: Authenication
     },
 
     {
       path: '/login',
-      component: Login
+      component: Login,
+      beforeEnter: resetToken
     },
 
     {
       path: '/register',
-      component: Register
+      component: Register,
+      beforeEnter: resetToken
     },
 
     {

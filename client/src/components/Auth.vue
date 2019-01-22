@@ -6,12 +6,10 @@
 </template>
 
 <script>
-
 export default {
   name: "Auth",
   beforeCreate: () => {
-    document.body.className = "hold-transition login-page";
-    
+    document.body.className = "login-page";
   }
 };
 </script>

@@ -9,9 +9,9 @@
         </div>
         <div class="pull-left info">
           <p>Wei Zheng</p>
-          <a href="#">
-            <i class="fa fa-circle text-success"></i> Developer
-          </a>
+         
+           <i class="fa fa-address-card"></i>&nbsp;&nbsp; Developer
+      
         </div>
       </div>
       <!-- sidebar menu: : style can be found in sidebar.less -->

@@ -23,14 +23,8 @@ export default {
 
 
 <style lang='scss'>
-html, body, #app{
-  height:100% !important;
-  width:100% !important;
-  margin:0 !important;
-  padding:0 !important;
-  top:0 !important;
-  left:0 !important;
-  position:absolute;
+.capitalize{
+  text-transform: capitalize;
 }
 .fade {
   z-index:-100 !important;

@@ -9,7 +9,7 @@
       <p class="login-box-msg">Register a new membership</p>
 
       <div>
-        <div class="form-group has-feedback" v-bind:class="{'has-error':error.first_name_error}">
+        <div class="form-group has-feedback" :class="{'has-error':error.first_name_error}">
           <input
             type="text"
             class="form-control"
@@ -33,7 +33,7 @@
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
           <br>
         </div>
-        <div class="form-group has-feedback" v-bind:class="{'has-error':error.last_name_error}">
+        <div class="form-group has-feedback" :class="{'has-error':error.last_name_error}">
           <input
             type="text"
             class="form-control"
@@ -45,7 +45,7 @@
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.last_name_error}}</span>
         </div>
-        <div class="form-group has-feedback" v-bind:class="{'has-error':error.email_error}">
+        <div class="form-group has-feedback" :class="{'has-error':error.email_error}">
           <input
             name="email"
             type="email"
@@ -58,7 +58,7 @@
           <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.email_error}}</span>
         </div>
-        <div class="form-group has-feedback" v-bind:class="{'has-error':error.password_error}">
+        <div class="form-group has-feedback" :class="{'has-error':error.password_error}">
           <input
             name="password"
             type="password"
@@ -71,7 +71,7 @@
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.password_error}}</span>
         </div>
-        <div class="form-group has-feedback" v-bind:class="{'has-error':error.password_error}">
+        <div class="form-group has-feedback" :class="{'has-error':error.password_error}">
           <input
             name="password_retype"
             type="password"

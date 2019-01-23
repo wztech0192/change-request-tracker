@@ -7,11 +7,12 @@
         <div class="pull-left image">
           <img src="/adminLTE/dist/img/avatar5.png" class="img-circle" alt="User Image">
         </div>
-        <div class="pull-left info">
-          <p>Wei Zheng</p>
-         
-           <i class="fa fa-address-card"></i>&nbsp;&nbsp; Developer
-      
+        <div class="pull-left info capitalize">
+          <p>{{user.first_name}} {{user.last_name}}</p>
+
+          <i class="fa fa-address-card capitalize"></i>
+
+          &nbsp;&nbsp; {{user.role}}
         </div>
       </div>
       <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -165,7 +166,11 @@
 
 <script>
 export default {
-  name: "Sidebar"
+  name: "Sidebar",
+  //data from parent
+  props: {
+    user: { type: Object, required: false, default: "Anonymous" }
+  }
 };
 </script>
 

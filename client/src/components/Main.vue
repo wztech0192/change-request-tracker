@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
-    <Header userData="user"/>
-    <Sidebar/>
+    <Header :user="user"/>
+    <Sidebar :user="user"/>
     <router-view/>
     <Controlbar/>
   </div>
@@ -9,7 +9,7 @@
 
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
-import Header from "@/components/Main/Header/Header.vue";
+import Header from "@/components/Main/Header.vue";
 import Sidebar from "@/components/Main/Sidebar.vue";
 import Controlbar from "@/components/Main/Controlbar.vue";
 

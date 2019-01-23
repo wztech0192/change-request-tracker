@@ -2,7 +2,7 @@
   <div class="box register-box" style="background-color:transparent;">
     <div class="register-logo">
       <p>
-        <b>CR</b>Tracker
+        <i class="fa fa-spinner"></i> <b> CR</b>Tracker
       </p>
     </div>
     <form class="register-box-body" @submit.prevent="registerSubmit">

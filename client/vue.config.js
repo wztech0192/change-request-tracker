@@ -3,6 +3,7 @@ module.exports = {
     config.module.rules.delete('eslint');
   },
   devServer: {
+    host: 'localhost',
     proxy: {
       '/api': {
         target: 'http://localhost:3333'

@@ -1,14 +1,19 @@
 <template>
-  <div id='app'>
-    <Main v-if="isLoggedIn"/>
-    <Auth v-else/>
+  <div id="app">
+    <div id="app-content">
+      <Main v-if="isLoggedIn"/>
+      <Auth v-else/>
+    </div>
+    <h1 id="loading-screen">
+      <i class="fa fa-spinner"></i>
+    </h1>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import Main from '@/components/Main.vue';
-import Auth from '@/components/Auth.vue';
+import { mapGetters, mapActions } from "vuex";
+import Main from "@/components/Main.vue";
+import Auth from "@/components/Auth.vue";
 
 export default {
   components: {
@@ -16,21 +21,73 @@ export default {
     Auth
   },
   computed: {
-    ...mapGetters('authentication',['isLoggedIn'])
+    ...mapGetters("authentication", ["isLoggedIn"])
+  },
+  watch: {
+    //refresh page when login or logout
+    isLoggedIn() {
+      document.body.style.background='#d2d6de';
+      $('#app-content').hide();
+      $("#loading-screen").show();
+       location.reload();
+    }
+  },
+  mounted() {
+    // set user profile into authentication.user state if user is logged in
+    if (this.isLoggedIn) this.fetchUser();
+  },
+  methods: {
+    ...mapActions("authentication", ["fetchUser"])
   }
 };
 </script>
 
 
 <style lang='scss'>
-.capitalize{
+
+.capitalize {
   text-transform: capitalize;
 }
-.fade {
-  z-index:-100 !important;
-}
-.in{
-  z-index:10000 !important;
+
+#loading-screen {
+  display: none;
+  text-align: center;
+  top: 30%;
+  width: 100%;
+  position: fixed;
+  font-size: 1000%;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.1s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition-duration: 0.2s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  overflow: hidden;
+}
+
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translate(2em, 0);
+}
+
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translate(-2em, 0);
+}
 </style>

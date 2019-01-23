@@ -41,8 +41,8 @@ export default {
     },
     getIcon: type => {
            switch(type){
-        case "messages": return "fa-envelope-o";
-        case "notifications": return "fa-bell-o";
+        case "messages": return "fa fa-envelope-o";
+        case "notifications": return "fa fa-bell-o";
         case "tasks": return "fa fa-flag-o";
       }
     }

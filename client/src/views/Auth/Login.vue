@@ -2,7 +2,7 @@
   <div class="box login-box" style="background-color:transparent">
     <div class="login-logo">
       <p>
-        <b>CR</b>Tracker
+        <i class="fa fa-spinner"></i> <b> CR</b>Tracker
       </p>
     </div>
 

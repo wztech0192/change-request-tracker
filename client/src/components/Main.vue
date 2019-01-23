@@ -2,7 +2,12 @@
   <div class="wrapper">
     <Header :user="user"/>
     <Sidebar :user="user"/>
-    <router-view/>
+
+     <transition>
+       <router-view/>
+     </transition>
+     
+      
     <Controlbar/>
   </div>
 </template>
@@ -21,17 +26,14 @@ export default {
     Sidebar,
     Controlbar
   },
-    computed: {
+  computed: {
     ...mapGetters("authentication", ["isLoggedIn"]),
     ...mapState("authentication",["user"])
   },
   mounted () {
-    this.fetchUser();
     document.body.className = "skin-blue sidebar-mini";
-    
   },
   methods:{
-    ...mapActions("authentication",["fetchUser"]),
     test(){
     }
   }

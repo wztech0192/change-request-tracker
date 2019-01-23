@@ -54,7 +54,6 @@ class UserController {
      */
     async self({auth}){
         const user= await auth.getUser();
-       // console.log("hey");
         return user;
     }
 

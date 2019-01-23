@@ -87,7 +87,8 @@ export default {
           if (data.token) {
             commit('setToken', data.token);
             commit('clearRegisterData');
-            window.location.href = "/";
+            // redirect route plus reload page
+            // window.location.href = "/";
           } else {
             commit('setMessageError', data);
           }
@@ -114,7 +115,9 @@ export default {
           if (data.token) {
             commit('clearLoginData');
             commit('setToken', data.token);
-            window.location.href = "/";
+            // redirect route plus reload page
+            // window.location.href = "/";
+            router.push('/');
           } else {
             commit('setExceptionError', "Wrong Password or Email!");
           }

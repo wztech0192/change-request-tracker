@@ -35,9 +35,11 @@ Route.group(() => {
   //User Route
   Route.get('user','UserController.self').middleware('auth');
   Route.get('user/all', "UserController.getAll").middleware('auth');
+  Route.get('user/flagged', "UserController.getFlaggedList").middleware('auth');
   Route.get('user/:id', "UserController.get").middleware('auth');
   Route.delete('user/:id', "UserController.destroy").middleware('auth');
   Route.patch('user/:id', "UserController.update").middleware('auth');
+
 
   //Developer Todo Route
   Route.get('dev',"DevController.index").middleware('auth');

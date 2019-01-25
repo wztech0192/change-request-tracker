@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <Header :user="user"/>
+    <Header :user="user" :taskList="flaggedList"/>
     <Sidebar :user="user"/>
 
      <transition>
@@ -28,14 +28,10 @@ export default {
   },
   computed: {
     ...mapGetters("authentication", ["isLoggedIn"]),
-    ...mapState("authentication",["user"])
+    ...mapState("authentication",["user","flaggedList"])
   },
   mounted () {
     document.body.className = "skin-blue sidebar-mini";
-  },
-  methods:{
-    test(){
-    }
   }
 };
 </script>

@@ -34,8 +34,10 @@ export default {
   },
   mounted() {
     // set user profile into authentication.user state if user is logged in
-    if (this.isLoggedIn) this.fetchUser();
-
+    if (this.isLoggedIn) {
+      this.fetchUser();
+      this.fetchFlaggedList();
+    }
     $("body").tooltip({
       selector: '[data-toggle="tooltip"]',
       trigger: "hover"
@@ -46,7 +48,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions("authentication", ["fetchUser"])
+    ...mapActions("authentication", ["fetchUser","fetchFlaggedList"])
   }
 };
 </script>

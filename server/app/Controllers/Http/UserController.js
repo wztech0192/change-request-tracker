@@ -9,6 +9,7 @@ const User=use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService')
 const Hash = use('Hash')
 const Validator = use('Validator')
+const Database = use('Database')
 
 class UserController {
 
@@ -133,6 +134,27 @@ class UserController {
         await targetUser.save();
         return targetUser;
     };
+
+
+    /**
+     * return flagged list
+     * @return {array}
+     */
+    async getFlaggedList({ auth}) {
+        const user = await auth.getUser();
+        const FlaggedList = [];
+        if (user.role === "Developer") {
+        const flaggedDevTodo = await Database
+            .table('dev_todos')
+            .where('isFlagged', '1').orderBy('created_at', 'desc');
+            for(let devTodo of flaggedDevTodo){
+              //  devTodo.link="/todo";
+                FlaggedList.push(devTodo);
+            }
+        }
+        //return null if list is empty
+        return (FlaggedList.length>0)? FlaggedList : null;
+    }
 
 }
 

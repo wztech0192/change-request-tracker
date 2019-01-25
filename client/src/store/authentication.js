@@ -33,7 +33,8 @@ export default {
       ex_error: null
     },
     token: null,
-    loading: false
+    loading: false,
+    flaggedList: []
   },
 
   /**
@@ -41,14 +42,10 @@ export default {
    */
   actions: {
     // fetch user profile
-    fetchUser({
-      commit
-    }) {
+    fetchUser({ commit }) {
       return HTTP().get('/user')
         // if user exist set user information in state, else set error message then redirect to login view
-        .then(({
-          data
-        }) => {
+        .then(({ data }) => {
           if (data) {
             commit('setUser', data);
           } else {
@@ -62,12 +59,24 @@ export default {
         });
     },
 
+    // get user flagged list
+    fetchFlaggedList({ commit }) {
+      return HTTP().get('/user/flagged')
+        .then(({ data }) => {
+          if (data) {
+            commit('setFlaggedList', data);
+          } else {
+            commit('setFlaggedList', []);
+          }
+        })
+        .catch(() => {
+          commit('setExceptionError', "Cannot find the user. Try to Re-login.");
+          router.push('/login');
+        });
+    },
 
     // submit register data to server
-    registerSubmit({
-      commit,
-      state
-    }) {
+    registerSubmit({ commit, state }) {
       const rd = state.registerData;
 
       // stop if password and confirm password do not match
@@ -82,9 +91,7 @@ export default {
        */
       commit('setLoading', true);
       return HTTP().post('/auth/register', rd)
-        .then(({
-          data
-        }) => {
+        .then(({ data }) => {
           // Set token and clear register data if token is avaliable, else return validation error
           if (data.token) {
             commit('setToken', data.token);
@@ -105,17 +112,12 @@ export default {
     },
 
     // login http request
-    loginSubmit({
-      commit,
-      state
-    }) {
+    loginSubmit({ commit, state }) {
       // clear exception error
       commit('clearExceptionError');
       commit('setLoading', true);
       return HTTP().post('/auth/login', state.user)
-        .then(({
-          data
-        }) => {
+        .then(({ data }) => {
           // redirect router if data has token, else show error message
           if (data.token) {
             commit('clearLoginData');
@@ -137,9 +139,7 @@ export default {
     },
 
     // set token to null
-    logoutToken({
-      commit
-    }) {
+    logoutToken({ commit }) {
       commit('setToken', null);
     }
 
@@ -160,6 +160,11 @@ export default {
    * Make changes to the state
    */
   mutations: {
+
+    // set user flagged list
+    setFlaggedList(state, flagList) {
+      state.flaggedList = flagList;
+    },
 
     // login user information include token
     setUser(state, user) {

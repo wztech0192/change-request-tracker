@@ -67,7 +67,7 @@ class DevController {
     async updateTodo({auth, request, params}){
         return CrudHelper.update(auth, params, DevTodo, {
             verify:(user, devTodo)=>AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
-            work: (devTodo) => devTodo.merge(request.only(['title','percentage']))
+            work: (devTodo) => devTodo.merge(request.only(['title','percentage','isFlagged']))
         });
     }
 
@@ -91,7 +91,7 @@ class DevController {
                 let old_task_num = devTodo.task_num;
                 devTodo.task_num++;
                 // total of completed divide by new total of task
-                devTodo.percentage = (old_task_num*devTodo.percentage)/devTodo.task_num;
+                devTodo.percentage = Math.round((old_task_num*devTodo.percentage)/devTodo.task_num);
                 await devTodo.save();
             }
         });
@@ -116,7 +116,7 @@ class DevController {
                 //determine percetange after item is deleted
                 parent.task_num --;
                 // total of completed divide by new total of task
-                parent.percentage = (old_task_num*parent.percentage)/parent.task_num;
+                parent.percentage = Math.round((old_task_num*parent.percentage)/parent.task_num);
                 await parent.save();
             }
         });
@@ -155,7 +155,7 @@ class DevController {
         //determine increasing or decreasing on percentage
         dPercent = (devTask.isCompleted)? dPercent : -dPercent;
         parentTodo.percentage += dPercent;
-        if(parentTodo.percentage>100){
+        if(Math.round(parentTodo.percentage)>100){
             parentTodo.percentage = 100;
         }
         else if(parentTodo.percentage<0){

@@ -15,14 +15,10 @@ export default {
 
   actions: {
     // fetch dev todo list
-    fetchDevTodo({
-      commit
-    }) {
+    fetchDevTodo({ commit }) {
       return HTTP().get('/dev')
         // if user exist set user information in state, else set error message then redirect to login view
-        .then(({
-          data
-        }) => {
+        .then(({ data }) => {
           if (data) {
             commit('setTodoList', data);
           } else {
@@ -38,9 +34,7 @@ export default {
     },
 
     // add todo
-    addNewTodo({
-      commit
-    }, newItem) {
+    addNewTodo({ commit }, newItem) {
       return HTTP().post('/dev/todo', {
         title: newItem
       })
@@ -53,10 +47,7 @@ export default {
     },
 
     // add task, param: object contains id and detail
-    addNewTask({
-      commit,
-      dispatch
-    }, newTask) {
+    addNewTask({ commit, dispatch }, newTask) {
       return HTTP().post(`/dev/todo/${newTask.id}/task`, newTask)
         .then(() => {
           // refresh devtodo
@@ -67,10 +58,7 @@ export default {
     },
 
     // delete todo
-    deleteTodo({
-      commit,
-      dispatch
-    }, id) {
+    deleteTodo({ commit, dispatch }, id) {
       return HTTP().delete(`/dev/todo/${id}`)
         .then(() => {
           // refresh devtodo
@@ -81,10 +69,7 @@ export default {
     },
 
     // delete task
-    deleteTask({
-      commit,
-      dispatch
-    }, id) {
+    deleteTask({ commit, dispatch }, id) {
       return HTTP().delete(`/dev/task/${id}`)
         .then(() => {
           // refresh devtodo
@@ -95,10 +80,7 @@ export default {
     },
 
     // edit todo
-    editTodo({
-      commit,
-      dispatch
-    }, todo) {
+    editTodo({ commit, dispatch }, todo) {
       return HTTP().patch(`/dev/todo/${todo.id}`, todo)
         .then(() => {
           // refresh devtodo
@@ -109,10 +91,7 @@ export default {
     },
 
     // edit task
-    editTask({
-      commit,
-      dispatch
-    }, task) {
+    editTask({ commit, dispatch }, task) {
       return HTTP().patch(`/dev/task/${task.id}`, task)
         .then(() => {
           // refresh devtodo
@@ -122,25 +101,29 @@ export default {
         });
     },
     // set task status
-    setTaskStatus({
-      commit
-    }, {
-      task,
-      todo
-    }) {
+    setTaskStatus({ commit }, { task, todo }) {
       commit("setTaskCompleted", task);
       // http request returns calculated percent of todo
-      commit("setTodoPercentage", {
-        todo,
-        isCompleted: task.isCompleted
-      });
+      commit("setTodoPercentage", { todo, isCompleted: task.isCompleted });
       return HTTP().patch(`/dev/task/complete/${task.id}`, task).catch(() => {
         commit('setErrorMsg', "There is a connection issue");
       });
+    },
+
+    // set flag
+    setTodoFlag({ commit }, todo) {
+      commit('setFlag', todo);
+      return HTTP().patch(`/dev/todo/${todo.id}`, todo)
+        .catch(() => {
+          commit('setErrorMsg', "There is a connection issue");
+        });
     }
   },
 
   mutations: {
+    setFlag(state, todo) {
+      todo.isFlagged = !(todo.isFlagged || todo.isFlagged === 1);
+    },
     // set todoList from database to local state
     setTodoList(state, todoList) {
       state.todoList = todoList;

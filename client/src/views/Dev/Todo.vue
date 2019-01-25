@@ -38,7 +38,11 @@
               class="box box-widget box-solid box-default collapsed-box"
               data-widget="box-widget"
             >
-              <div class="box-header with-border" style="padding-left:30px;">
+              <div
+                class="box-header with-border"
+                style="padding-left:30px;"
+                :class="{'todo-flagged':todo.isFlagged}"
+              >
                 <div
                   class="box-tools pull-left"
                   style="margin-left:-25px; position:relative;top:0; right:0;"
@@ -58,7 +62,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Edit"
-                  @click="showConfirmModal(true, 'Edit Todo #'+(i+1),todo.id)"
+                  @click="showConfirmModal(true, 'Edit Todo #'+(i+1),todo)"
                 >
                   <i class="fa fa-edit"></i>
                 </button>
@@ -67,7 +71,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Delete"
-                  @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Todo?',todo.id)"
+                  @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Todo?',todo)"
                 >
                   <i class="fa fa-trash"></i>
                 </button>
@@ -76,7 +80,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Add Task"
-                  @click="showConfirmModal(true, 'Create New Task For Todo #'+(i+1), todo.id)"
+                  @click="showConfirmModal(true, 'Create New Task For Todo #'+(i+1), todo)"
                 >
                   <i class="fa fa-plus-square"></i>
                 </button>
@@ -85,8 +89,20 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Flag"
+                  @click="flagTodo(todo)"
                 >
-                  <i class="fa fa-flag-o"></i>
+                  <i v-if="!todo.isFlagged" class="fa fa-flag-o"></i>
+                  <i v-else class="fa fa-flag" style="color:blue;"></i>
+                </button>
+                
+                <button
+                  type="button"
+                  class="pull-right btn btn-box-tool"
+                  data-toggle="tooltip"
+                  data-html="true"
+                  :data-original-title="getTodoInfo(todo)"
+                >
+                  <i class="fa fa-info-circle"></i>
                 </button>
 
                 <h5 class="box-title" style="font-size:100%; padding: 5px 0;">{{todo.title}}</h5>
@@ -94,19 +110,24 @@
                 <div class="progress xxs active" style="width:100%; margin-bottom:0;">
                   <div
                     class="progress-bar progress-bar-primary progress-bar-striped"
+                    :class="{'progress-bar-success':Math.round(todo.percentage)>=100}"
                     role="progressbar"
-                    :style="getPercentageStyle(todo.percentage)"
+                    :style="{width: todo.percentage + '%' }"
                   ></div>
                 </div>
               </div>
               <div class="box-body" style="display:none; padding-left:30px;">
-                <div v-for="task in todo.tasks" class="devtask-style" :class="{'devtask-completed':task.isCompleted}">
+                <div
+                  v-for="task in todo.tasks"
+                  class="devtask-style"
+                  :class="{'devtask-completed':task.isCompleted}"
+                >
                   <button
                     type="button"
                     class="btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Complete"
-                    @click="setTaskStatus({task:task, todo:todo})"
+                    @click="setTaskCompleted({task:task, todo:todo})"
                   >
                     <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
                   </button>
@@ -117,7 +138,7 @@
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Edit"
-                    @click="showConfirmModal(true, 'Edit Task #'+(i+1), task.id)"
+                    @click="showConfirmModal(true, 'Edit Task #'+(i+1), task)"
                   >
                     <i class="fa fa-edit"></i>
                   </button>
@@ -126,7 +147,7 @@
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Delete"
-                    @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Task?',task.id)"
+                    @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Task?',task)"
                   >
                     <i class="fa fa-trash"></i>
                   </button>
@@ -230,7 +251,7 @@ export default {
   },
   computed: {
     ...mapGetters("devTodo", ["getTodoList"]),
-    ...mapState("devTodo", ["errorMsg"]),
+    ...mapState("devTodo", ["errorMsg"])
   },
   methods: {
     ...mapMutations("devTodo", ["setErrorMsg"]),
@@ -242,27 +263,62 @@ export default {
       "deleteTask",
       "editTodo",
       "editTask",
-      "setTaskStatus"
+      "setTaskStatus",
+      "setTodoFlag"
     ]),
 
-    //determine if task is completed or not
-    getCompletedClass(isCompleted){
-    
-      return (isCompleted || isCompleted===1 )?  "fa-check-square text-green":"fa-square-o";
+    //allow update flaggedlist when perform a flag
+    ...mapActions("authentication", ["fetchFlaggedList"]),
+
+    //flag a todo
+    flagTodo(todo) {
+      //update todo state
+      this.setTodoFlag(todo);
+      //update user flagged list state, fire 50ms later so setFlag request will complete
+      setTimeout(this.fetchFlaggedList, 50);
     },
 
-    //convert number into style
-    getPercentageStyle(percentage){
-      return "width:"+percentage+"%";
+    //todo information
+    getTodoInfo(todo) {
+      const info =
+        "<table class='todo-detail'><tr><td>ID:</td><td>" +
+        todo.id +
+        "</td></tr>" +
+        "<tr><td>Tk:</td><td>" +
+        todo.task_num +
+        "</td></tr>" +
+        "<tr><td>&#9745;:</td><td>" +
+        Math.round((todo.percentage / 100) * todo.task_num) +
+        "</td></tr>" +
+        "</table>";
+      return info;
+    },
+
+    //determine if task is completed or not
+    getCompletedClass(isCompleted) {
+      return isCompleted || isCompleted === 1
+        ? "fa-check-square text-green"
+        : "fa-square-o";
+    },
+
+    //set task completion and update flagged list
+    setTaskCompleted(data) {
+      this.setTaskStatus(data);
+      //update user flagged list state, fire 50ms later so setFlag request will complete
+      setTimeout(this.fetchFlaggedList, 50);
     },
 
     //setup confirm modal then display it
-    showConfirmModal(isInput, type, id) {
-      this.selectedID = id;
+    showConfirmModal(isInput, type, item) {
+      if (item) this.selectedID = item.id;
+      else this.selectedID = null;
       this.modalHeader = type;
       if (isInput) {
         this.setErrorMsg(null);
-        this.modalInput = null;
+        //if task is edit, check condition and exist set input
+        if (this.modalHeader.indexOf("Create") === -1) {
+          this.modalInput = item.title ? item.title : item.detail;
+        } else this.modalInput = null;
         this.$modal.show("InputModal");
       } else {
         this.$modal.show("ConfirmModal");
@@ -272,6 +328,8 @@ export default {
     modalAlertConfirm() {
       if (this.modalHeader.indexOf("Todo") >= 0) {
         this.deleteTodo(this.selectedID);
+        //update user flagged list state, fire 50ms later so setFlag request will complete
+        setTimeout(this.fetchFlaggedList, 50);
       } else {
         this.deleteTask(this.selectedID);
       }
@@ -295,7 +353,7 @@ export default {
           //else it is a todo title
           else {
             this.addNewTodo(this.modalInput);
-            location.reload();
+           location.reload();
           }
         } else {
           if (this.modalHeader.indexOf("Todo") >= 0) {
@@ -325,6 +383,15 @@ export default {
 </script>
 
 <style>
+.todo-flagged {
+  background: lightsteelblue !important;
+}
+.todo-detail td:first-child {
+  padding-right: 5px;
+}
+.todo-detail td:last-child {
+  text-align: right;
+}
 .devtask-style {
   margin-bottom: 15px;
   min-height: 30px;

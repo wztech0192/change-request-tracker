@@ -46,17 +46,17 @@
               <!-- Task item -->
               <a href="#">
                 <h3>
-                  Design some buttons
-                  <small class="pull-right">{{task.percent}}%</small>
+                  {{task.title}}
+                  <small class="pull-right">{{Math.round(task.percentage)}}%</small>
                 </h3>
                 <div class="progress xs">
                   <div
                     class="progress-bar progress-bar-striped"
-                    :class="getProgressBarColor(task.percent)"
-                    :style="convertPercentToStyle(task.percent)"
+                    :class="getProgressBarColor(Math.round(task.percentage))"
+                    :style="{width: task.percentage + '%' }"
                     role="progressbar"
                   >
-                  <span class="sr-only">{{task.percent}}% Complete</span>
+                  <span class="sr-only">{{task.percentage}}% Complete</span>
                   </div>
                 </div>
               </a>
@@ -168,26 +168,12 @@ export default {
           sign: "delete"
         }
       ],
-      //array of flagged task for header menu
-      taskList: [
-        {
-          body: "Hey this is a testing",
-          percent: 20
-        },
-        {
-          body: "Hey this is a testing3",
-          percent: 55
-        },
-        {
-          body: "Hey this is a testing2",
-          percent: 100
-        }
-      ]
     };
   },
   //data from parent
   props: {
-    user: { type: Object, required: false, default: "Anonymous" }
+    user: { type: Object, required: false, default: "Anonymous" },
+    taskList:Array
   },
   methods: {
     //if has date and time, split date out and return it
@@ -214,11 +200,6 @@ export default {
         case "delete":
           return "fa-check-square text-red";
       }
-    },
-
-    //convert percent to style
-    convertPercentToStyle: percent =>{
-      return "width:"+percent+"%;";
     },
 
     //define progress bar color based on its percentage

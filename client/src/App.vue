@@ -26,15 +26,24 @@ export default {
   watch: {
     //refresh page when login or logout
     isLoggedIn() {
-      document.body.style.background='#d2d6de';
-      $('#app-content').hide();
+      document.body.style.background = "#d2d6de";
+      $("#app-content").hide();
       $("#loading-screen").show();
-       location.reload();
+      location.reload();
     }
   },
   mounted() {
     // set user profile into authentication.user state if user is logged in
     if (this.isLoggedIn) this.fetchUser();
+
+    $("body").tooltip({
+      selector: '[data-toggle="tooltip"]',
+      trigger: "hover"
+    });
+    //disable tooltip stays when toggle
+    $('[data-toggle="tooltip"]').tooltip({
+      trigger: "hover"
+    });
   },
   methods: {
     ...mapActions("authentication", ["fetchUser"])
@@ -44,9 +53,11 @@ export default {
 
 
 <style lang='scss'>
-
 .capitalize {
   text-transform: capitalize;
+}
+body {
+  max-width: 100% !important;
 }
 
 #loading-screen {
@@ -89,5 +100,14 @@ export default {
 .slide-right-enter {
   opacity: 0;
   transform: translate(-2em, 0);
+}
+.v--modal-block-scroll,
+.v--modal-box {
+  overflow: auto !important;
+}
+@media (min-width: 500px) {
+  .v--modal-box {
+    top: 20% !important;
+  }
 }
 </style>

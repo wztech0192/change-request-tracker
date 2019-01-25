@@ -2,13 +2,22 @@
   <div class="box login-box" style="background-color:transparent">
     <div class="login-logo">
       <p>
-        <i class="fa fa-spinner"></i> <b> CR</b>Tracker
+        <i class="fa fa-spinner"></i>
+        <b>CR</b>Tracker
       </p>
     </div>
 
     <!-- /.login-logo -->
     <form class="login-box-body" @submit.prevent="loginSubmit">
       <p class="login-box-msg">Sign in to start your session</p>
+          <transition name="fade">
+      <div v-if="error.ex_error" class="alert alert-danger alert-dismissible">
+        <h5>
+          <i class="icon fa fa-ban"></i> Fail
+        </h5>
+        {{error.ex_error}}
+      </div>
+    </transition>
       <div class="form-group has-feedback">
         <input
           name="email"
@@ -42,8 +51,9 @@
           </a>
         </div>
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block">Login&nbsp;&nbsp;&nbsp;<i class="fa fa-sign-in"></i></button>
-         
+          <button type="submit" class="btn btn-primary btn-block">Login&nbsp;&nbsp;&nbsp;
+            <i class="fa fa-sign-in"></i>
+          </button>
         </div>
         <!-- /.col -->
       </div>
@@ -56,12 +66,6 @@
     <!--<div class="overlay fade" v-bind:class="{'in':loading}">
       <i class="fa fa-refresh fa-spin"></i>
     </div>-->
-          <div v-if="error.ex_error" class="alert alert-danger alert-dismissible">
-        <h5>
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <i class="icon fa fa-ban"></i> Fail
-        </h5>{{error.ex_error}}
-      </div>
   </div>
 </template>
 
@@ -73,7 +77,7 @@ export default {
     ...mapState("authentication", ["user", "error", "loading"])
   },
   methods: {
-    ...mapMutations("authentication", ["setLoginData", "clearLoginData"]),
+    ...mapMutations("authentication", ["setLoginData", "clearLoginData", "clearExceptionError"]),
     ...mapActions("authentication", ["loginSubmit"])
   }
 };

@@ -2,6 +2,7 @@ import createPersistedState from 'vuex-persistedstate';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import authentication from './authentication';
+import devTodo from './devTodo';
 
 Vue.use(Vuex);
 
@@ -11,7 +12,8 @@ export default new Vuex.Store({
     baseURL: '/api'
   },
   modules: {
-    authentication
+    authentication,
+    devTodo
   },
   mutations: {
 

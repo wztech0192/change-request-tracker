@@ -1,77 +1,344 @@
 <template>
   <div class="content-wrapper">
     <section class="content-header">
-      <h1>
-        To-Do
-        <small>on progress</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <a href="#">
-            <i class="fa fa-code"></i> Home
+      <!-- Custom Tabs (Pulled to the right) -->
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs pull-right">
+          <li class>
+            <a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Tab 1</a>
+          </li>
+          <li class>
+            <a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Tab 2</a>
+          </li>
+          <li class="active">
+            <a href="#tab_3-2" data-toggle="tab" aria-expanded="true">Tab 3</a>
+          </li>
+          <!-- Add New ToDo Button  -->
+          <a
+            class="pull-right btn btn-app addTodoBtn"
+            @click="showConfirmModal(true,'Create New Todo')"
+          >
+            <i class="fa fa-calendar-plus-o"></i> New Todo
           </a>
-        </li>
-        <li>
-          <a href="#">Todo</a>
-        </li>
-      </ol>
-    </section>
-    <section class="content">
-      <div class="box box-default" data-widget="box-widget">
-        <div class="box-header with-border">
-          <h2 class="box-title">List</h2>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse">
-              <i class="fa fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <div class="box box-widget" data-widget="box-widget">
-            <div class="box-header with-border">
-              <h5 class="box-title" style="font-size:100%">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                  <i class="fa fa-minus"></i>
-                </button>
-                Create Database
-              </h5>
-
-              <div class="pull-right progress" style="width:50%; margin:5px;">
+          <li class="pull-left header">
+            <h2 style="padding:0; margin:0;">
+              <i class="fa fa-th"></i>&nbsp;&nbsp;Developer Todo List
+              <small>on progress</small>
+            </h2>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane" id="tab_1-1"></div>
+          <!-- /.tab-pane -->
+          <div class="tab-pane" id="tab_2-2"></div>
+          <!-- /.tab-pane -->
+          <div class="tab-pane active" id="tab_3-2">
+            <div
+              v-for="(todo, i) in getTodoList"
+              class="box box-widget box-solid box-default collapsed-box"
+              data-widget="box-widget"
+            >
+              <div class="box-header with-border" style="padding-left:30px;">
                 <div
-                  class="progress-bar progress-bar-primary progress-bar-striped"
-                  role="progressbar"
-                  aria-valuenow="40"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style="width: 5%;"
-                ></div>
+                  class="box-tools pull-left"
+                  style="margin-left:-25px; position:relative;top:0; right:0;"
+                >
+                  <button
+                    class="btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Collapse"
+                    data-widget="collapse"
+                  >
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  class="pull-right btn btn-box-tool"
+                  data-toggle="tooltip"
+                  title="Edit"
+                  @click="showConfirmModal(true, 'Edit Todo #'+(i+1),todo.id)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  type="button"
+                  class="pull-right btn btn-box-tool"
+                  data-toggle="tooltip"
+                  title="Delete"
+                  @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Todo?',todo.id)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+                <button
+                  type="button"
+                  class="pull-right btn btn-box-tool"
+                  data-toggle="tooltip"
+                  title="Add Task"
+                  @click="showConfirmModal(true, 'Create New Task For Todo #'+(i+1), todo.id)"
+                >
+                  <i class="fa fa-plus-square"></i>
+                </button>
+                <button
+                  type="button"
+                  class="pull-right btn btn-box-tool"
+                  data-toggle="tooltip"
+                  title="Flag"
+                >
+                  <i class="fa fa-flag-o"></i>
+                </button>
+
+                <h5 class="box-title" style="font-size:100%; padding: 5px 0;">{{todo.title}}</h5>
+
+                <div class="progress xxs active" style="width:100%; margin-bottom:0;">
+                  <div
+                    class="progress-bar progress-bar-primary progress-bar-striped"
+                    role="progressbar"
+                    :style="getPercentageStyle(todo.percentage)"
+                  ></div>
+                </div>
+              </div>
+              <div class="box-body" style="display:none; padding-left:30px;">
+                <div v-for="task in todo.tasks" class="devtask-style" :class="{'devtask-completed':task.isCompleted}">
+                  <button
+                    type="button"
+                    class="btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Complete"
+                    @click="setTaskStatus({task:task, todo:todo})"
+                  >
+                    <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
+                  </button>
+                  
+                  <span>{{task.detail}}</span>
+                  <button
+                    type="button"
+                    class="pull-right btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Edit"
+                    @click="showConfirmModal(true, 'Edit Task #'+(i+1), task.id)"
+                  >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="pull-right btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Delete"
+                    @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Task?',task.id)"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="box-body">
-              <p>'HELLO'</p>
-            </div>
+          </div>
+          <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+      </div>
+    </section>
+
+    <!-- Input Modal -->
+    <modal
+      name="InputModal"
+      :adaptive="true"
+      :scrollable="true"
+      height="auto"
+      width="80%"
+      :max-width="400"
+    >
+      <div class="box box-primary" style="margin:0;">
+        <div class="box-header with-border">
+          <h3 class="box-title">{{modalHeader}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <div class="box-body">
+          <!-- form start -->
+          <div class="form-group" :class="{'has-error':errorMsg}">
+            <label v-if="errorMsg" class="control-label" for="inputError">
+              <i class="fa fa-times-circle-o"></i>
+              {{errorMsg}}
+            </label>
+            <textarea v-model="modalInput" type="text" class="form-control" placeholder="Enter ..."></textarea>
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          Visit
-          <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-          the plugin.
+          <button class="pull-right btn btn-primary" @click="modalInputConfirm()">Confirm</button>
+          <button
+            @click="$modal.hide('InputModal')"
+            class="pull-right btn btn-secondary"
+            style="margin-right:10px"
+          >Close</button>
         </div>
       </div>
-    </section>
-    <div data-widget="todo-list">
-      <input type="checkbox">
-    </div>
+    </modal>
+
+    <!-- Confirm Modal -->
+    <modal
+      name="ConfirmModal"
+      :adaptive="true"
+      :scrollable="true"
+      height="auto"
+      width="80%"
+      :max-width="400"
+    >
+      <div class="box box-primary" style="margin:0;">
+        <div class="box-header with-border">
+          <div class="alert-dismissible">
+            <h4>
+              <i class="icon fa fa-info"></i> Confirmation
+            </h4>
+            {{modalHeader}}
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <!-- /.box-body -->
+        <div class="box-footer">
+          <button class="pull-right btn btn-primary" @click="modalAlertConfirm()">Remove</button>
+          <button
+            @click="$modal.hide('ConfirmModal')"
+            class="pull-right btn btn-secondary"
+            style="margin-right:10px"
+          >Close</button>
+        </div>
+      </div>
+    </modal>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions, mapState } from "vuex";
+
 export default {
-    name:'DevTodo'
+  name: "DevTodo",
+  data: () => {
+    return {
+      // data for modal
+      modalHeader: null,
+      modalInput: null,
+      selectedID: null
+    };
+  },
+  created() {
+    //fetch todolist data from database to local state
+    this.fetchDevTodo();
+  },
+  computed: {
+    ...mapGetters("devTodo", ["getTodoList"]),
+    ...mapState("devTodo", ["errorMsg"]),
+  },
+  methods: {
+    ...mapMutations("devTodo", ["setErrorMsg"]),
+    ...mapActions("devTodo", [
+      "fetchDevTodo",
+      "addNewTodo",
+      "addNewTask",
+      "deleteTodo",
+      "deleteTask",
+      "editTodo",
+      "editTask",
+      "setTaskStatus"
+    ]),
+
+    //determine if task is completed or not
+    getCompletedClass(isCompleted){
+    
+      return (isCompleted || isCompleted===1 )?  "fa-check-square text-green":"fa-square-o";
+    },
+
+    //convert number into style
+    getPercentageStyle(percentage){
+      return "width:"+percentage+"%";
+    },
+
+    //setup confirm modal then display it
+    showConfirmModal(isInput, type, id) {
+      this.selectedID = id;
+      this.modalHeader = type;
+      if (isInput) {
+        this.setErrorMsg(null);
+        this.modalInput = null;
+        this.$modal.show("InputModal");
+      } else {
+        this.$modal.show("ConfirmModal");
+      }
+    },
+
+    modalAlertConfirm() {
+      if (this.modalHeader.indexOf("Todo") >= 0) {
+        this.deleteTodo(this.selectedID);
+      } else {
+        this.deleteTask(this.selectedID);
+      }
+      //close modal
+      this.$modal.hide("ConfirmModal");
+    },
+
+    //send confirm input data to handler method
+    modalInputConfirm() {
+      if (this.modalInput) {
+        this.setErrorMsg(null);
+        //perform post html request if modal header has create
+        if (this.modalHeader.indexOf("Create") >= 0) {
+          // type is task detail if selectedID is not empty
+          if (this.selectedID) {
+            this.addNewTask({
+              detail: this.modalInput,
+              id: this.selectedID
+            });
+          }
+          //else it is a todo title
+          else {
+            this.addNewTodo(this.modalInput);
+            location.reload();
+          }
+        } else {
+          if (this.modalHeader.indexOf("Todo") >= 0) {
+            this.editTodo({
+              title: this.modalInput,
+              id: this.selectedID
+            });
+          } else {
+            this.editTask({
+              detail: this.modalInput,
+              id: this.selectedID
+            });
+          }
+        }
+
+        //close modal if there is no error message
+        if (!this.errorMsg) {
+          //close modal
+          this.$modal.hide("InputModal");
+        }
+      } else {
+        this.setErrorMsg("Input is Empty!");
+      }
+    }
+  }
 };
 </script>
 
 <style>
+.devtask-style {
+  margin-bottom: 15px;
+  min-height: 30px;
+  box-shadow: -2px 2px 2px 2px rgba(176, 164, 176, 0.65);
+}
+.devtask-completed {
+  box-shadow: -2px 2px 2px 2px rgba(15, 190, 44, 0.637);
+}
+.addTodoBtn {
+  padding: 0;
+  margin: 0;
+  height: auto;
+}
+.modalbtn {
+  width: 25%;
+}
 </style>

@@ -49,6 +49,7 @@ Route.group(() => {
   Route.post('dev/todo/:id/task',"DevController.createTask").middleware('auth');
   Route.delete('dev/task/:id',"DevController.destroyTask").middleware('auth');
   Route.patch('dev/task/:id',"DevController.updateTask").middleware('auth');
+  Route.patch('dev/task/complete/:id',"DevController.updateTaskComplete").middleware('auth');
 
   //Developer Reference Route
   Route.get('dev/ref',"DevController.getRef").middleware('auth');

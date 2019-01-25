@@ -45,8 +45,10 @@ export default {
       commit
     }) {
       return HTTP().get('/user')
-      // if user exist set user information in state, else set error message then redirect to login view
-        .then(({ data }) => {
+        // if user exist set user information in state, else set error message then redirect to login view
+        .then(({
+          data
+        }) => {
           if (data) {
             commit('setUser', data);
           } else {
@@ -89,6 +91,7 @@ export default {
             commit('clearRegisterData');
             // redirect route plus reload page
             // window.location.href = "/";
+            router.push('/');
           } else {
             commit('setMessageError', data);
           }
@@ -106,6 +109,8 @@ export default {
       commit,
       state
     }) {
+      // clear exception error
+      commit('clearExceptionError');
       commit('setLoading', true);
       return HTTP().post('/auth/login', state.user)
         .then(({
@@ -114,6 +119,7 @@ export default {
           // redirect router if data has token, else show error message
           if (data.token) {
             commit('clearLoginData');
+            commit('clearRegisterData');
             commit('setToken', data.token);
             // redirect route plus reload page
             // window.location.href = "/";
@@ -187,6 +193,16 @@ export default {
     setExceptionError(state, string) {
       state.user.password = null;
       state.error.ex_error = string;
+    },
+
+    clearExceptionError(state) {
+      state.error = {
+        first_name_error: null,
+        last_name_error: null,
+        email_error: null,
+        password_error: null,
+        ex_error: null
+      };
     },
 
     // empty login user data

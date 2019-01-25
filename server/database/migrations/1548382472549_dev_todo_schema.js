@@ -5,16 +5,15 @@ const Schema = use('Schema')
 
 class DevTodoSchema extends Schema {
   up () {
-    this.create('dev_todos', (table) => {
-      table.increments()
-      table.float('percentage').defaultTo(0);
-      table.string('title',200)
-      table.timestamps()
+    this.table('dev_todos', (table) => {
+      table.integer('task_num').defaultTo(0);
     })
   }
 
   down () {
-    this.drop('dev_todos')
+    this.table('dev_todos', (table) => {
+      // reverse alternations
+    })
   }
 }
 

@@ -8,7 +8,7 @@ class DevTaskSchema extends Schema {
     this.create('dev_tasks', (table) => {
       table.increments()
       table.integer('dev_todo_id').unsigned().references('id').inTable('dev_todos')
-      table.string('status', 20).defaultTo("New")
+      table.boolean('isCompleted').defaultTo(false)
       table.string('detail',200)
       table.timestamps()
     })

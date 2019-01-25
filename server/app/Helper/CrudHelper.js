@@ -13,7 +13,7 @@ class CrudHelper{
      * @returns {Model[]}
      */
     async getAll(Model,callback){
-        const resourceQuery=await Model.query().fetch();
+        const resourceQuery=await Model.all();
         //call back function
         if(callback){
             //verification

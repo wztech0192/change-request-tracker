@@ -1,10 +1,12 @@
 import { sync } from 'vuex-router-sync';
+import VModal from 'vue-js-modal';
 import Vue from 'vue';
-import App from './App.vue';
 import router from './router';
 import store from './store/index';
+import App from './App.vue';
 
 Vue.config.productionTip = false;
+Vue.use(VModal);
 
 sync(store, router);
 

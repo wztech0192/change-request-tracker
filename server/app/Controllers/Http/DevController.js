@@ -13,23 +13,23 @@ const CrudHelper = use('App/Helper/CrudHelper');
 
 class DevController {
     /**
-     * Get all change request belongs to this user
+     * Get all dev ToDo and its task
      * @returns {Object}
      */
     async index({auth}){
+        //authorize
         const user= await auth.getUser();
         AuthorizationService.verifyRole(user, ['Developer']); 
+       
+        //get all todoList from database
+        const todoList= await DevTodo.all();
 
-        return CrudHelper.getAll(DevTodo, {
-            work: async (parentList)=>{
-                for( let i in parentList){
-                    var p = parentList[i];
-                    var tasks= await p.devTask().fetch();
-                    p.tasks=tasks.rows;
-                }
-            }
-        });
-        
+        //get all children task of each todo
+         for(let todo of todoList.rows){
+            const task= await todo.devTask().fetch();
+            todo.tasks= task;
+        }
+        return todoList.rows;
     }
     
     /*----------------------Dev Todo CRUD--------------------------
@@ -87,6 +87,12 @@ class DevController {
                  //fill in data then save to its parent
                 devTask.fill({detail});  
                 await devTodo.devTask().save(devTask);
+
+                let old_task_num = devTodo.task_num;
+                devTodo.task_num++;
+                // total of completed divide by new total of task
+                devTodo.percentage = (old_task_num*devTodo.percentage)/devTodo.task_num;
+                await devTodo.save();
             }
         });
     }
@@ -96,9 +102,26 @@ class DevController {
      * @returns {devTask}
      */
     async destroyTask({auth, params}){
-        return CrudHelper.destroy(auth, params, DevTask, {
-            verify: (user, devTask) => AuthorizationService.verifyPermission(devTask, user, ['Developer'])
+    
+        const item = await CrudHelper.destroy(auth, params, DevTask, {
+            verify: (user, devTask) => AuthorizationService.verifyPermission(devTask, user, ['Developer']),
+            work: async (devTask) => {
+                const parent = await devTask.devTodo().fetch();
+                const old_task_num = parent.task_num;
+                //is devtask is completed then decrease total percetange
+                if(devTask.isCompleted){
+                    let dPercent = (1/old_task_num) * 100;
+                    parent.percentage -= dPercent;
+                }
+                //determine percetange after item is deleted
+                parent.task_num --;
+                // total of completed divide by new total of task
+                parent.percentage = (old_task_num*parent.percentage)/parent.task_num;
+                await parent.save();
+            }
         });
+
+        return item;
     }
 
 
@@ -107,11 +130,40 @@ class DevController {
      * @returns {devTask}
      */
     async updateTask({auth, request, params}){
-        const item= CrudHelper.update(auth, params, DevTask, {
+        const item= await CrudHelper.update(auth, params, DevTask, {
             verify: ( user, devTask) =>AuthorizationService.verifyPermission(devTask,user, ['Developer']),
-            work: (devTask) => devTask.merge(request.only(['detail','status']))           
+            work: (devTask) => devTask.merge(request.only('detail'))           
         });
         return item;
+    }
+
+
+     /**
+     * update task completion 
+     * @returns {devTask}
+     */
+    async updateTaskComplete({auth, request, params}){
+        const user=await auth.getUser();
+        const devTask =await DevTask.find(params.id);        
+
+        AuthorizationService.verifyPermission(devTask,user, ['Developer']);
+        devTask.merge(request.only('isCompleted'));
+        await devTask.save()
+        //recalculate parent todo complete percentage
+        const parentTodo = await devTask.devTodo().fetch();
+        let dPercent = (1/parentTodo.task_num) * 100;
+        //determine increasing or decreasing on percentage
+        dPercent = (devTask.isCompleted)? dPercent : -dPercent;
+        parentTodo.percentage += dPercent;
+        if(parentTodo.percentage>100){
+            parentTodo.percentage = 100;
+        }
+        else if(parentTodo.percentage<0){
+            parentTodo.percentage = 0;
+        }
+        await parentTodo.save();
+
+        return parentTodo;
     }
 
     /*----------------------Dev Reference CRUD--------------------------

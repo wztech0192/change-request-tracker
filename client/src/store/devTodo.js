@@ -10,13 +10,19 @@ export default {
   state: {
     // array of todo list
     todoList: null,
-    errorMsg: null
+    errorMsg: null,
+    todoType: "ALL"
   },
 
   actions: {
     // fetch dev todo list
-    fetchDevTodo({ commit }) {
-      return HTTP().get('/dev')
+    fetchDevTodo({ commit, state }) {
+      return HTTP().get('/dev', {
+        // request params to pass data from get requests
+        params: {
+          type: state.todoType
+        }
+      })
         // if user exist set user information in state, else set error message then redirect to login view
         .then(({ data }) => {
           if (data) {
@@ -121,6 +127,12 @@ export default {
   },
 
   mutations: {
+
+    // set request todo list type
+    setTodoType(state, type) {
+      state.todoType = type;
+    },
+
     setFlag(state, todo) {
       todo.isFlagged = !(todo.isFlagged || todo.isFlagged === 1);
     },

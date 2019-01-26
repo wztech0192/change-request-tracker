@@ -198,7 +198,6 @@ if (typeof jQuery === 'undefined') {
     const expandedEvent = $.Event(Event.expanded);
     const collapseIcon = this.options.collapseIcon;
     const expandIcon = this.options.expandIcon;
-
     $(this.element).removeClass(ClassName.collapsed);
 
     $(this.element)

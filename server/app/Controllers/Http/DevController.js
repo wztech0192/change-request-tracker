@@ -155,7 +155,8 @@ class DevController {
         //determine increasing or decreasing on percentage
         dPercent = (devTask.isCompleted)? dPercent : -dPercent;
         parentTodo.percentage += dPercent;
-        if(Math.round(parentTodo.percentage)>100){
+        parentTodo.percentage = Math.round(parentTodo.percentage);
+        if(parentTodo.percentage>=100){
             parentTodo.percentage = 100;
         }
         else if(parentTodo.percentage<0){

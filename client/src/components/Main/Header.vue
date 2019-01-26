@@ -47,12 +47,12 @@
               <a href="#">
                 <h3>
                   {{task.title}}
-                  <small class="pull-right">{{Math.round(task.percentage)}}%</small>
+                  <small class="pull-right">{{task.percentage}}%</small>
                 </h3>
-                <div class="progress xs">
+                <div class="progress xs active">
                   <div
                     class="progress-bar progress-bar-striped"
-                    :class="getProgressBarColor(Math.round(task.percentage))"
+                    :class="getProgressBarColor(task.percentage)"
                     :style="{width: task.percentage + '%' }"
                     role="progressbar"
                   >

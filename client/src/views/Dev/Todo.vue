@@ -4,14 +4,29 @@
       <!-- Custom Tabs (Pulled to the right) -->
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
-          <li class>
-            <a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Tab 1</a>
+          <li :class="{'active':todoType==='COMPLETE'}">
+            <a
+              @click="setTodoType('COMPLETE')"
+              href="#tab_1-1"
+              data-toggle="tab"
+              aria-expanded="false"
+            >Completed</a>
           </li>
-          <li class>
-            <a href="#tab_2-2" data-toggle="tab" aria-expanded="false">Tab 2</a>
+          <li :class="{'active':todoType==='FLAG'}">
+            <a
+              @click="setTodoType('FLAG')"
+              href="#tab_2-2"
+              data-toggle="tab"
+              aria-expanded="false"
+            >Flagged</a>
           </li>
-          <li class="active">
-            <a href="#tab_3-2" data-toggle="tab" aria-expanded="true">Tab 3</a>
+          <li :class="{'active':todoType==='ALL'}">
+            <a
+              @click="setTodoType('ALL')"
+              href="#tab_3-2"
+              data-toggle="tab"
+              aria-expanded="true"
+            >All</a>
           </li>
           <!-- Add New ToDo Button  -->
           <a
@@ -28,13 +43,11 @@
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane" id="tab_1-1"></div>
-          <!-- /.tab-pane -->
-          <div class="tab-pane" id="tab_2-2"></div>
-          <!-- /.tab-pane -->
-          <div class="tab-pane active" id="tab_3-2">
+          <div class="tab-pane active">
+            <!-- Loop and display all todo -->
             <div
               v-for="(todo, i) in getTodoList"
+              :class="{'hide':todoFilter(todo)}"
               class="box box-widget box-solid box-default collapsed-box"
               data-widget="box-widget"
             >
@@ -57,6 +70,7 @@
                   </button>
                 </div>
 
+                <!-- Todo Edit -->
                 <button
                   type="button"
                   class="pull-right btn btn-box-tool"
@@ -66,6 +80,8 @@
                 >
                   <i class="fa fa-edit"></i>
                 </button>
+
+                <!-- Todo Delete -->
                 <button
                   type="button"
                   class="pull-right btn btn-box-tool"
@@ -75,6 +91,8 @@
                 >
                   <i class="fa fa-trash"></i>
                 </button>
+
+                <!-- Task Add -->
                 <button
                   type="button"
                   class="pull-right btn btn-box-tool"
@@ -84,6 +102,8 @@
                 >
                   <i class="fa fa-plus-square"></i>
                 </button>
+
+                <!-- Todo Flag -->
                 <button
                   type="button"
                   class="pull-right btn btn-box-tool"
@@ -94,7 +114,8 @@
                   <i v-if="!todo.isFlagged" class="fa fa-flag-o"></i>
                   <i v-else class="fa fa-flag" style="color:blue;"></i>
                 </button>
-                
+
+                <!-- Todo Information -->
                 <button
                   type="button"
                   class="pull-right btn btn-box-tool"
@@ -110,18 +131,20 @@
                 <div class="progress xxs active" style="width:100%; margin-bottom:0;">
                   <div
                     class="progress-bar progress-bar-primary progress-bar-striped"
-                    :class="{'progress-bar-success':Math.round(todo.percentage)>=100}"
+                    :class="{'progress-bar-success':todo.percentage>=100}"
                     role="progressbar"
                     :style="{width: todo.percentage + '%' }"
                   ></div>
                 </div>
               </div>
               <div class="box-body" style="display:none; padding-left:30px;">
+                <!-- Loop and display each task inside each todo -->
                 <div
                   v-for="task in todo.tasks"
                   class="devtask-style"
                   :class="{'devtask-completed':task.isCompleted}"
                 >
+                  <!-- Task Completion -->
                   <button
                     type="button"
                     class="btn btn-box-tool"
@@ -131,8 +154,7 @@
                   >
                     <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
                   </button>
-                  
-                  <span>{{task.detail}}</span>
+                                    <!-- Task Edit -->
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
@@ -142,6 +164,8 @@
                   >
                     <i class="fa fa-edit"></i>
                   </button>
+
+                  <!-- Task Delete -->
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
@@ -151,6 +175,9 @@
                   >
                     <i class="fa fa-trash"></i>
                   </button>
+                  
+                  <h5 style="display:inline;">{{task.detail}}</h5>
+
                 </div>
               </div>
             </div>
@@ -251,10 +278,10 @@ export default {
   },
   computed: {
     ...mapGetters("devTodo", ["getTodoList"]),
-    ...mapState("devTodo", ["errorMsg"])
+    ...mapState("devTodo", ["errorMsg", "todoType"])
   },
   methods: {
-    ...mapMutations("devTodo", ["setErrorMsg"]),
+    ...mapMutations("devTodo", ["setErrorMsg", "setTodoType"]),
     ...mapActions("devTodo", [
       "fetchDevTodo",
       "addNewTodo",
@@ -270,6 +297,18 @@ export default {
     //allow update flaggedlist when perform a flag
     ...mapActions("authentication", ["fetchFlaggedList"]),
 
+    //filter display todo
+    todoFilter(todo) {
+      switch (this.todoType) {
+        case "ALL":
+          return false;
+        case "FLAG":
+          return (!todo.isFlagged || todo.isFlagged !==1);
+        case "COMPLETE":
+          return todo.percentage < 100;
+      }
+    },
+
     //flag a todo
     flagTodo(todo) {
       //update todo state
@@ -281,16 +320,16 @@ export default {
     //todo information
     getTodoInfo(todo) {
       const info =
-        "<table class='todo-detail'><tr><td>ID:</td><td>" +
-        todo.id +
-        "</td></tr>" +
-        "<tr><td>Tk:</td><td>" +
-        todo.task_num +
-        "</td></tr>" +
-        "<tr><td>&#9745;:</td><td>" +
-        Math.round((todo.percentage / 100) * todo.task_num) +
-        "</td></tr>" +
-        "</table>";
+        `<table class='todo-detail'><tr><td>ID:</td><td>
+        ${todo.id}
+        </td></tr>
+        <tr><td>Tk:</td><td>
+        ${todo.task_num}
+        </td></tr>
+        <tr><td>&#9745;:</td><td>
+        ${todo.percentage / 100 * todo.task_num }
+        </td></tr> 
+        </table>`;
       return info;
     },
 
@@ -353,7 +392,7 @@ export default {
           //else it is a todo title
           else {
             this.addNewTodo(this.modalInput);
-           location.reload();
+            location.reload();
           }
         } else {
           if (this.modalHeader.indexOf("Todo") >= 0) {

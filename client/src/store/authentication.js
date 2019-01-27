@@ -113,11 +113,13 @@ export default {
 
     // login http request
     loginSubmit({ commit, state }) {
+      console.log(state);
       // clear exception error
       commit('clearExceptionError');
       commit('setLoading', true);
       return HTTP().post('/auth/login', state.user)
         .then(({ data }) => {
+          console.log(data);
           // redirect router if data has token, else show error message
           if (data.token) {
             commit('clearLoginData');

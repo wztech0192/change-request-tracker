@@ -150,6 +150,7 @@
                     class="btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Complete"
+                    style="margin-left: -20px;"
                     @click="setTaskCompleted({task:task, todo:todo})"
                   >
                     <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
@@ -364,6 +365,7 @@ export default {
       }
     },
 
+    //show alert modal
     modalAlertConfirm() {
       if (this.modalHeader.indexOf("Todo") >= 0) {
         this.deleteTodo(this.selectedID);
@@ -432,6 +434,7 @@ export default {
   text-align: right;
 }
 .devtask-style {
+  padding-left:20px;
   margin-bottom: 15px;
   min-height: 30px;
   box-shadow: -2px 2px 2px 2px rgba(176, 164, 176, 0.65);

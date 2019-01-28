@@ -204,9 +204,6 @@ export default {
 
     //define progress bar color based on its percentage
     getProgressBarColor: percent =>{
-      if(percent<=20){
-        return "progress-bar-danger";
-      }
       if(percent<100){
         return "progress-bar-primary";
       }

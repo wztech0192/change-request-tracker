@@ -176,6 +176,4 @@ $(() => {
     }
 
     setup()
-
-    $('[data-toggle="tooltip"]').tooltip()
 });

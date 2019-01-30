@@ -20,10 +20,10 @@
         <!-- Admin Tab -->
         <li class="header">Developer</li>
         <li>
-          <a href="#">
+          <router-link to="/devtodo">
             <i class="fa fa-code"></i>
             <span>Todo List</span>
-          </a>
+          </router-link>
         </li>
         <!-- Admin Tab -->
         <li class="header">ADMINISTRATOR</li>
@@ -60,10 +60,10 @@
           </ul>
         </li>
         <li>
-          <a href="#">
+         <router-link to="/">
             <i class="fa fa-users"></i>
             <span>Create User</span>
-          </a>
+           </router-link>
         </li>
         <li>
           <a href="#">

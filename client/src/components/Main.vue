@@ -3,11 +3,12 @@
     <Header :user="user" :taskList="flaggedList"/>
     <Sidebar :user="user"/>
 
-     <transition>
-       <router-view/>
-     </transition>
-     
-      
+    <div class="content-wrapper">
+      <transition name="slide-left" mode="out-in">
+        <router-view/>
+      </transition>
+    </div>
+
     <Controlbar/>
   </div>
 </template>
@@ -20,19 +21,19 @@ import Controlbar from "@/components/Main/Controlbar.vue";
 
 export default {
   name: "Main",
-  namedspaced:false,
+  namedspaced: false,
   components: {
     Header,
     Sidebar,
     Controlbar
   },
   computed: {
-    ...mapGetters("authentication", ["isLoggedIn"]),
-    ...mapState("authentication",["user","flaggedList"])
+    ...mapGetters("authentication", "isLoggedIn"),
+    ...mapState("authentication", ["user", "flaggedList"]),
   },
-  mounted () {
+  mounted() {
     document.body.className = "skin-blue sidebar-mini";
-  }
+  },
 };
 </script>
 

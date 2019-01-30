@@ -39,11 +39,11 @@ class DevController {
      * @returns {devTask}
      */
     async createTodo({auth, request}){
-        const {title}=request.all();
+        const {content}=request.all();
         return CrudHelper.create(auth, DevTodo, {
             verify: (user) => AuthorizationService.verifyRole(user, ['Developer']),
             work: async (devTodo) => {
-                devTodo.title=title;
+                devTodo.content=content;
                 await devTodo.save();
             }     
         });
@@ -67,7 +67,7 @@ class DevController {
     async updateTodo({auth, request, params}){
         return CrudHelper.update(auth, params, DevTodo, {
             verify:(user, devTodo)=>AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
-            work: (devTodo) => devTodo.merge(request.only(['title','percentage','isFlagged']))
+            work: (devTodo) => devTodo.merge(request.only(['content','percentage','isFlagged']))
         });
     }
 
@@ -79,13 +79,13 @@ class DevController {
      * @returns {devTask}
      */
     async createTask({auth, request, params}){
-        const {detail} = request.all();
+        const {content} = request.all();
         const devTodo = await DevTodo.find(params.id);
         return CrudHelper.create(auth, DevTask, {
             verify: (user) => AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
             work: async (devTask) => {
                  //fill in data then save to its parent
-                devTask.fill({detail});  
+                devTask.fill({content});  
                 await devTodo.devTask().save(devTask);
 
                 let old_task_num = devTodo.task_num;
@@ -132,7 +132,7 @@ class DevController {
     async updateTask({auth, request, params}){
         const item= await CrudHelper.update(auth, params, DevTask, {
             verify: ( user, devTask) =>AuthorizationService.verifyPermission(devTask,user, ['Developer']),
-            work: (devTask) => devTask.merge(request.only('detail'))           
+            work: (devTask) => devTask.merge(request.only('content'))           
         });
         return item;
     }

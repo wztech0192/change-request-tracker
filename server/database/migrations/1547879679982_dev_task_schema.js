@@ -9,7 +9,7 @@ class DevTaskSchema extends Schema {
       table.increments()
       table.integer('dev_todo_id').unsigned().references('id').inTable('dev_todos')
       table.boolean('isCompleted').defaultTo(false)
-      table.string('detail',200)
+      table.string('content',200)
       table.timestamps()
     })
   }

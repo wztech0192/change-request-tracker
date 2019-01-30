@@ -8,7 +8,7 @@ class DevTodoSchema extends Schema {
     this.create('dev_todos', (table) => {
       table.increments()
       table.float('percentage').defaultTo(0);
-      table.string('title',200)
+      table.string('content',200)
       table.timestamps()
     })
   }

@@ -46,7 +46,7 @@
               <!-- Task item -->
               <a href="#">
                 <h3>
-                  {{task.title}}
+                  {{task.content}}
                   <small class="pull-right">{{task.percentage}}%</small>
                 </h3>
                 <div class="progress xs active">

@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import DevTodo from "./views/Dev/Todo.vue";
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
+import UserManager from './views/UserManager.vue';
 import store from './store/index';
 
 
@@ -14,6 +15,7 @@ function Authenication(to, from, next) {
     next('/login');
   } else next();
 }
+
 function resetToken(to, from, next) {
   store.dispatch('authentication/logoutToken');
   next();
@@ -22,23 +24,29 @@ function resetToken(to, from, next) {
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      component: DevTodo,
-      beforeEnter: Authenication
-    },
+  routes: [{
 
-    {
-      path: '/login',
-      component: Login,
-      beforeEnter: resetToken
-    },
+    path: '/devtodo',
+    component: DevTodo,
+    beforeEnter: Authenication
+  },
 
-    {
-      path: '/register',
-      component: Register,
-      beforeEnter: resetToken
-    }
+  {
+    path: '/',
+    component: UserManager,
+    beforeEnter: Authenication
+  },
+
+  {
+    path: '/login',
+    component: Login,
+    beforeEnter: resetToken
+  },
+
+  {
+    path: '/register',
+    component: Register,
+    beforeEnter: resetToken
+  }
   ]
 });

@@ -1,5 +1,12 @@
 <template>
   <div id="app">
+    <div :class="{'fade z-index-out': !getGlobalError}" class="alert alert-danger flat error-bar">
+      <button class="close" @click.prevent="clearGlobalError">X</button>
+      <h4 style="text-align:left; margin:0;">
+        <i class="icon fa fa-ban"></i> Alert!
+      </h4>
+      {{getGlobalError}}
+    </div>
     <div id="app-content">
       <Main v-if="isLoggedIn"/>
       <Auth v-else/>
@@ -21,7 +28,8 @@ export default {
     Auth
   },
   computed: {
-    ...mapGetters("authentication", ["isLoggedIn"])
+    ...mapGetters("authentication", ["isLoggedIn"]),
+    ...mapGetters("errorStore", ["getGlobalError"]),
   },
   watch: {
     //refresh page when login or logout
@@ -38,6 +46,7 @@ export default {
       this.fetchUser();
       this.fetchFlaggedList();
     }
+
     $("body").tooltip({
       selector: '[data-toggle="tooltip"]',
       trigger: "hover"
@@ -48,13 +57,26 @@ export default {
     });
   },
   methods: {
-    ...mapActions("authentication", ["fetchUser","fetchFlaggedList"])
+    ...mapActions("authentication", ["fetchUser", "fetchFlaggedList"]),
+    ...mapActions("errorStore", ["clearGlobalError"])
   }
 };
 </script>
 
 
 <style lang='scss'>
+.error-bar {
+  z-index: 1000000;
+  position: fixed;
+  width: 100%;
+  background-color:#dd4b39ed !important;
+  border: none;
+  text-align: center;
+  transition:0.3s ease;
+}
+.z-index-out{
+  z-index: -100 !important;
+}
 .capitalize {
   text-transform: capitalize;
 }
@@ -106,6 +128,9 @@ body {
 .v--modal-block-scroll,
 .v--modal-box {
   overflow: auto !important;
+}
+a {
+  -webkit-user-drag: none;
 }
 @media (min-width: 500px) {
   .v--modal-box {

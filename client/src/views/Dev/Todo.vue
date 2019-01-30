@@ -1,13 +1,13 @@
 <template>
-  <div class="content-wrapper">
+  <div style="transition:0.2s ease" :class="{'fade': !todoList}">
     <section class="content-header">
       <!-- Custom Tabs (Pulled to the right) -->
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
           <li :class="{'active':todoType==='COMPLETE'}">
             <a
-              @click="setTodoType('COMPLETE')"
-              href="#tab_1-1"
+              @click.prevent="setTodoType('COMPLETE')"
+              href="#COMPLETE"
               data-toggle="tab"
               aria-expanded="false"
             >Completed</a>
@@ -15,23 +15,18 @@
           <li :class="{'active':todoType==='FLAG'}">
             <a
               @click="setTodoType('FLAG')"
-              href="#tab_2-2"
+              href="#FLAG"
               data-toggle="tab"
               aria-expanded="false"
             >Flagged</a>
           </li>
           <li :class="{'active':todoType==='ALL'}">
-            <a
-              @click="setTodoType('ALL')"
-              href="#tab_3-2"
-              data-toggle="tab"
-              aria-expanded="true"
-            >All</a>
+            <a @click="setTodoType('ALL')" href="#ALL" data-toggle="tab" aria-expanded="true">All</a>
           </li>
           <!-- Add New ToDo Button  -->
           <a
             class="pull-right btn btn-app addTodoBtn"
-            @click="showConfirmModal(true,'Create New Todo')"
+            @click="showPromptModal(false, 'Create New Todo')"
           >
             <i class="fa fa-calendar-plus-o"></i> New Todo
           </a>
@@ -46,13 +41,13 @@
           <div class="tab-pane active">
             <!-- Loop and display all todo -->
             <div
-              v-for="(todo, i) in getTodoList"
-              :class="{'hide':todoFilter(todo)}"
+              :style="[ todoFilter(todo) ? {'display':'none'} : {'display':'block'}] "
               class="box box-widget box-solid box-default collapsed-box"
               data-widget="box-widget"
+              v-for="(todo, i) in todoList"
             >
               <div
-                class="box-header with-border"
+                class="box-header with-border todo-header"
                 style="padding-left:30px;"
                 :class="{'todo-flagged':todo.isFlagged}"
               >
@@ -76,7 +71,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Edit"
-                  @click="showConfirmModal(true, 'Edit Todo #'+(i+1),todo)"
+                  @click="showPromptModal(true, 'Edit Todo #'+(i+1), todo)"
                 >
                   <i class="fa fa-edit"></i>
                 </button>
@@ -87,7 +82,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Delete"
-                  @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Todo?',todo)"
+                  @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Todo?',todo)"
                 >
                   <i class="fa fa-trash"></i>
                 </button>
@@ -98,7 +93,7 @@
                   class="pull-right btn btn-box-tool"
                   data-toggle="tooltip"
                   title="Add Task"
-                  @click="showConfirmModal(true, 'Create New Task For Todo #'+(i+1), todo)"
+                  @click="showPromptModal(false, 'Create New Task For Todo #'+(i+1), todo)"
                 >
                   <i class="fa fa-plus-square"></i>
                 </button>
@@ -126,7 +121,10 @@
                   <i class="fa fa-info-circle"></i>
                 </button>
 
-                <h5 class="box-title" style="font-size:100%; padding: 5px 0;">{{todo.title}}</h5>
+                <h5
+                  class="box-title"
+                  style="font-size:100%; padding: 5px 0; display:inline;"
+                >{{todo.content}}</h5>
 
                 <div class="progress xxs active" style="width:100%; margin-bottom:0;">
                   <div
@@ -155,13 +153,13 @@
                   >
                     <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
                   </button>
-                                    <!-- Task Edit -->
+                  <!-- Task Edit -->
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Edit"
-                    @click="showConfirmModal(true, 'Edit Task #'+(i+1), task)"
+                    @click="showPromptModal(true, 'Edit Task #'+(i+1), task, todo)"
                   >
                     <i class="fa fa-edit"></i>
                   </button>
@@ -172,13 +170,12 @@
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Delete"
-                    @click="showConfirmModal(false, 'Are You Sure You Want To Permanently Remove This Task?',task)"
+                    @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Task?',task, todo)"
                   >
                     <i class="fa fa-trash"></i>
                   </button>
-                  
-                  <h5 style="display:inline;">{{task.detail}}</h5>
 
+                  <h5 style="display:inline;">{{task.content}}</h5>
                 </div>
               </div>
             </div>
@@ -191,7 +188,7 @@
 
     <!-- Input Modal -->
     <modal
-      name="InputModal"
+      name="PromptModal"
       :adaptive="true"
       :scrollable="true"
       height="auto"
@@ -200,25 +197,26 @@
     >
       <div class="box box-primary" style="margin:0;">
         <div class="box-header with-border">
-          <h3 class="box-title">{{modalHeader}}</h3>
+          <h3 class="box-title">{{modalInfo.description}}</h3>
         </div>
-        <!-- /.box-header -->
-        <!-- form start -->
         <div class="box-body">
-          <!-- form start -->
           <div class="form-group" :class="{'has-error':errorMsg}">
             <label v-if="errorMsg" class="control-label" for="inputError">
               <i class="fa fa-times-circle-o"></i>
               {{errorMsg}}
             </label>
-            <textarea v-model="modalInput" type="text" class="form-control" placeholder="Enter ..."></textarea>
+            <textarea
+              v-model="modalInfo.content"
+              type="text"
+              class="form-control"
+              placeholder="Enter ..."
+            ></textarea>
           </div>
         </div>
-        <!-- /.box-body -->
         <div class="box-footer">
-          <button class="pull-right btn btn-primary" @click="modalInputConfirm()">Confirm</button>
+          <button class="pull-right btn btn-primary" @click="modalInfo.btnEvent">Confirm</button>
           <button
-            @click="$modal.hide('InputModal')"
+            @click="$modal.hide('PromptModal')"
             class="pull-right btn btn-secondary"
             style="margin-right:10px"
           >Close</button>
@@ -241,14 +239,11 @@
             <h4>
               <i class="icon fa fa-info"></i> Confirmation
             </h4>
-            {{modalHeader}}
+            {{modalInfo.description}}
           </div>
         </div>
-        <!-- /.box-header -->
-        <!-- form start -->
-        <!-- /.box-body -->
         <div class="box-footer">
-          <button class="pull-right btn btn-primary" @click="modalAlertConfirm()">Remove</button>
+          <button class="pull-right btn btn-primary" @click="modalInfo.btnEvent">Remove</button>
           <button
             @click="$modal.hide('ConfirmModal')"
             class="pull-right btn btn-secondary"
@@ -261,169 +256,289 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
+import HTTP from "@/http";
+import router from "@/router";
 
 export default {
   name: "DevTodo",
+
   data: () => {
     return {
       // data for modal
-      modalHeader: null,
-      modalInput: null,
-      selectedID: null
+      modalInfo: {},
+
+      // array of todo list
+      todoList: null,
+      errorMsg: null,
+
+      //filtering type
+      todoType: "ALL"
     };
   },
+
   created() {
-    //fetch todolist data from database to local state
+    //fetch todolist data from database
     this.fetchDevTodo();
   },
-  computed: {
-    ...mapGetters("devTodo", ["getTodoList"]),
-    ...mapState("devTodo", ["errorMsg", "todoType"])
-  },
+
   methods: {
-    ...mapMutations("devTodo", ["setErrorMsg", "setTodoType"]),
-    ...mapActions("devTodo", [
-      "fetchDevTodo",
-      "addNewTodo",
-      "addNewTask",
-      "deleteTodo",
-      "deleteTask",
-      "editTodo",
-      "editTask",
-      "setTaskStatus",
-      "setTodoFlag"
-    ]),
+    //allow update flaggedlist when perform a check flag action
+    ...mapActions("authentication", ["fetchFlaggedList", "setExceptionError"]),
+    ...mapActions("errorStore", ["setGlobalError"]),
 
-    //allow update flaggedlist when perform a flag
-    ...mapActions("authentication", ["fetchFlaggedList"]),
+    // reload collapse box event
+    reloadCollapseEvent() {
+      setTimeout(() => {
+        $(".collapsed-box").boxWidget({
+          animationSpeed: 500,
+          collapseTrigger: "[data-widget='collapse']",
+          collapseIcon: "fa-minus",
+          expandIcon: "fa-plus"
+        });
+      }, 200);
+    },
 
+    // fetch dev todo list
+    fetchDevTodo() {
+      return HTTP()
+        .get("/dev", {
+          // request params to pass data from get requests
+          params: {
+            type: this.todoType
+          }
+        })
+        .then(({ data }) => {
+          this.todoList = data;
+          this.reloadCollapseEvent();
+        })
+        .catch(e => {
+          this.setGlobalError(e.response.data.error);
+          router.push("/");
+        });
+    },
+
+    setTodoType(type) {
+      this.todoType = type;
+    },
     //filter display todo
     todoFilter(todo) {
       switch (this.todoType) {
         case "ALL":
           return false;
         case "FLAG":
-          return (!todo.isFlagged || todo.isFlagged !==1);
+          return !todo.isFlagged || todo.isFlagged !== 1;
         case "COMPLETE":
           return todo.percentage < 100;
       }
     },
 
-    //flag a todo
+    // set flag
     flagTodo(todo) {
-      //update todo state
-      this.setTodoFlag(todo);
-      //update user flagged list state, fire 50ms later so setFlag request will complete
-      setTimeout(this.fetchFlaggedList, 50);
+      //reverse boolean
+      todo.isFlagged = !(todo.isFlagged || todo.isFlagged === 1);
+      HTTP()
+        .patch(`/dev/todo/${todo.id}`, todo)
+        .then(() => {
+          //update header task menu
+          this.fetchFlaggedList();
+        })
+        .catch(() => {
+          var { error } = e.response.data;
+          this.setGlobalError(error);
+        });
     },
 
-    //todo information
+    // set task status
+    setTaskCompleted({ task, todo }) {
+      //reverse isCompleted
+      task.isCompleted = !(task.isCompleted || task.isCompleted === 1);
+
+      //calculate parent completion percentage
+      let dPercent = (1 / todo.task_num) * 100;
+
+      // determine increasing or decreasing on percentage
+      dPercent = task.isCompleted ? dPercent : -dPercent;
+      todo.percentage += dPercent;
+      if (todo.percentage > 100) {
+        todo.percentage = 100;
+      } else if (todo.percentage < 0) {
+        todo.percentage = 0;
+      }
+
+      HTTP()
+        .patch(`/dev/task/complete/${task.id}`, task)
+        .then(() => {
+          //update header task menu
+          this.fetchFlaggedList();
+        })
+        .catch(e => {
+          this.setGlobalError(e.response.data.error);
+        });
+    },
+
+    //todo information tool tip
     getTodoInfo(todo) {
-      const info =
-        `<table class='todo-detail'><tr><td>ID:</td><td>
+      const info = `<table class='todo-detail'><tr><td>ID:</td><td>
         ${todo.id}
         </td></tr>
         <tr><td>Tk:</td><td>
         ${todo.task_num}
         </td></tr>
         <tr><td>&#9745;:</td><td>
-        ${todo.percentage / 100 * todo.task_num }
+        ${Math.round((todo.percentage / 100) * todo.task_num)}
         </td></tr> 
         </table>`;
       return info;
     },
 
-    //determine if task is completed or not
+    //return css class based on the task completion
     getCompletedClass(isCompleted) {
       return isCompleted || isCompleted === 1
         ? "fa-check-square text-green"
         : "fa-square-o";
     },
 
-    //set task completion and update flagged list
-    setTaskCompleted(data) {
-      this.setTaskStatus(data);
-      //update user flagged list state, fire 50ms later so setFlag request will complete
-      setTimeout(this.fetchFlaggedList, 50);
+    //setup modal data then display confirm modal
+    showConfirmModal(description, item, parent) {
+      this.modalInfo = {
+        description: description,
+        item: item
+      };
+      if (!parent) {
+        this.modalInfo.btnEvent = this.deleteTodo;
+      } else {
+        this.modalInfo.parent = parent;
+        this.modalInfo.btnEvent = this.deleteTask;
+      }
+      this.$modal.show("ConfirmModal");
     },
 
-    //setup confirm modal then display it
-    showConfirmModal(isInput, type, item) {
-      if (item) this.selectedID = item.id;
-      else this.selectedID = null;
-      this.modalHeader = type;
-      if (isInput) {
-        this.setErrorMsg(null);
-        //if task is edit, check condition and exist set input
-        if (this.modalHeader.indexOf("Create") === -1) {
-          this.modalInput = item.title ? item.title : item.detail;
-        } else this.modalInput = null;
-        this.$modal.show("InputModal");
+    //setup modal data then display prompt modal
+    showPromptModal(isEdit, description, item, parent) {
+      this.modalInfo = {
+        description: description,
+        item: item,
+        content: null,
+        parent: parent
+      };
+      this.errorMsg = null;
+      if (isEdit) {
+        this.modalInfo.link = parent
+          ? `/dev/task/${item.id}`
+          : `/dev/todo/${item.id}`;
+        this.modalInfo.btnEvent = this.editItem;
       } else {
-        this.$modal.show("ConfirmModal");
+        this.modalInfo.btnEvent = item ? this.addTask : this.addTodo;
       }
+      this.$modal.show("PromptModal");
     },
 
-    //show alert modal
-    modalAlertConfirm() {
-      if (this.modalHeader.indexOf("Todo") >= 0) {
-        this.deleteTodo(this.selectedID);
-        //update user flagged list state, fire 50ms later so setFlag request will complete
-        setTimeout(this.fetchFlaggedList, 50);
-      } else {
-        this.deleteTask(this.selectedID);
-      }
-      //close modal
+    //remove selected todo
+    deleteTodo() {
+      var { item } = this.modalInfo;
+      //remove todo from todoList array
+      this.todoList = this.todoList.filter(value => value != item);
+      HTTP()
+        .delete(`/dev/todo/${item.id}`)
+        .then(() => {
+          //update header task menu if the selector is flagged
+          if (item.isFlagged) this.fetchFlaggedList();
+        })
+        .catch(e => {
+          this.setGlobalError(e.response.data.error);
+        });
       this.$modal.hide("ConfirmModal");
     },
 
-    //send confirm input data to handler method
-    modalInputConfirm() {
-      if (this.modalInput) {
-        this.setErrorMsg(null);
-        //perform post html request if modal header has create
-        if (this.modalHeader.indexOf("Create") >= 0) {
-          // type is task detail if selectedID is not empty
-          if (this.selectedID) {
-            this.addNewTask({
-              detail: this.modalInput,
-              id: this.selectedID
-            });
-          }
-          //else it is a todo title
-          else {
-            this.addNewTodo(this.modalInput);
-            location.reload();
-          }
-        } else {
-          if (this.modalHeader.indexOf("Todo") >= 0) {
-            this.editTodo({
-              title: this.modalInput,
-              id: this.selectedID
-            });
-          } else {
-            this.editTask({
-              detail: this.modalInput,
-              id: this.selectedID
-            });
-          }
-        }
+    //remove selected task
+    deleteTask() {
+      var { parent, item } = this.modalInfo;
+      //remove task from its parent tasks array
+      parent.tasks = parent.tasks.filter(value => value !== item);
 
-        //close modal if there is no error message
-        if (!this.errorMsg) {
-          //close modal
-          this.$modal.hide("InputModal");
-        }
-      } else {
-        this.setErrorMsg("Input is Empty!");
+      //calculate new completion percentage after task is deleted
+      var dPercent = item.isCompleted ? (1 / parent.task_num) * 100 : 0;
+      parent.percentage -= dPercent;
+      parent.task_num--;
+      parent.percentage =
+        ((parent.task_num + 1) * parent.percentage) / parent.task_num;
+
+      HTTP()
+        .delete(`/dev/task/${item.id}`)
+        .then(() => {
+          //this.fetchDevTodo;
+        })
+        .catch(e => {
+          this.setGlobalError(e.response.data.error);
+        });
+      this.$modal.hide("ConfirmModal");
+    },
+
+    //add new todo
+    addTodo() {
+      if (this.modalHasInput()) {
+        HTTP()
+          .post("/dev/todo", this.modalInfo)
+          .then(({ data }) => {
+            this.fetchDevTodo();
+          });
+
+        this.$modal.hide("PromptModal");
       }
+    },
+
+    //add new task to selected todo
+    addTask() {
+      var { item } = this.modalInfo;
+      if (this.modalHasInput()) {
+        HTTP()
+          .post(`/dev/todo/${item.id}/task`, this.modalInfo)
+          .then(() => {
+            this.fetchDevTodo();
+          })
+          .catch(e => {
+            this.setGlobalError(e.response.data.error);
+          });
+        this.$modal.hide("PromptModal");
+      }
+    },
+
+    //edit selected todo or task
+    editItem() {
+      if (this.modalHasInput()) {
+        var { item, link } = this.modalInfo;
+        item.content = this.modalInfo.content;
+        HTTP()
+          .patch(link, this.modalInfo)
+          .then(() => {
+            this.fetchFlaggedList();
+          })
+          .catch(e => {
+            this.setGlobalError(e.response.data.error);
+          });
+        this.$modal.hide("PromptModal");
+      }
+    },
+
+    //verify modal input is not empty
+    modalHasInput() {
+      if (this.modalInfo.content === null) {
+        this.errorMsg = "Input cannot be empty!";
+        this.setGlobalError("wow");
+        return false;
+      }
+      return true;
     }
   }
 };
 </script>
 
+
 <style>
+.todo-header {
+  transition: 0.5s ease;
+}
 .todo-flagged {
   background: lightsteelblue !important;
 }
@@ -434,7 +549,7 @@ export default {
   text-align: right;
 }
 .devtask-style {
-  padding-left:20px;
+  padding-left: 20px;
   margin-bottom: 15px;
   min-height: 30px;
   box-shadow: -2px 2px 2px 2px rgba(176, 164, 176, 0.65);

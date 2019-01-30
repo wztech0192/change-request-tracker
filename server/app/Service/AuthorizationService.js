@@ -2,6 +2,7 @@
 
 const InvalidAccessException = use('App/Exceptions/InvalidAccessException');
 const ResourceNotExistException = use('App/Exceptions/ResourceNotExistException');
+const RegistCodeNotExistException = use('App/Exceptions/RegistCodeNotExistException');
 
 class AuthorizationService{
 
@@ -21,6 +22,19 @@ class AuthorizationService{
             }
         }
     }
+
+    /**
+     * verify if user is the owner of the message
+     */
+    verifyMessageOwnership(message, owner){
+
+        //throw a ResourceNotExistException if resource do not exist
+        this.verifyExistance(message, 'message');
+        if(message.receiverEmail !== owner.email){
+            throw new InvalidAccessException('message');
+        }
+    }
+
 
     /**
      * verify if user has permission to view the entire list
@@ -72,6 +86,13 @@ class AuthorizationService{
     verifyExistance(resource,message){
         if(!resource){
             throw new ResourceNotExistException(message);
+        }
+    }
+    
+    //verify if register exists
+    verifyRegistration(code){
+        if(!code){
+            throw new RegistCodeNotExistException();
         }
     }
     

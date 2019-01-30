@@ -59,12 +59,30 @@
             </li>
           </ul>
         </li>
-        <li>
-         <router-link to="/">
+
+
+        <li class="treeview">
+          <a href="#">
             <i class="fa fa-users"></i>
-            <span>Create User</span>
-           </router-link>
+            <span>User Management</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li>
+              <router-link to="/user-list">
+                <i class="fa fa-circle-o"></i>User List
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/generate-code">
+                <i class="fa fa-circle-o"></i>Generate Register Code
+              </router-link>
+            </li>
+          </ul>
         </li>
+
         <li>
           <a href="#">
             <i class="fa fa-pie-chart"></i>
@@ -74,10 +92,10 @@
 
         <li class="header">MAIN NAVIGATION</li>
         <li>
-          <a href="pages/widgets.html">
+          <router-link to="/">
             <i class="fa fa-dashboard"></i>
             <span>Dashboard</span>
-          </a>
+          </router-link>
         </li>
         <li class="treeview">
           <a href="#">

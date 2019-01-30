@@ -44,7 +44,7 @@ export default {
     // set user profile into authentication.user state if user is logged in
     if (this.isLoggedIn) {
       this.fetchUser();
-      this.fetchFlaggedList();
+      this.fetchTaskList();
     }
 
     $("body").tooltip({
@@ -57,7 +57,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions("authentication", ["fetchUser", "fetchFlaggedList"]),
+    ...mapActions("authentication", ["fetchUser", "fetchTaskList"]),
     ...mapActions("errorStore", ["clearGlobalError"])
   }
 };

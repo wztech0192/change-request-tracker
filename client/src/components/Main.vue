@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <Header :user="user" :taskList="flaggedList"/>
+    <Header :user="user" :taskList="taskList"/>
     <Sidebar :user="user"/>
 
     <div class="content-wrapper">
@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     ...mapGetters("authentication", "isLoggedIn"),
-    ...mapState("authentication", ["user", "flaggedList"]),
+    ...mapState("authentication", ["user", "taskList"]),
   },
   mounted() {
     document.body.className = "skin-blue sidebar-mini";

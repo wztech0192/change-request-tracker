@@ -230,7 +230,7 @@ export default {
             }
           })
           .catch((e) => {
-            this.error.first_name_error = e;
+            this.error.first_name_error = e.response.data;
           })
           .finally(() => {
             this.setLoading(false);

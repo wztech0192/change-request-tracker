@@ -3,7 +3,9 @@ import Router from 'vue-router';
 import DevTodo from "./views/Dev/Todo.vue";
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
-import UserManager from './views/UserManager.vue';
+import UserList from './views/Admin/UserList.vue';
+import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
+import Dashboard from './views/Dashboard.vue';
 import store from './store/index';
 
 
@@ -16,6 +18,7 @@ function Authenication(to, from, next) {
   } else next();
 }
 
+// reset token if user enter login/register page
 function resetToken(to, from, next) {
   store.dispatch('authentication/logoutToken');
   next();
@@ -24,29 +27,42 @@ function resetToken(to, from, next) {
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [{
+  routes: [
 
-    path: '/devtodo',
-    component: DevTodo,
-    beforeEnter: Authenication
-  },
+    {
+      path: '/login',
+      component: Login,
+      beforeEnter: resetToken
+    },
 
-  {
-    path: '/',
-    component: UserManager,
-    beforeEnter: Authenication
-  },
+    {
+      path: '/register',
+      component: Register,
+      beforeEnter: resetToken
+    },
 
-  {
-    path: '/login',
-    component: Login,
-    beforeEnter: resetToken
-  },
+    {
+      path: '/',
+      component: Dashboard,
+      beforeEnter: Authenication
+    },
 
-  {
-    path: '/register',
-    component: Register,
-    beforeEnter: resetToken
-  }
+    {
+      path: '/devtodo',
+      component: DevTodo,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/user-list',
+      component: UserList,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/generate-code',
+      component: CreateRegisterCode,
+      beforeEnter: Authenication
+    }
   ]
 });

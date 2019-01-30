@@ -33,37 +33,49 @@ Route.group(() => {
 }).prefix('api')
 
 Route.group(() => {
-    //User Route
-    Route.get('user','UserController.self')
-    Route.get('user/all', "UserController.getAll")
-    Route.get('user/flagged', "UserController.getFlaggedList")
-    Route.get('user/:id', "UserController.get")
-    Route.delete('user/:id', "UserController.destroy")
-    Route.patch('user/:id', "UserController.update")
-  
-  
-    //Developer Todo Route
-    Route.get('dev',"DevController.index")
-    Route.post('dev/todo',"DevController.createTodo")
-    Route.delete('dev/todo/:id',"DevController.destroyTodo")
-    Route.patch('dev/todo/:id',"DevController.updateTodo")
-    
-    //Developer Task Route
-    Route.post('dev/todo/:id/task',"DevController.createTask")
-    Route.delete('dev/task/:id',"DevController.destroyTask")
-    Route.patch('dev/task/:id',"DevController.updateTask")
-    Route.patch('dev/task/complete/:id',"DevController.updateTaskComplete")
-  
-    //Developer Reference Route
-    Route.get('dev/ref',"DevController.getRef")
-    Route.post('dev/ref',"DevController.createRef")
-    Route.delete('dev/ref/:id',"DevController.destroyRef")
-    Route.patch('dev/ref/:id',"DevController.updateRef")
-  
-    //Change Request Route
-    Route.get('change-request', "ChangeRequestController.index")
-    Route.post('change-request', "ChangeRequestController.create")
-    Route.delete('change-request/:id', "ChangeRequestController.destroy")
-    Route.patch('change-request/:id', "ChangeRequestController.update")
-    Route.get('change-request/all', "ChangeRequestController.getAll")
+  //User Route
+  Route.get('user', 'UserController.self')
+  Route.get('user/all', "UserController.getAll")
+  Route.get('user/task', "UserController.getTaskList")
+  Route.get('user/:id', "UserController.get")
+  Route.delete('user/:id', "UserController.destroy")
+  Route.patch('user/:id', "UserController.update")
+
+  //Registration code
+  Route.get('regist-code', "RegistrationCodeController.getRegistrationCode")
+  Route.post('regist-code', "RegistrationCodeController.createRegistrationCode")
+  Route.delete('regist-code/:id', "RegistrationCodeController.deleteRegistrationCode")
+  Route.patch('regist-code/:id', "RegistrationCodeController.updateRegistrationCode")
+
+
+  //Developer Todo Route
+  Route.get('dev', "DevController.index")
+  Route.post('dev/todo', "DevController.createTodo")
+  Route.delete('dev/todo/:id', "DevController.destroyTodo")
+  Route.patch('dev/todo/:id', "DevController.updateTodo")
+
+  //Developer Task Route
+  Route.post('dev/todo/:id/task', "DevController.createTask")
+  Route.delete('dev/task/:id', "DevController.destroyTask")
+  Route.patch('dev/task/:id', "DevController.updateTask")
+  Route.patch('dev/task/complete/:id', "DevController.updateTaskComplete")
+
+  //Developer Reference Route
+  Route.get('dev/ref', "DevController.getRef")
+  Route.post('dev/ref', "DevController.createRef")
+  Route.delete('dev/ref/:id', "DevController.destroyRef")
+  Route.patch('dev/ref/:id', "DevController.updateRef")
+
+  //Message Reference Route
+  Route.get('message', "MessageController.getMessage")
+  Route.post('message', "MessageController.createMessage")
+  Route.delete('message/:id', "MessageController.deleteMessage")
+  Route.patch('message/:id', "MessageController.updateMessage")
+
+  //Change Request Route
+  Route.get('change-request', "ChangeRequestController.index")
+  Route.post('change-request', "ChangeRequestController.create")
+  Route.delete('change-request/:id', "ChangeRequestController.destroy")
+  Route.patch('change-request/:id', "ChangeRequestController.update")
+  Route.get('change-request/all', "ChangeRequestController.getAll")
 }).middleware('auth').prefix('api');

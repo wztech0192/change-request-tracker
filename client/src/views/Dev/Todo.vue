@@ -283,8 +283,7 @@ export default {
   },
 
   methods: {
-    //allow update flaggedlist when perform a check flag action
-    ...mapActions("authentication", ["fetchFlaggedList", "setExceptionError"]),
+    ...mapActions("authentication", ["fetchTaskList", "setExceptionError"]),
     ...mapActions("errorStore", ["setGlobalError"]),
 
     // reload collapse box event
@@ -341,7 +340,7 @@ export default {
         .patch(`/dev/todo/${todo.id}`, todo)
         .then(() => {
           //update header task menu
-          this.fetchFlaggedList();
+          this.fetchTaskList();
         })
         .catch(() => {
           var { error } = e.response.data;
@@ -370,7 +369,7 @@ export default {
         .patch(`/dev/task/complete/${task.id}`, task)
         .then(() => {
           //update header task menu
-          this.fetchFlaggedList();
+          this.fetchTaskList();
         })
         .catch(e => {
           this.setGlobalError(e.response.data.error);
@@ -424,6 +423,7 @@ export default {
       };
       this.errorMsg = null;
       if (isEdit) {
+        this.modalInfo.content=item.content;
         this.modalInfo.link = parent
           ? `/dev/task/${item.id}`
           : `/dev/todo/${item.id}`;
@@ -443,7 +443,7 @@ export default {
         .delete(`/dev/todo/${item.id}`)
         .then(() => {
           //update header task menu if the selector is flagged
-          if (item.isFlagged) this.fetchFlaggedList();
+          if (item.isFlagged) this.fetchTaskList();
         })
         .catch(e => {
           this.setGlobalError(e.response.data.error);
@@ -512,7 +512,7 @@ export default {
         HTTP()
           .patch(link, this.modalInfo)
           .then(() => {
-            this.fetchFlaggedList();
+            this.fetchTaskList();
           })
           .catch(e => {
             this.setGlobalError(e.response.data.error);

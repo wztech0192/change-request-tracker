@@ -17,7 +17,7 @@ export default {
     ex_error: null,
     token: null,
     loading: false,
-    flaggedList: []
+    taskList: []
   },
 
   /**
@@ -42,14 +42,14 @@ export default {
         });
     },
 
-    // get user flagged list
-    fetchFlaggedList({ commit }) {
-      return HTTP().get('/user/flagged')
+    // get user task list
+    fetchTaskList({ commit }) {
+      return HTTP().get('/user/task')
         .then(({ data }) => {
           if (data) {
-            commit('setFlaggedList', data);
+            commit('setTaskList', data);
           } else {
-            commit('setFlaggedList', []);
+            commit('setTaskList', []);
           }
         })
         .catch(() => {
@@ -87,8 +87,8 @@ export default {
   mutations: {
 
     // set user flagged list
-    setFlaggedList(state, flagList) {
-      state.flaggedList = flagList;
+    setTaskList(state, taskList) {
+      state.taskList = taskList;
     },
 
     // login user information include token

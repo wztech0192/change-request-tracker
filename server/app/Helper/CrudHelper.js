@@ -40,7 +40,7 @@ class CrudHelper{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                callback.work(resource);
+                callback.work(resource, user);
         }
         return resource;
     }

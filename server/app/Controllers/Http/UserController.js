@@ -10,6 +10,7 @@ const AuthorizationService = use('App/Service/AuthorizationService')
 const Hash = use('Hash')
 const Validator = use('Validator')
 const Database = use('Database')
+const MessageController = use('App/Controllers/Http/MessageController');
 
 class UserController {
 
@@ -23,12 +24,38 @@ class UserController {
         return token;
     }
 
+    //verify registration code
+    async _getRegistrationCode(request){
+        //verify registration code
+        let {code} = request.only('code');
+        if(code){
+            code = await Database
+            .table('registration_codes')
+            .where('code', code).first();
+        }
+        return code;
+    }
+        
     /**
      * Take email and password then create a user inside database. If success call login function
      * @return {login}
      */
     async register({request}){
-        const {email, password , first_name, last_name, mid_initial} = request.all();
+
+        //verify registration code
+        const code = await this._getRegistrationCode(request);
+        AuthorizationService.verifyRegistration(code);
+      
+        let {email, password, first_name, last_name, mid_initial} = request.all();
+
+        //if not allow to edit, set registration data to code data
+        if(code.allowEdit === 0){
+            email = code.email;
+            first_name = code.first_name;
+            last_name = code.last_name;
+            mid_initial = code.mid_initial;
+        }
+        
         //validate all request data
         const validation =  await Validator.validateAll(
             {email, password, first_name, last_name, mid_initial}
@@ -38,13 +65,24 @@ class UserController {
         if (validation.fails()) { 
             return validation.messages();
         }
+
+        //create user
         await User.create({
             email, 
             password, 
             username:email,
             first_name, last_name, mid_initial
-
         })
+
+        //create welcome message
+        MessageController._createMessage({
+            content : code.contetn,
+            receiverEmail : email,
+            senderEmail : code.creator_email,
+            senderName : code.creator_name,
+            title: "Welcome to CRTracker!", 
+        });
+
         //pass arguments from this method
         return this.login(...arguments)
     };
@@ -140,20 +178,20 @@ class UserController {
      * return flagged list
      * @return {array}
      */
-    async getFlaggedList({ auth}) {
+    async getTaskList({ auth}) {
         const user = await auth.getUser();
-        const FlaggedList = [];
+        const TaskList = [];
         if (user.role === "Developer") {
-        const flaggedDevTodo = await Database
-            .table('dev_todos')
-            .where('isFlagged', '1').orderBy('created_at', 'desc');
+            const flaggedDevTodo = await Database
+                .table('dev_todos')
+                .where('isFlagged', '1').orderBy('created_at', 'desc');
             for(let devTodo of flaggedDevTodo){
-              //  devTodo.link="/todo";
-                FlaggedList.push(devTodo);
+                //  devTodo.link="/todo";
+                TaskList.push(devTodo);
             }
         }
         //return null if list is empty
-        return (FlaggedList.length>0)? FlaggedList : null;
+        return TaskList;
     }
 
 }

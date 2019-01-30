@@ -1,5 +1,8 @@
 <template>
-    <div><h1>HIII</h1></div>
+    <div>
+        <span>This is user list page</span>
+
+    </div>
 </template>
 
 <script>

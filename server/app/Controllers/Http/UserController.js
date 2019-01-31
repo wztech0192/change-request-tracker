@@ -7,10 +7,11 @@
 
 const User=use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService')
+const RegistrationCodeService = use('App/Service/RegistrationCodeService');
+const MessageService = use('App/Service/MessageService')
 const Hash = use('Hash')
 const Validator = use('Validator')
 const Database = use('Database')
-const MessageController = use('App/Controllers/Http/MessageController');
 
 class UserController {
 
@@ -23,69 +24,45 @@ class UserController {
         const token= await auth.attempt(email,password);
         return token;
     }
-
-    //verify registration code
-    async _getRegistrationCode(request){
-        //verify registration code
-        let {code} = request.only('code');
-        if(code){
-            code = await Database
-            .table('registration_codes')
-            .where('code', code).first();
-        }
-        return code;
-    }
         
     /**
      * Take email and password then create a user inside database. If success call login function
      * @return {login}
      */
     async register({request}){
-
         //verify registration code
-        const code = await this._getRegistrationCode(request);
-        AuthorizationService.verifyRegistration(code);
+        const code = await RegistrationCodeService.getMatchCode(request.only('code'));
       
-        let {email, password, first_name, last_name, mid_initial} = request.all();
-
+        const userInfo = request.except(['code','password_retype']);
         //if not allow to edit, set registration data to code data
         if(code.allowEdit === 0){
-            email = code.email;
-            first_name = code.first_name;
-            last_name = code.last_name;
-            mid_initial = code.mid_initial;
+            userInfo.email = code.email;
+            userInfo.first_name = code.first_name;
+            userInfo.last_name = code.last_name;
+            userInfo.mid_initial = code.mid_initial;
         }
         
-        //validate all request data
-        const validation =  await Validator.validateAll(
-            {email, password, first_name, last_name, mid_initial}
-            , User.registerRules);
-
-        //return validation fail message if failed
+        //validate all request data, return message if fails
+        const validation =  await Validator.validateAll(userInfo, User.registerRules);
         if (validation.fails()) { 
             return validation.messages();
         }
 
+        //set username as email
+        userInfo.username = userInfo.email;
         //create user
-        await User.create({
-            email, 
-            password, 
-            username:email,
-            first_name, last_name, mid_initial
-        })
+        await User.create(userInfo)
 
         //create welcome message
-        MessageController._createMessage({
-            content : code.contetn,
-            receiverEmail : email,
-            senderEmail : code.creator_email,
-            senderName : code.creator_name,
-            title: "Welcome to CRTracker!", 
-        });
+        MessageService.addRegistrationCodeMessage(code,userInfo)
 
-        //pass arguments from this method
+        //remove used code
+        RegistrationCodeService.removeCode(code.id);
+
+        //pass arguments from this method to login
         return this.login(...arguments)
     };
+
 
    /**
      * Get Self Information

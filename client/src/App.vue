@@ -14,6 +14,8 @@
     <h1 id="loading-screen">
       <i class="fa fa-spinner"></i>
     </h1>
+
+    <v-dialog :resizable="true"/>
   </div>
 </template>
 
@@ -29,7 +31,7 @@ export default {
   },
   computed: {
     ...mapGetters("authentication", ["isLoggedIn"]),
-    ...mapGetters("errorStore", ["getGlobalError"]),
+    ...mapGetters("errorStore", ["getGlobalError"])
   },
   watch: {
     //refresh page when login or logout
@@ -65,16 +67,18 @@ export default {
 
 
 <style lang='scss'>
+
+
 .error-bar {
   z-index: 1000000;
   position: fixed;
   width: 100%;
-  background-color:#dd4b39ed !important;
+  background-color: #dd4b39ed !important;
   border: none;
   text-align: center;
-  transition:0.3s ease;
+  transition: 0.3s ease;
 }
-.z-index-out{
+.z-index-out {
   z-index: -100 !important;
 }
 .capitalize {

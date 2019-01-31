@@ -30,6 +30,7 @@ Route.group(() => {
   //User Authenication
   Route.post('auth/register', "UserController.register");
   Route.post('auth/login', "UserController.login");
+  Route.post('regist-code/verify', "RegistrationCodeController.verifyRegistrationCode");
 }).prefix('api')
 
 Route.group(() => {

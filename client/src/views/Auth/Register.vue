@@ -16,6 +16,7 @@
             class="form-control"
             placeholder="First Name"
             name="first_name"
+            :readonly="!this.allowEdit"
             v-model="registerData.first_name"
             @blur="clearError('first_name')"
           >
@@ -28,6 +29,7 @@
             class="form-control"
             placeholder="M."
             name="mid_initial"
+            :readonly="!this.allowEdit"
             v-model="registerData.mid_initial"
             @blur="clearError('mid_initial')"
           >
@@ -40,6 +42,7 @@
             class="form-control"
             placeholder="Last name"
             name="last_name"
+            :readonly="!this.allowEdit"
             v-model="registerData.last_name"
             @blur="clearError('last_name')"
           >
@@ -51,7 +54,8 @@
             name="email"
             type="email"
             class="form-control"
-            placeholder="Email"
+            :readonly="!this.allowEdit"
+            placeholder="Email: example@domain.com"
             autocomplete="username"
             v-model="registerData.email"
             @blur="clearError('email')"
@@ -111,7 +115,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -125,14 +129,15 @@ export default {
         last_name: null,
         email: null,
         password: null,
-        password_retype: null
+        password_retype: null,
       },
       error: {
         first_name_error: null,
         last_name_error: null,
         email_error: null,
         password_error: null
-      }
+      },
+      allowEdit: true
     };
   },
   watch: {
@@ -144,7 +149,33 @@ export default {
     }
   },
 
+  //verify registration code before created
+  mounted() {
+    HTTP()
+      .post("/regist-code/verify", { code: this.registrationCode })
+      .then(({ data }) => {
+        if (data) {
+          //fill in register data from the registration code
+          this.registerData.first_name = data.first_name;
+          this.registerData.last_name = data.last_name;
+          this.registerData.mid_initial = data.mid_initial;
+          this.registerData.email = data.email;
+          this.allowEdit = data.allowEdit === 1;
+          this.registerData.code = data.code;
+        } else {
+          this.setGlobalError("Registration code failed!");
+          router.push("/login");
+        }
+      })
+      .catch(() => {
+        this.setGlobalError("Registration code failed!");
+        router.push("/login");
+      });
+      console.log(!this.allowEdit);
+  },
+
   computed: {
+    ...mapState("authentication", ["registrationCode"]),
     password() {
       return this.registerData.password;
     },
@@ -152,8 +183,10 @@ export default {
       return this.registerData.password_retype;
     }
   },
+
   methods: {
     ...mapMutations("authentication", ["setLoading", "setToken"]),
+    ...mapActions("errorStore", ["setGlobalError"]),
 
     //clear register datas by set it to empty object
     clearRegisterData() {
@@ -186,28 +219,14 @@ export default {
     },
 
     //clear selector's error message
-    clearError(selector){
-      this.error[selector+"_error"] = null;
+    clearError(selector) {
+      this.error[selector + "_error"] = null;
     },
 
     // loop through all exception error then set message to the associated field
     setErrorMessage(exceptionArr) {
       exceptionArr.forEach(({ field, message }) => {
-        switch (field) {
-          case "email":
-            this.error.email_error = message;
-            break;
-          case "first_name":
-            this.error.first_name_error = message;
-            break;
-          case "last_name":
-            this.error.last_name_error = message;
-            break;
-          case "password":
-            this.error.password_error = message;
-            break;
-          default:
-        }
+        this.error[field + "_error"] = message;
       });
     },
 
@@ -229,8 +248,8 @@ export default {
               this.setErrorMessage(data);
             }
           })
-          .catch((e) => {
-            this.error.first_name_error = e.response.data;
+          .catch(e => {
+            this.setGlobalError(e.response.data.error);
           })
           .finally(() => {
             this.setLoading(false);

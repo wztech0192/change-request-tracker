@@ -8,7 +8,7 @@
 
 const ChangeRequest = use('App/Models/ChangeRequest')
 const AuthorizationService = use('App/Service/AuthorizationService')
-const CrudHelper = use('App/Helper/CrudHelper');
+const CrudService = use('App/Service/CrudService');
 
 class ChangeRequestController {
 
@@ -27,7 +27,7 @@ class ChangeRequestController {
      */
     async getAll({auth}){
         const user= await auth.getUser();
-        return CrudHelper.getAll(ChangeRequest,{
+        return CrudService.getAll(ChangeRequest,{
             verify:()=>AuthorizationService.verifyRole(user, ['Developer','Admin'])
         });
     }
@@ -38,7 +38,7 @@ class ChangeRequestController {
      */
     async create({auth, request}){
         const {title, details} = request.all();
-        return CrudHelper.create(auth, ChangeRequest, {
+        return CrudService.create(auth, ChangeRequest, {
             work: async (user, changeRequest)=>{
                 //fill in data then save to its creator
                 changeRequest.fill({title, details});  
@@ -52,7 +52,7 @@ class ChangeRequestController {
      * @returns {ChangeRequest}
      */
     async destroy({auth, params}){
-        return CrudHelper.destroy(auth, params, ChangeRequest, {
+        return CrudService.destroy(auth, params, ChangeRequest, {
             verify: (user, changeRequest) => AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin']) 
         });
     }
@@ -63,7 +63,7 @@ class ChangeRequestController {
      * @returns {ChangeRequest}
      */
     async update({auth, request, params}){
-        return CrudHelper.update(auth, params, ChangeRequest, {
+        return CrudService.update(auth, params, ChangeRequest, {
             verify: (user, changeRequest) => (AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true)),
             work: (changeRequest) => changeRequest.merge(request.only(['title','details']))
         });

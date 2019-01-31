@@ -2,7 +2,6 @@
 
 const InvalidAccessException = use('App/Exceptions/InvalidAccessException');
 const ResourceNotExistException = use('App/Exceptions/ResourceNotExistException');
-const RegistCodeNotExistException = use('App/Exceptions/RegistCodeNotExistException');
 
 class AuthorizationService{
 
@@ -87,15 +86,7 @@ class AuthorizationService{
         if(!resource){
             throw new ResourceNotExistException(message);
         }
-    }
-    
-    //verify if register exists
-    verifyRegistration(code){
-        if(!code){
-            throw new RegistCodeNotExistException();
-        }
-    }
-    
+    }    
 
 }
 

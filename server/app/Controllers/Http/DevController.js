@@ -9,7 +9,7 @@ const DevRef = use('App/Models/Dev/DevRef')
 const DevTask = use('App/Models/Dev/DevTask')
 const DevTodo = use('App/Models/Dev/DevTodo')
 const AuthorizationService = use('App/Service/AuthorizationService')
-const CrudHelper = use('App/Helper/CrudHelper');
+const CrudService = use('App/Service/CrudService');
 
 class DevController {
     /**
@@ -40,7 +40,7 @@ class DevController {
      */
     async createTodo({auth, request}){
         const {content}=request.all();
-        return CrudHelper.create(auth, DevTodo, {
+        return CrudService.create(auth, DevTodo, {
             verify: (user) => AuthorizationService.verifyRole(user, ['Developer']),
             work: async (devTodo) => {
                 devTodo.content=content;
@@ -54,7 +54,7 @@ class DevController {
      * @returns {devTodo}
      */
     async destroyTodo({auth, params}){
-        return CrudHelper.destroy(auth, params, DevTodo, {
+        return CrudService.destroy(auth, params, DevTodo, {
             verify:(user, devTodo)=>AuthorizationService.verifyPermission(devTodo, user, ['Developer'])
         });
     }
@@ -65,7 +65,7 @@ class DevController {
      * @returns {devTodo}
      */
     async updateTodo({auth, request, params}){
-        return CrudHelper.update(auth, params, DevTodo, {
+        return CrudService.update(auth, params, DevTodo, {
             verify:(user, devTodo)=>AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
             work: (devTodo) => devTodo.merge(request.only(['content','percentage','isFlagged']))
         });
@@ -81,7 +81,7 @@ class DevController {
     async createTask({auth, request, params}){
         const {content} = request.all();
         const devTodo = await DevTodo.find(params.id);
-        return CrudHelper.create(auth, DevTask, {
+        return CrudService.create(auth, DevTask, {
             verify: (user) => AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
             work: async (devTask) => {
                  //fill in data then save to its parent
@@ -103,7 +103,7 @@ class DevController {
      */
     async destroyTask({auth, params}){
     
-        const item = await CrudHelper.destroy(auth, params, DevTask, {
+        const item = await CrudService.destroy(auth, params, DevTask, {
             verify: (user, devTask) => AuthorizationService.verifyPermission(devTask, user, ['Developer']),
             work: async (devTask) => {
                 const parent = await devTask.devTodo().fetch();
@@ -130,7 +130,7 @@ class DevController {
      * @returns {devTask}
      */
     async updateTask({auth, request, params}){
-        const item= await CrudHelper.update(auth, params, DevTask, {
+        const item= await CrudService.update(auth, params, DevTask, {
             verify: ( user, devTask) =>AuthorizationService.verifyPermission(devTask,user, ['Developer']),
             work: (devTask) => devTask.merge(request.only('content'))           
         });
@@ -175,7 +175,7 @@ class DevController {
      */
     async createRef({auth, request}){
         const {description,link} = request.all();
-        return CrudHelper.create(auth, DevRef,{
+        return CrudService.create(auth, DevRef,{
             verify: (user) => AuthorizationService.verifyRole(user, ['Developer']),
             work: async (devRef) => {
                 devRef.fill({description,link});
@@ -189,7 +189,7 @@ class DevController {
      */
     async getRef({auth}){
         const user= await auth.getUser();
-        return CrudHelper.getAll(DevRef,{
+        return CrudService.getAll(DevRef,{
             verify: ()=>AuthorizationService.verifyRole(user, ['Developer']) 
         });
     }
@@ -199,7 +199,7 @@ class DevController {
      * @returns {devRef}
      */
     async destroyRef({auth, params}){
-        return CrudHelper.destroy(auth, params, DevRef, {
+        return CrudService.destroy(auth, params, DevRef, {
             verify:(user, devRef)=>AuthorizationService.verifyPermission(devRef, user, ['Developer']) 
         });
     }
@@ -210,7 +210,7 @@ class DevController {
      * @returns {devRef}
      */
     async updateRef({auth, request, params}){
-        return CrudHelper.update(auth, params, DevRef, {  
+        return CrudService.update(auth, params, DevRef, {  
             verify:(user, devRef)=>AuthorizationService.verifyPermission(devRef, user, ['Developer']) ,
             work: (devRef) => devRef.merge(request.only(['description','link']))
         });

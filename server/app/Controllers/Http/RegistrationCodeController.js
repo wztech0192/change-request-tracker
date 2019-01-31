@@ -5,11 +5,11 @@
  * @description create, read, upload, and delete RegistrationCode
  */
 
-const RegistrationCode = use('App/Models/RegistrationCode')
-const AuthorizationService = use('App/Service/AuthorizationService')
-const CrudHelper = use('App/Helper/CrudHelper');
+const RegistrationCode = use('App/Models/RegistrationCode');
+const AuthorizationService = use('App/Service/AuthorizationService');
+const RegistrationCodeService = use('App/Service/RegistrationCodeService');
+const CrudService = use('App/Service/CrudService');
 const Database = use('Database');
-const Validator = use('Validator')
 
 class RegistrationCodeController {
 
@@ -20,27 +20,15 @@ class RegistrationCodeController {
 
         let data = request.all();
 
-        //validate email
-        const emailValidate = await Validator.validation(data, RegistrationCode.registerEmailRules)
-        if(emailValidate.fails()){
-            return validation.messages();
+        //validate data
+        var validateResult= await RegistrationCodeService.registrationCodeIsFail(data);
+        if(validateResult){
+            return validateResult;
         }
-
-        //if validate input name if not allow to edit
-        if(!data.allowEdit){
-            const validation =  await Validator.validateAll(
-                data,
-                RegistrationCode.registerRules
-            );
-            //return validation fail message if failed
-            if (validation.fails()) { 
-                return validation.messages();
-            }
-        }      
 
         //genreate random number 
         data.code = Math.round((1+Math.random()*999) * (1+Math.random()*999));     
-        CrudHelper.create(auth, RegistrationCode, {
+        await CrudService.create(auth, RegistrationCode, {
             verify: user => AuthorizationService.verifyRole(user, ['Developer', 'Admin']),
             work: async (registrationCode, user) => {
                 data.creator_email = user.email;
@@ -49,7 +37,16 @@ class RegistrationCodeController {
                 await registrationCode.save();
             }
         });
-        return data.code;
+        return {
+            code: data.code
+        };
+    }
+
+    /**
+     * Get registrationCode from data that match with input code
+     */
+    async verifyRegistrationCode({request}){
+        return RegistrationCodeService.getMatchCode(request.only('code'));
     }
 
     /**
@@ -70,7 +67,7 @@ class RegistrationCodeController {
      * @returns {registrationCode}
      */
     async deleteRegistrationCode({auth, params}){
-        return CrudHelper.destroy(auth, params, RegistrationCode, {
+        return CrudService.destroy(auth, params, RegistrationCode, {
             verify:(user)=>AuthorizationService.verifyRole(user, ['Developer', 'Admin'])
         });
     }
@@ -81,7 +78,7 @@ class RegistrationCodeController {
      * @returns {registrationCode}
      */
     async updateRegistrationCode({auth, request, params}){
-        return CrudHelper.update(auth, params, RegistrationCode, {  
+        return CrudService.update(auth, params, RegistrationCode, {  
             verify:(user)=>AuthorizationService.verifyRole(user, ['Developer', 'Admin']),
             work: (registrationCode) => registrationCode.merge(request.only(['isRead','isArchived']))
         });

@@ -1,140 +1,250 @@
 <template>
-  <div class="box box-info">
-    <div class="box-header with-border">
-      <h3 class="box-title">Input Addon</h3>
-    </div>
-    <div class="box-body">
-      <div class="input-group">
-        <span class="input-group-addon">@</span>
-        <input type="text" class="form-control" placeholder="Username">
-      </div>
-      <br>
-
-      <div class="input-group">
-        <input type="text" class="form-control">
-        <span class="input-group-addon">.00</span>
-      </div>
-      <br>
-
-      <div class="input-group">
-        <span class="input-group-addon">$</span>
-        <input type="text" class="form-control">
-        <span class="input-group-addon">.00</span>
-      </div>
-
-      <h4>With icons</h4>
-
-      <div class="input-group">
-        <span class="input-group-addon">
-          <i class="fa fa-envelope"></i>
-        </span>
-        <input type="email" class="form-control" placeholder="Email">
-      </div>
-      <br>
-
-      <div class="input-group">
-        <input type="text" class="form-control">
-        <span class="input-group-addon">
-          <i class="fa fa-check"></i>
-        </span>
-      </div>
-      <br>
-
-      <div class="input-group">
-        <span class="input-group-addon">
-          <i class="fa fa-dollar"></i>
-        </span>
-        <input type="text" class="form-control">
-        <span class="input-group-addon">
-          <i class="fa fa-ambulance"></i>
-        </span>
-      </div>
-
-      <h4>With checkbox and radio inputs</h4>
-
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="input-group">
+  <div>
+    <section class="content-header">
+      <h1>Registration Code Generator</h1>
+    </section>
+    <section class="content">
+      <div class="box">
+        <div class="box-body" style="background-color:lightgrey">
+          <span class="pull-right">
+            <a
+              class="register-resetbtn btn btn-social-icon"
+              @click.prevent="resetCodeData"
+              data-toggle="tooltip"
+              title="Reset All Except Message"
+            >
+              <i class="fa fa-repeat"></i>
+            </a>
+          </span>
+          <br>
+          <label :class="{'text-red':error.email_error}">Receiver/User Email Address</label>
+          <div class="input-group" :class="{'has-error':error.email_error}">
             <span class="input-group-addon">
-              <input type="checkbox">
+              <i class="fa fa-envelope"></i>
             </span>
-            <input type="text" class="form-control">
+            <input
+              type="email"
+              class="form-control"
+              v-model="codeData.email"
+              placeholder="example@domain.com"
+              @blur="clearError('email')"
+            >
           </div>
-          <!-- /input-group -->
-        </div>
-        <!-- /.col-lg-6 -->
-        <div class="col-lg-6">
-          <div class="input-group">
-            <span class="input-group-addon">
-              <input type="radio">
-            </span>
-            <input type="text" class="form-control">
+          <span class="help-block" :class="{'text-red':error.email_error}">&nbsp;{{error.email_error}}</span>
+          <label>Message</label>
+          <div class="box">
+            <div class="box-body">
+              <form>
+                <textarea
+                  id="wysihtml5-textarea"
+                  style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid rgb(221, 221, 221); padding: 10px; "
+                  placeholder="Place some text here"
+                ></textarea>
+              </form>
+            </div>
           </div>
-          <!-- /input-group -->
-        </div>
-        <!-- /.col-lg-6 -->
-      </div>
-      <!-- /.row -->
-      <h4>With buttons</h4>
+          <hr>
+          <br>
+          <div
+            class="box box-primary collapsed-box"
+            :class="{'box-danger':error.first_name_error||error.last_name_error}"
+          >
+            <div class="box-header with-border">
+              <a href class="box-title" data-widget="collapse">
+                <i class="fa fa-user"></i>&nbsp;&nbsp;User Registration Information
+                <span
+                  v-if="!codeData.allowEdit"
+                >-- Must Fill!</span>
+              </a>
+              
+              <a class="box-tools pull-right">
+                <button
+                  type="button"
+                  class="btn btn-box-tool"
+                  data-toggle="tooltip"
+                  title="Registor's Ability To Edit Information."
+                  @click="allowEditClick"
+                >
+                  User Editable&nbsp;&nbsp;
+                  <i :class="getEditCondition()"></i>
+                </button>
+              </a>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body" style="display:none;">
+              <div class="form-group" :class="{'has-error':error.first_name_error}">
+                <label>First Name</label>
+                
+                <input
+                  v-model="codeData.first_name"
+                  class="form-control"
+                  placeholder="F."
+                  @blur="clearError('first_name')"
+                >
+                <span class="help-block">&nbsp;{{error.first_name_error}}</span>
+              </div>
+              <div class="form-group">
+                <label>Middle Initial</label>
+                <input v-model="codeData.mid_initial" class="form-control" placeholder="M.">
+              </div>
+              <div class="form-group" :class="{'has-error':error.last_name_error}">
+                <label>Last Name</label>
+                <input
+                  v-model="codeData.last_name"
+                  class="form-control"
+                  placeholder="L."
+                  @blur="clearError('last_name')"
+                >
+                <span class="help-block">&nbsp;{{error.last_name_error}}</span>
+              </div>
 
-      <p class="margin">Large:
-        <code>.input-group.input-group-lg</code>
-      </p>
-
-      <div class="input-group input-group-lg">
-        <div class="input-group-btn">
-          <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-            Action
-            <span class="fa fa-caret-down"></span>
+              <!-- /input-group -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <button class="btn btn-primary btn-lg" @click="generateRegisterCode">
+            <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Generate
           </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a href="#">Action</a>
-            </li>
-            <li>
-              <a href="#">Another action</a>
-            </li>
-            <li>
-              <a href="#">Something else here</a>
-            </li>
-            <li class="divider"></li>
-            <li>
-              <a href="#">Separated link</a>
-            </li>
-          </ul>
         </div>
-        <!-- /btn-group -->
-        <input type="text" class="form-control">
       </div>
-      <!-- /input-group -->
-      <p class="margin">Normal</p>
-
-      <div class="input-group">
-        <div class="input-group-btn">
-          <button type="button" class="btn btn-danger">Action</button>
-        </div>
-        <!-- /btn-group -->
-        <input type="text" class="form-control">
-      </div>
-      <!-- /input-group -->
-      <p class="margin">Small
-        <code>.input-group.input-group-sm</code>
-      </p>
-
-      <div class="input-group input-group-sm">
-        <input type="text" class="form-control">
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-info btn-flat">Go!</button>
-        </span>
-      </div>
-      <!-- /input-group -->
-    </div>
-    <!-- /.box-body -->
+    </section>
   </div>
 </template>
 
 <script>
-export default {};
+import HTTP from "@/http";
+import router from "@/router";
+
+export default {
+  mounted() {
+    //initialize editor
+    $("#wysihtml5-textarea").wysihtml5();
+
+    //initialize collapse box
+    $(".collapsed-box").boxWidget({
+      animationSpeed: 500,
+      collapseTrigger: "[data-widget='collapse']"
+    });
+  },
+
+  data() {
+    return {
+      codeData: {
+        first_name: null,
+        mid_initial: null,
+        last_name: null,
+        email: null,
+        allowEdit: true
+      },
+      error: {
+        first_name_error: null,
+        last_name_error: null,
+        email_error: null
+      }
+    };
+  },
+
+  watch: {
+    message() {
+      consoel.log(this.message);
+    }
+  },
+
+  methods: {
+    //submit code data and perform http request
+    generateRegisterCode() {
+      this.codeData.content = $("#wysihtml5-textarea").val();
+      var dialogTitle = "hi",
+        dialogBtnText,
+        dialogContent;
+
+      HTTP()
+        .post(`/regist-code`, this.codeData)
+        .then(({ data }) => {
+          console.log(data);
+          //request is successful if data.code exist
+          if (data.code) {
+            this.showDialog(
+              "<span class='text-green'><i class='fa fa-check'></i> SUCCESS! </span>",
+              "Got It!",
+              `Your registration code is <b>${data.code}</b>,
+             and the code is automatically sent to <i>${
+               this.codeData.email
+             }.</i>`
+            );
+            router.push('/user-list');
+          } else {
+            this.setErrorMessage(data);
+            this.showDialog(
+              "<span class='text-red'><i class='fa fa-window-close'></i> Oops! </span>",
+              "Ok",
+              "There are some fields need to be fix"
+            );
+          }
+        })
+        .catch(e => {
+          this.showDialog(
+            "<span class='text-red'><i class='fa fa-window-close'></i> Error </span>",
+            "Ok",
+            e.response.data.error
+          );
+        });
+    },
+
+    showDialog(dialogTitle, dialogBtnText, dialogContent) {
+      this.$modal.show("dialog", {
+        title: dialogTitle,
+        text: dialogContent,
+        buttons: [
+          {
+            title: dialogBtnText,
+            default:true
+          }
+        ]
+      });
+    },
+
+    //toggle allowEdit value
+    allowEditClick() {
+      this.codeData.allowEdit = !this.codeData.allowEdit;
+    },
+
+    //return css class
+    getEditCondition() {
+      return this.codeData.allowEdit
+        ? "fa fa-check-square text-green"
+        : "fa  fa-minus-square text-red";
+    },
+
+    // loop through all exception error then set message to the associated field
+    setErrorMessage(exceptionArr) {
+      exceptionArr.forEach(({ field, message }) => {
+        this.error[field + "_error"] = message;
+      });
+    },
+
+    //clear selector's error message
+    clearError(selector) {
+      this.error[selector + "_error"] = null;
+    },
+
+    resetCodeData() {
+      this.codeData = {
+        first_name: null,
+        mid_initial: null,
+        last_name: null,
+        email: null,
+        allowEdit: true
+      };
+      this.error = {
+        first_name_error: null,
+        last_name_error: null,
+        email_error: null
+      };
+    }
+  }
+};
 </script>
 
 <style>

@@ -7,7 +7,8 @@
 
 const Message = use('App/Models/Message')
 const AuthorizationService = use('App/Service/AuthorizationService')
-const CrudHelper = use('App/Helper/CrudHelper');
+const MessageService = use('App/Service/MessageService')
+const CrudService = use('App/Service/CrudService');
 const Database = use('Database');
 
 class MessageController {
@@ -16,24 +17,11 @@ class MessageController {
      * Create new message 
      */
     async createMessage({auth, request}){
+        const user= await auth.getUser();
         const data= request.only(['title','content','receiverEmail'])
-        return CrudHelper.create(auth, Message, {
-            work: async (message, user) => {
-                data.senderEmail = user.email;
-                data.senderName = `${user.first_name} ${user.last_name}`
-                message.fill(data);
-                await message.save();
-            }
-        });
-    }
-
-    /**
-     * Create new message 
-     */
-    async _createMessage(data){
-        var message = new Message();
-        message.fill(data);
-        await message.save();
+        data.senderEmail = user.email;
+        data.senderName = `${user.first_name} ${user.last_name}`
+        return MessageService.createMessage(data);
     }
 
     /**
@@ -53,18 +41,15 @@ class MessageController {
      * @returns {message}
      */
     async deleteMessage({auth, params}){
-        return CrudHelper.destroy(auth, params, Message, {
-            verify:(user, message)=>AuthorizationService.verifyMessageOwnership(message, user) 
-        });
+        return MessageService.deleteMessage(auth, params);
     }
-
 
     /**
      * update target 
      * @returns {message}
      */
     async updateMessage({auth, request, params}){
-        return CrudHelper.update(auth, params, Message, {  
+        return CrudService.update(auth, params, Message, {  
             verify:(user, message)=>AuthorizationService.verifyMessageOwnership(message, user) ,
             work: (message) => message.merge(request.only(['isRead','isArchived']))
         });

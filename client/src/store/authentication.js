@@ -17,13 +17,15 @@ export default {
     ex_error: null,
     token: null,
     loading: false,
-    taskList: []
+    taskList: [],
+    registrationCode: null
   },
 
   /**
    * do action related to current state
    */
   actions: {
+
     // fetch user profile
     fetchUser({ commit }) {
       return HTTP().get('/user')
@@ -85,6 +87,10 @@ export default {
    * Make changes to the state
    */
   mutations: {
+
+    setRegistrationCode(state, code) {
+      state.registrationCode = code;
+    },
 
     // set user flagged list
     setTaskList(state, taskList) {

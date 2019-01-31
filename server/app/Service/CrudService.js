@@ -1,12 +1,9 @@
 'use strict'
 
-const Database = use('Database');
-const {LogicalException} = require('@adonisjs/generic-exceptions')
-
 /**
  * Use to simplify Create, Read, Update, and Destroy method
  */
-class CrudHelper{
+class CrudService{
 
     /**
      * get all resource from database
@@ -90,4 +87,4 @@ class CrudHelper{
 
 }
 
-module.exports = new CrudHelper();
+module.exports = new CrudService();

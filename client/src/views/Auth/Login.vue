@@ -58,13 +58,12 @@
       </div>
       <hr>
 
-      <router-link to="/register" class="text-center">Register a new membership</router-link>
+      <a
+        href="Registration Code Verification"
+        @click.prevent="registrationCodeDialog"
+        class="text-center"
+      >Register a new membership</a>
     </form>
-
-    <!-- /.login-box-body -->
-    <!--<div class="overlay fade" v-bind:class="{'in':loading}">
-      <i class="fa fa-refresh fa-spin"></i>
-    </div>-->
   </div>
 </template>
 
@@ -78,7 +77,9 @@ export default {
 
   data() {
     return {
-      login: { password: null, email: null }
+      login: { password: null, email: null },
+      registCodeError: null,
+      registCode: null
     };
   },
 
@@ -95,8 +96,43 @@ export default {
     ...mapMutations("authentication", [
       "setExceptionError",
       "setLoading",
-      "setToken"
+      "setToken",
+      "setRegistrationCode"
     ]),
+
+    //show registration code dialog
+    registrationCodeDialog() {
+      this.$modal.show("dialog", {
+        title: "Enter Registration Code",
+        text: "<p class='regist-code-error text-red'></p><input style='width:100%;' class='regist-code' type='number'>",
+        buttons: [
+          {
+            title: "Confirm",
+            handler: () => {
+              HTTP()
+                .post("/regist-code/verify", { code: $('.regist-code').val() })
+                .then(({ data }) => {
+                  //if data exist set registration code to state, then direct to register page
+                  if (data) {
+                    this.setRegistrationCode(data.code);
+                    this.$modal.hide("dialog");
+                    router.push('/register');
+                  } else {
+                    $('.regist-code-error').text("Your Registration Code Is Incorrect");
+                  }
+                })
+                .catch(() => {
+                   $('.regist-code-error').text("Your Registration Code Is Incorrect");
+                });
+             // this.$modal.hide("dialog");
+            }
+          },
+          {
+            title: "Cancel"
+          }
+        ]
+      });
+    },
 
     clearLoginData() {
       this.login.password = null;
@@ -117,7 +153,6 @@ export default {
       return HTTP()
         .post("/auth/login", this.login)
         .then(({ data }) => {
-          console.log(data);
           // redirect router if data has token, else show error message
           if (data.token) {
             this.setToken(data.token);

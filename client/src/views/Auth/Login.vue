@@ -103,28 +103,37 @@ export default {
     //show registration code dialog
     registrationCodeDialog() {
       this.$modal.show("dialog", {
-        title: "Enter Registration Code",
-        text: "<p class='regist-code-error text-red'></p><input style='width:100%;' class='regist-code' type='number'>",
+        title:
+          "<i class='fa fa-sign-in'></i>&nbsp;&nbsp;Enter Registration Code",
+        template: "<input style='width:100%;' class='regist-code' type='number'>",
+        maxWidth: 300,
         buttons: [
           {
             title: "Confirm",
-            handler: () => {
+            handler: spinner => {
+              spinner.loading = true;
               HTTP()
-                .post("/regist-code/verify", { code: $('.regist-code').val() })
+                .post("/regist-code/verify", { code: $(".regist-code").val() })
                 .then(({ data }) => {
                   //if data exist set registration code to state, then direct to register page
                   if (data) {
                     this.setRegistrationCode(data.code);
                     this.$modal.hide("dialog");
-                    router.push('/register');
+                    router.push("/register");
                   } else {
-                    $('.regist-code-error').text("Your Registration Code Is Incorrect");
+                    $(".dialog-error").text(
+                      "Your Registration Code Is Incorrect"
+                    );
                   }
                 })
                 .catch(() => {
-                   $('.regist-code-error').text("Your Registration Code Is Incorrect");
+                  $(".dialog-error").text(
+                    "Your Registration Code Is Incorrect"
+                  );
+                })
+                .finally(() => {
+                  spinner.loading = false;
                 });
-             // this.$modal.hide("dialog");
             }
           },
           {

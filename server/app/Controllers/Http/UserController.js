@@ -50,6 +50,7 @@ class UserController {
 
         //set username as email
         userInfo.username = userInfo.email;
+        userInfo.mid_initial = userInfo.mid_initial+"."
         //create user
         await User.create(userInfo)
 
@@ -149,8 +150,7 @@ class UserController {
         await targetUser.save();
         return targetUser;
     };
-
-
+    
     /**
      * return flagged list
      * @return {array}

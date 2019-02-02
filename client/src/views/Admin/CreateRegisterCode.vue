@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="content-header">
-      <h1>Registration Code Generator</h1>
+    <h1><i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Generator</h1>
     </section>
     <section class="content">
       <div class="box">
@@ -162,7 +162,6 @@ export default {
       HTTP()
         .post(`/regist-code`, this.codeData)
         .then(({ data }) => {
-          console.log(data);
           //request is successful if data.code exist
           if (data.code) {
             this.showDialog(
@@ -179,7 +178,7 @@ export default {
             this.showDialog(
               "<span class='text-red'><i class='fa fa-window-close'></i> Oops! </span>",
               "Ok",
-              "There are some fields need to be fix"
+              "<h4 style='text-align:center'>There are some fields need to be fix</h4>"
             );
           }
         })
@@ -195,7 +194,7 @@ export default {
     showDialog(dialogTitle, dialogBtnText, dialogContent) {
       this.$modal.show("dialog", {
         title: dialogTitle,
-        text: dialogContent,
+        template: dialogContent,
         buttons: [
           {
             title: dialogBtnText,

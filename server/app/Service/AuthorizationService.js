@@ -50,12 +50,12 @@ class AuthorizationService{
         //throw a ResourceNotExistException if targetUser do not exist
         this.verifyExistance(targetUser,'user');
         
+        // allow developer to ignore this rule
         if(!user.isDev){
             //if not allow self update or target is not current user, do a role check
             if(!allowSelf || targetUser.id != user.id){
                 //throw a InvalidAccessException if the current user's role is not in allowed roles list 
-                //or target user's role is in allowed roles list
-                if(allowRoles.indexOf(targetUser.role)!=-1  || allowRoles.indexOf(user.role)==-1){
+                if(allowRoles.indexOf(user.role)==-1){
                     throw new InvalidAccessException('user');
                 }
             }

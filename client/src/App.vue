@@ -15,7 +15,7 @@
       <i class="fa fa-spinner"></i>
     </h1>
 
-    <v-dialog :resizable="true"/>
+    <MyDialog :adaptive="true" width="80%"/>
   </div>
 </template>
 
@@ -23,11 +23,13 @@
 import { mapGetters, mapActions } from "vuex";
 import Main from "@/components/Main.vue";
 import Auth from "@/components/Auth.vue";
+import MyDialog from "@/components/Modal/MyDialog.vue";
 
 export default {
   components: {
     Main,
-    Auth
+    Auth,
+    MyDialog
   },
   computed: {
     ...mapGetters("authentication", ["isLoggedIn"]),
@@ -67,8 +69,6 @@ export default {
 
 
 <style lang='scss'>
-
-
 .error-bar {
   z-index: 1000000;
   position: fixed;
@@ -136,9 +136,15 @@ body {
 a {
   -webkit-user-drag: none;
 }
-@media (min-width: 500px) {
+@media (min-width: 480px) {
   .v--modal-box {
     top: 20% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-hide {
+    display: none;
   }
 }
 </style>

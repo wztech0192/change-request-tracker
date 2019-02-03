@@ -75,6 +75,7 @@ export default {
   width: 100%;
   background-color: #dd4b39ed !important;
   border: none;
+  top:0;
   text-align: center;
   transition: 0.3s ease;
 }
@@ -83,6 +84,10 @@ export default {
 }
 .capitalize {
   text-transform: capitalize;
+}
+
+.pointer{
+  cursor: pointer;
 }
 body {
   max-width: 100% !important;

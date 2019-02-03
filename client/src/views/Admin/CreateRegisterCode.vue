@@ -1,7 +1,9 @@
 <template>
   <div>
     <section class="content-header">
-    <h1><i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Generator</h1>
+      <h1>
+        <i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Generator
+      </h1>
     </section>
     <section class="content">
       <div class="box">
@@ -30,7 +32,10 @@
               @blur="clearError('email')"
             >
           </div>
-          <span class="help-block" :class="{'text-red':error.email_error}">&nbsp;{{error.email_error}}</span>
+          <span
+            class="help-block"
+            :class="{'text-red':error.email_error}"
+          >&nbsp;{{error.email_error}}</span>
           <label>Message</label>
           <div class="box">
             <div class="box-body">
@@ -50,12 +55,12 @@
             :class="{'box-danger':error.first_name_error||error.last_name_error}"
           >
             <div class="box-header with-border">
-              <a href class="box-title" data-widget="collapse">
+              <span class="box-title pointer" data-widget="collapse">
                 <i class="fa fa-user"></i>&nbsp;&nbsp;User Registration Information
                 <span
                   v-if="!codeData.allowEdit"
                 >-- Must Fill!</span>
-              </a>
+              </span>
               
               <a class="box-tools pull-right">
                 <button
@@ -113,19 +118,30 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
 export default {
   mounted() {
-    //initialize editor
-    $("#wysihtml5-textarea").wysihtml5();
+    //verify user's role
+    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
+      router.push("/");
+      this.setGlobalError("Only admin allows to enter this page");
+    } else {
+      //initialize editor
+      $("#wysihtml5-textarea").wysihtml5();
 
-    //initialize collapse box
-    $(".collapsed-box").boxWidget({
-      animationSpeed: 500,
-      collapseTrigger: "[data-widget='collapse']"
-    });
+      //initialize collapse box
+      $(".collapsed-box").boxWidget({
+        animationSpeed: 500,
+        collapseTrigger: "[data-widget='collapse']"
+      });
+    }
+  },
+
+  computed: {
+    ...mapState("authentication", ["user"])
   },
 
   data() {
@@ -152,6 +168,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("errorStore", ["setGlobalError"]),
     //submit code data and perform http request
     generateRegisterCode() {
       this.codeData.content = $("#wysihtml5-textarea").val();
@@ -172,7 +189,7 @@ export default {
                this.codeData.email
              }.</i>`
             );
-            router.push('/user-list');
+            router.push("/user-list");
           } else {
             this.setErrorMessage(data);
             this.showDialog(
@@ -183,11 +200,7 @@ export default {
           }
         })
         .catch(e => {
-          this.showDialog(
-            "<span class='text-red'><i class='fa fa-window-close'></i> Error </span>",
-            "Ok",
-            e.response.data.error
-          );
+          this.setGlobalError(e);
         });
     },
 
@@ -198,7 +211,7 @@ export default {
         buttons: [
           {
             title: dialogBtnText,
-            default:true
+            default: true
           }
         ]
       });

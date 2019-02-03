@@ -167,11 +167,10 @@ export default {
           router.push("/login");
         }
       })
-      .catch(() => {
-        this.setGlobalError("Registration code failed!");
+      .catch(e => {
+        this.setGlobalError(e);
         router.push("/login");
       });
-      console.log(!this.allowEdit);
   },
 
   computed: {
@@ -249,7 +248,7 @@ export default {
             }
           })
           .catch(e => {
-            this.setGlobalError(e.response.data.error);
+            this.setGlobalError(e);
           })
           .finally(() => {
             this.setLoading(false);

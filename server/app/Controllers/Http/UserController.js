@@ -65,6 +65,16 @@ class UserController {
     };
 
 
+    /**
+     * Generate number of users, for testing purpose
+     */
+    async generateUsers({request}){
+        var {num} = request.all();
+        for (var i=0; i<num; i++){
+
+        }
+    }
+
    /**
      * Get Self Information
      * @return {user}

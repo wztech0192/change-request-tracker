@@ -105,7 +105,8 @@ export default {
       this.$modal.show("dialog", {
         title:
           "<i class='fa fa-sign-in'></i>&nbsp;&nbsp;Enter Registration Code",
-        template: "<input style='width:100%;' class='regist-code' type='number'>",
+        template:
+          "<input style='width:100%;' class='regist-code' type='number'>",
         maxWidth: 300,
         buttons: [
           {
@@ -171,7 +172,12 @@ export default {
           }
         })
         .catch(e => {
-          this.showErrorAndClearPW("Wrong Password or Email!");
+          var errorData =e.response.data;
+          if (errorData.length > 0) {
+            this.showErrorAndClearPW("Wrong Password or Email!");
+          } else {
+            this.showErrorAndClearPW(errorData.error.message);
+          }
         })
         .finally(() => {
           this.setLoading(false);

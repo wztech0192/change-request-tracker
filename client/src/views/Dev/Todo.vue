@@ -256,7 +256,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -277,9 +277,19 @@ export default {
     };
   },
 
-  created() {
-    //fetch todolist data from database
-    this.fetchDevTodo();
+  computed: {
+    ...mapState("authentication", ["user"])
+  },
+
+  mounted() {
+    //verify user's role
+    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
+      router.push("/");
+      this.setGlobalError("Only admin allows to enter this page");
+    } else {
+      //fetch todolist data from database
+      this.fetchDevTodo();
+    }
   },
 
   methods: {
@@ -312,7 +322,7 @@ export default {
           this.reloadCollapseEvent();
         })
         .catch(e => {
-          this.setGlobalError(e.response.data.error);
+          this.setGlobalError(e);
           router.push("/");
         });
     },
@@ -342,9 +352,8 @@ export default {
           //update header task menu
           this.fetchTaskList();
         })
-        .catch(() => {
-          var { error } = e.response.data;
-          this.setGlobalError(error);
+        .catch(e => {
+          this.setGlobalError(e);
         });
     },
 
@@ -372,7 +381,7 @@ export default {
           this.fetchTaskList();
         })
         .catch(e => {
-          this.setGlobalError(e.response.data.error);
+          this.setGlobalError(e);
         });
     },
 
@@ -423,7 +432,7 @@ export default {
       };
       this.errorMsg = null;
       if (isEdit) {
-        this.modalInfo.content=item.content;
+        this.modalInfo.content = item.content;
         this.modalInfo.link = parent
           ? `/dev/task/${item.id}`
           : `/dev/todo/${item.id}`;
@@ -446,7 +455,7 @@ export default {
           if (item.isFlagged) this.fetchTaskList();
         })
         .catch(e => {
-          this.setGlobalError(e.response.data.error);
+          this.setGlobalError(e);
         });
       this.$modal.hide("ConfirmModal");
     },
@@ -470,7 +479,7 @@ export default {
           //this.fetchDevTodo;
         })
         .catch(e => {
-          this.setGlobalError(e.response.data.error);
+          this.setGlobalError(e);
         });
       this.$modal.hide("ConfirmModal");
     },
@@ -498,7 +507,7 @@ export default {
             this.fetchDevTodo();
           })
           .catch(e => {
-            this.setGlobalError(e.response.data.error);
+            this.setGlobalError(e);
           });
         this.$modal.hide("PromptModal");
       }
@@ -515,7 +524,7 @@ export default {
             this.fetchTaskList();
           })
           .catch(e => {
-            this.setGlobalError(e.response.data.error);
+            this.setGlobalError(e);
           });
         this.$modal.hide("PromptModal");
       }

@@ -15,7 +15,8 @@
       <i class="fa fa-spinner"></i>
     </h1>
 
-    <MyDialog :adaptive="true" width="80%"/>
+    <MyDialog :adaptive="true" width="80%"/>'
+    
   </div>
 </template>
 

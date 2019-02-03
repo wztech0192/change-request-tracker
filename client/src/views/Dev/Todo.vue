@@ -281,16 +281,16 @@ export default {
     ...mapState("authentication", ["user"])
   },
 
-  mounted() {
+  created() {
     //verify user's role
     if (this.user.role !== "Admin" && this.user.role !== "Developer") {
       router.push("/");
       this.setGlobalError("Only admin allows to enter this page");
-    } else {
-      //fetch todolist data from database
-      this.fetchDevTodo();
-    }
+    } 
+    //fetch todolist data from database
+    this.fetchDevTodo();
   },
+
 
   methods: {
     ...mapActions("authentication", ["fetchTaskList", "setExceptionError"]),

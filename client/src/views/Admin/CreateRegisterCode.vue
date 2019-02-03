@@ -123,21 +123,23 @@ import HTTP from "@/http";
 import router from "@/router";
 
 export default {
-  mounted() {
+  created() {
     //verify user's role
     if (this.user.role !== "Admin" && this.user.role !== "Developer") {
       router.push("/");
       this.setGlobalError("Only admin allows to enter this page");
-    } else {
-      //initialize editor
-      $("#wysihtml5-textarea").wysihtml5();
-
-      //initialize collapse box
-      $(".collapsed-box").boxWidget({
-        animationSpeed: 500,
-        collapseTrigger: "[data-widget='collapse']"
-      });
     }
+  },
+
+  mounted() {
+    //initialize editor
+    $("#wysihtml5-textarea").wysihtml5();
+
+    //initialize collapse box
+    $(".collapsed-box").boxWidget({
+      animationSpeed: 500,
+      collapseTrigger: "[data-widget='collapse']"
+    });
   },
 
   computed: {

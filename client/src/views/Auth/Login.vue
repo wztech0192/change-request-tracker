@@ -83,7 +83,7 @@ export default {
     };
   },
 
-  mounted() {
+  created() {
     //intialize login email with exist data
     this.login.email = this.user.email;
   },

@@ -18,7 +18,7 @@ class CrudService{
                 callback.verify(resourceQuery.rows);
             //work
             if(callback.work)
-                callback.work(resourceQuery.rows);
+                await callback.work(resourceQuery.rows);
         }
         return resourceQuery.rows;
     }
@@ -37,7 +37,7 @@ class CrudService{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                callback.work(resource, user);
+                await callback.work(resource, user);
         }
         return resource;
     }
@@ -56,7 +56,7 @@ class CrudService{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                callback.work(resource);
+                await callback.work(resource);
         }
         await resource.delete();
         return resource;
@@ -78,7 +78,7 @@ class CrudService{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                callback.work(resource);
+                await callback.work(resource);
         }
         await resource.save()
         return resource;

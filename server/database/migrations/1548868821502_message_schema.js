@@ -11,7 +11,7 @@ class MessageSchema extends Schema {
       table.string('senderName', 100).notNullable()
       table.string('receiverEmail', 100).notNullable()
       table.string('title', 254).notNullable()
-      table.string('content',999).notNullable()
+      table.text('content','longtext').notNullable()
       table.boolean('isRead').defaultTo(false);
       table.boolean('isArchived').defaultTo(false);
       table.timestamps()

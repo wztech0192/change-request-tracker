@@ -7,6 +7,7 @@
 
 
 const ChangeRequest = use('App/Models/ChangeRequest')
+const ChangeRequestMessage = use('App/Models/ChangeRequestMessage')
 const AuthorizationService = use('App/Service/AuthorizationService')
 const CrudService = use('App/Service/CrudService');
 
@@ -22,7 +23,7 @@ class ChangeRequestController {
     }
     
     /**
-     * Get all change request belongs to this user
+     * Get all change request
      * @returns {ChangeRequest[]}
      */
     async getAll({auth}){
@@ -33,13 +34,13 @@ class ChangeRequestController {
     }
 
     /**
-     * Create a change request that owns by current user
+     * Create a change request
      * @returns {ChangeRequest}
      */
     async create({auth, request}){
         const {title, details} = request.all();
         return CrudService.create(auth, ChangeRequest, {
-            work: async (user, changeRequest)=>{
+            work: async (changeRequest, user)=>{
                 //fill in data then save to its creator
                 changeRequest.fill({title, details});  
                 await user.change_requests().save(changeRequest);
@@ -66,6 +67,59 @@ class ChangeRequestController {
         return CrudService.update(auth, params, ChangeRequest, {
             verify: (user, changeRequest) => (AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true)),
             work: (changeRequest) => changeRequest.merge(request.only(['title','details']))
+        });
+    }
+
+    /**
+     * Get all messages belongs to this change request
+     * @returns {ChangeRequest[]}
+     */
+    async getCRMessages({auth, params}){
+        const user= await auth.getUser();
+        const change_request = await ChangeRequest.find(params.id);
+        AuthorizationService.verifyPermission(change_request, user, ['Developer','Admin'], true);
+        return await change_request.messages().fetch();
+
+    }
+
+    /**
+     * Create a change request message
+     * @returns {ChangeRequest}
+     */
+    async createCRMessage({auth, request, params}){
+        const data = request.only('content');
+        const change_request = await ChangeRequest.find(params.id);
+
+        return CrudService.create(auth, ChangeRequestMessage, {
+            verify: (user) => AuthorizationService.verifyPermission(change_request, user, ['Developer','Admin'], true),
+            work: async (message, user)=>{
+                //fill in data then save to its owner
+                data.user_id = user.id;
+                message.fill(data);  
+                await change_request.messages().save(message);
+            }
+        });
+    }
+
+    /**
+     * delete target change request message
+     * @returns {ChangeRequest}
+     */
+    async destroyCRMessage({auth, params}){
+        return CrudService.destroy(auth, params, ChangeRequestMessage, {
+            verify: (user, message) => AuthorizationService.verifyPermission(message, user, ['Developer','Admin'], true) 
+        });
+    }
+
+
+    /**
+     * delete target change request message
+     * @returns {ChangeRequest}
+     */
+    async updateCRMessage({auth, request, params}){
+        return CrudService.update(auth, params, ChangeRequestMessage, {
+            verify: (user, message) => (AuthorizationService.verifyPermission(message, user, ['Developer','Admin'], true)),
+            work: (message) => message.merge(request.only('content'))
         });
     }
 

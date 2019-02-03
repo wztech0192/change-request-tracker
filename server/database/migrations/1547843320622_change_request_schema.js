@@ -11,7 +11,7 @@ class ChangeRequestSchema extends Schema {
   up () {
     this.create('change_requests', (table) => {
       table.increments()
-      table.integer('user_id').unsigned().references('id').inTable('users')
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE')
       table.string('title', 254).notNullable()
       table.string('status', 20).notNullable().defaultTo("To Do")
       table.text('details','longtext')

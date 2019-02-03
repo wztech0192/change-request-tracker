@@ -6,6 +6,7 @@ import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
+import CRForm from './views/ChangeRequest/ChangeRequestForm.vue';
 import store from './store/index';
 
 
@@ -62,6 +63,12 @@ export default new Router({
     {
       path: '/generate-code',
       component: CreateRegisterCode,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/change-request/form',
+      component: CRForm,
       beforeEnter: Authenication
     }
   ]

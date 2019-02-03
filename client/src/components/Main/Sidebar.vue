@@ -11,151 +11,19 @@
           <p>{{user.first_name}} {{user.last_name}}</p>
 
           <i class="fa fa-address-card capitalize"></i>
-
           &nbsp;&nbsp; {{user.role}}
         </div>
       </div>
       <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu" data-widget="tree">
-        <!-- Admin Tab -->
-        <li class="header">Developer</li>
-        <li>
-          <router-link to="/devtodo">
-            <i class="fa fa-code"></i>
-            <span>Todo List</span>
+      <ul  class="sidebar-menu" data-widget="tree">
+        <li v-for="item in navItem" :class="{'header':item.split}">
+
+          <span v-if="item.split">{{item.split}}</span>
+          <router-link v-else :to="item.link">
+            <i :class="item.icon"></i> {{item.name}}
           </router-link>
         </li>
-        <!-- Admin Tab -->
-        <li class="header">ADMINISTRATOR</li>
-
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-list"></i>
-            <span>Request List</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li>
-              <a href="pages/tables/simple.html">
-                <i class="fa fa-circle-o"></i>All
-              </a>
-            </li>
-            <li>
-              <a href="pages/tables/data.html">
-                <i class="fa fa-exclamation-circle"></i>To-Do
-              </a>
-            </li>
-            <li>
-              <a href="pages/tables/simple.html">
-                <i class="fa fa-spinner"></i>In Progress
-              </a>
-            </li>
-            <li>
-              <a href="pages/tables/simple.html">
-                <i class="fa fa-check-circle"></i>Complete
-              </a>
-            </li>
-          </ul>
-        </li>
-
-
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-users"></i>
-            <span>User Management</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li>
-              <router-link to="/user-list">
-                <i class="fa fa-circle-o"></i>User List
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/generate-code">
-                <i class="fa fa-circle-o"></i>Generate Register Code
-              </router-link>
-            </li>
-          </ul>
-        </li>
-
-        <li>
-          <a href="#">
-            <i class="fa fa-pie-chart"></i>
-            <span>Charts</span>
-          </a>
-        </li>
-
-        <li class="header">MAIN NAVIGATION</li>
-        <li>
-          <router-link to="/">
-            <i class="fa fa-dashboard"></i>
-            <span>Dashboard</span>
-          </router-link>
-        </li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-edit"></i>
-            <span>Forms</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li>
-              <a href="pages/forms/general.html">
-                <i class="fa fa-circle-o"></i> General Elements
-              </a>
-            </li>
-            <li>
-              <a href="pages/forms/advanced.html">
-                <i class="fa fa-circle-o"></i> Advanced Elements
-              </a>
-            </li>
-            <li>
-              <a href="pages/forms/editors.html">
-                <i class="fa fa-circle-o"></i> Editors
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-table"></i>
-            <span>Tables</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li>
-              <a href="pages/tables/simple.html">
-                <i class="fa fa-circle-o"></i> Simple tables
-              </a>
-            </li>
-            <li>
-              <a href="pages/tables/data.html">
-                <i class="fa fa-circle-o"></i> Data tables
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="pages/calendar.html">
-            <i class="fa fa-calendar"></i>
-            <span>Calendar</span>
-          </a>
-        </li>
-        <li>
-          <a href="pages/mailbox/mailbox.html">
-            <i class="fa fa-envelope"></i>
-            <span>Mailbox</span>
-          </a>
-        </li>
+        
         <li class="treeview">
           <a href="#">
             <i class="fa fa-book"></i>
@@ -185,6 +53,71 @@
 <script>
 export default {
   name: "Sidebar",
+  computed: {
+    navItem: () => {
+      return [
+        {
+          split: "Developer"
+        },
+        {
+          link: "/devtodo",
+          icon: "fa fa-code",
+          name: "Todo List"
+        },
+        {
+          split: "Admin"
+        },
+        {
+          link: "/",
+          icon: "fa fa-list",
+          name: "Request Track"
+        },
+        {
+          link: "/",
+          icon: "fa fa-pie-chart",
+          name: "Request Chart"
+        },
+        {
+          link: "/user-list",
+          icon: "fa fa-users",
+          name: "Manage User"
+        },
+        {
+          link: "/generate-code",
+          icon: "fa fa-user-plus",
+          name: "Register Code"
+        },
+        {
+          split: "NAVIGATION"
+        },
+        {
+          link: "/",
+          icon: "fa fa-dashboard",
+          name: "Dashboard"
+        },
+        {
+          link: "/change-request/form",
+          icon: "fa fa-edit",
+          name: "Change Request"
+        },
+        {
+          link: "/",
+          icon: "fa fa-table",
+          name: "Track Status"
+        },
+        {
+          link: "/",
+          icon: "fa fa-calendar",
+          name: "Calendar"
+        },
+        {
+          link: "/",
+          icon: "fa fa-envelope",
+          name: "Mailbox"
+        }
+      ];
+    }
+  },
   //data from parent
   props: {
     user: { type: Object, required: false, default: "Anonymous" }

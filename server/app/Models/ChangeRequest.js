@@ -12,6 +12,13 @@ class ChangeRequest extends Model {
         return this.belongsTo('App/Models/User');
     }
 
+    /**
+    * return all messages in this change request
+    */
+    messages() {
+    return this.hasMany('App/Models/ChangeRequestMessage')
+  }
+
 }
 
 module.exports = ChangeRequest

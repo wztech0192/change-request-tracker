@@ -72,6 +72,13 @@ class User extends Model {
   change_requests() {
     return this.hasMany('App/Models/ChangeRequest')
   }
+
+  /**
+   * return all change request messages belongs to this user
+   */
+  change_requests_messages() {
+    return this.hasMany('App/Models/ChangeRequestMessage')
+  }
 }
 
 module.exports = User

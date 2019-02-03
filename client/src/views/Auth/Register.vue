@@ -150,7 +150,7 @@ export default {
   },
 
   //verify registration code before created
-  mounted() {
+  created() {
     HTTP()
       .post("/regist-code/verify", { code: this.registrationCode })
       .then(({ data }) => {

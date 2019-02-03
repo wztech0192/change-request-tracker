@@ -67,7 +67,7 @@ Route.group(() => {
   Route.delete('dev/ref/:id', "DevController.destroyRef")
   Route.patch('dev/ref/:id', "DevController.updateRef")
 
-  //Message Reference Route
+  //Message Route
   Route.get('message', "MessageController.getMessage")
   Route.post('message', "MessageController.createMessage")
   Route.delete('message/:id', "MessageController.deleteMessage")
@@ -79,4 +79,11 @@ Route.group(() => {
   Route.delete('change-request/:id', "ChangeRequestController.destroy")
   Route.patch('change-request/:id', "ChangeRequestController.update")
   Route.get('change-request/all', "ChangeRequestController.getAll")
+
+  //Change Request Message Route
+  Route.get('change-request/:id/msg', "ChangeRequestController.getCRMessages")
+  Route.post('change-request/:id/msg', "ChangeRequestController.createCRMessage")
+  Route.delete('change-request/msg/:id', "ChangeRequestController.destroyCRMessage")
+  Route.patch('change-request/msg/:id', "ChangeRequestController.updateCRMessage")
+
 }).middleware('auth').prefix('api');

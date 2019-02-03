@@ -2,7 +2,7 @@
   <div>
     <section class="content-header">
       <h1>
-        <i class="fa fa-users"></i>&nbsp;&nbsp;User Management
+        <i class="fa fa-users"></i>&nbsp;&nbsp;User List
       </h1>
       <div class="pull-right" style="margin-top:-30px">
         <div class="btn-group">
@@ -74,16 +74,13 @@ export default {
     ...mapState("authentication", ["user"])
   },
 
-  mounted() {
+  created() {
     //verify user's role
     if (this.user.role !== "Admin" && this.user.role !== "Developer") {
-            this.setGlobalError("Only admin allows to enter this page");
+      this.setGlobalError("Only admin allows to enter this page");
       router.push("/");
-    }
-    else{
-      //fetch user list
-      this.fetchUserList();
-    }
+    }   //fetch user list
+    this.fetchUserList();
   },
 
   methods: {

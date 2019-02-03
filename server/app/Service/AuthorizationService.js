@@ -1,5 +1,10 @@
 'use strict'
 
+/**
+ * @author Wei Zheng
+ * @description handles all verification
+ */
+
 const InvalidAccessException = use('App/Exceptions/InvalidAccessException');
 const ResourceNotExistException = use('App/Exceptions/ResourceNotExistException');
 

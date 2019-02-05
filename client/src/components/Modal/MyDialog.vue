@@ -148,6 +148,7 @@ export default {
 <style>
 .vue-dialog-button {
   transition: 0.3s ease;
+  font-weight: bolder;
 }
 
 .vue-dialog-confirm:hover {

@@ -38,6 +38,10 @@ class CrudService{
             //work
             if(callback.work)
                 await callback.work(resource, user);
+
+            if(callback.after){
+                await callback.after(resource, user)
+            }
         }
         return resource;
     }
@@ -56,9 +60,15 @@ class CrudService{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                await callback.work(resource);
+                await callback.work(resource, user);
         }
         await resource.delete();
+
+        // call after function after resource is deleted
+        if(callback && callback.after){
+            await callback.after(resource, user)
+        }
+
         return resource;
     }
 
@@ -78,9 +88,15 @@ class CrudService{
                 callback.verify(user,resource);
             //work
             if(callback.work)
-                await callback.work(resource);
+                await callback.work(resource, user);
         }
         await resource.save()
+
+        // call after method after resource is saved
+        if(callback && callback.after){
+            await callback.after(resource, user)
+        }
+
         return resource;
     }
 

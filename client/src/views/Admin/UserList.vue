@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="transition:0.2s ease" :class="{'fade': !userList}">
     <section class="content-header">
       <h1>
         <i class="fa fa-users"></i>&nbsp;&nbsp;User List
@@ -35,15 +35,17 @@
           >
             <thead>
               <tr>
+                <th width="20px">#</th>
                 <th>User Name</th>
                 <th>Role</th>
                 <th>Email</th>
-                <th>Join Date</th>
+                <th>Join On</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(user, i) in userList" :id="i">
-                <td class="capitalize">{{user.first_name}} {{user.mid_initial}} {{user.last_name}}</td>
+                <th>{{i+1}}</th>
+                <td class="capitalize">{{user.first_name}} {{user.mid_initial || ""}} {{user.last_name}}</td>
                 <td>{{user.role}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.created_at}}</td>
@@ -66,7 +68,7 @@ import router from "@/router";
 export default {
   data() {
     return {
-      userList: []
+      userList: null
     };
   },
 
@@ -82,6 +84,7 @@ export default {
     }   //fetch user list
     this.fetchUserList();
   },
+
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),
@@ -107,7 +110,7 @@ export default {
         var table = $("#user-table").DataTable({
           //resize based on widht
           responsive: true,
-          //order by first row in ascending order
+          //order by first col in ascending order
           order: [[0, "asc"]]
         });
 
@@ -126,7 +129,7 @@ export default {
           var i = $(this).attr("id");
           _showChanegRoleDialog(i);
         });
-      }, 50);
+      }, 10);
     },
 
     //get selected row index and show dialog, alert when fail
@@ -187,7 +190,6 @@ export default {
                         .row($("#user-table .selected"))
                         .remove()
                         .draw();
-                      this.$modal.hide("dialog");
                       this.$modal.hide("dialog");
                     }
                   })

@@ -12,7 +12,8 @@ class RegistrationCode extends Model {
     return {
       mid_init: 'max:4',
       first_name: 'required|max:60',
-      last_name: 'required|max:60'
+      last_name: 'required|max:60',
+      email: 'required|email|unique:users'
     }
   }
 

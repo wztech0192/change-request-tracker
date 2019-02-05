@@ -15,8 +15,9 @@
       <i class="fa fa-spinner"></i>
     </h1>
 
-    <MyDialog :adaptive="true" width="80%"/>'
-    
+    <MyDialog :adaptive="true" width="80%"/>
+
+    '
   </div>
 </template>
 
@@ -70,13 +71,16 @@ export default {
 
 
 <style lang='scss'>
+.form-background {
+  background-color: #d3d3d359;
+}
 .error-bar {
   z-index: 1000000;
   position: fixed;
   width: 100%;
   background-color: #dd4b39ed !important;
   border: none;
-  top:0;
+  top: 0;
   text-align: center;
   transition: 0.3s ease;
 }
@@ -87,10 +91,11 @@ export default {
   text-transform: capitalize;
 }
 
-.pointer{
+.pointer {
   cursor: pointer;
 }
 body {
+  font-size:14px;
   max-width: 100% !important;
 }
 
@@ -142,11 +147,11 @@ body {
 a {
   -webkit-user-drag: none;
 }
-@media (min-width: 480px) {
-  .v--modal-box {
-    top: 20% !important;
-  }
+
+h1{
+  font-weight: 800;
 }
+
 
 @media (max-width: 480px) {
   .mobile-hide {

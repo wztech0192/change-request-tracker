@@ -7,18 +7,19 @@
     </section>
     <section class="content">
       <div class="box">
-        <div class="box-body" style="background-color:lightgrey">
+        <div class="box-body form-background">
           <span class="pull-right">
             <a
               class="register-resetbtn btn btn-social-icon"
               @click.prevent="resetCodeData"
               data-toggle="tooltip"
-              title="Reset All Except Message"
+              title="Reset All"
             >
               <i class="fa fa-repeat"></i>
             </a>
           </span>
           <br>
+          <!-- Email input -->
           <label :class="{'text-red':error.email_error}">Receiver/User Email Address</label>
           <div class="input-group" :class="{'has-error':error.email_error}">
             <span class="input-group-addon">
@@ -36,30 +37,29 @@
             class="help-block"
             :class="{'text-red':error.email_error}"
           >&nbsp;{{error.email_error}}</span>
+
+          <!-- Message Input -->
           <label>Message</label>
           <div class="box">
             <div class="box-body">
-              <form>
-                <textarea
-                  id="wysihtml5-textarea"
-                  style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid rgb(221, 221, 221); padding: 10px; "
-                  placeholder="Place some text here"
-                ></textarea>
-              </form>
+              <textarea id="editor" name="editor" style="width: 100%"></textarea>
             </div>
           </div>
-          <hr>
           <br>
+
+          <!-- Regsiter information -->
           <div
             class="box box-primary collapsed-box"
-            :class="{'box-danger':error.first_name_error||error.last_name_error}"
+            :style="[(error.first_name_error||error.last_name_error)?{'border-top-color': '#f56954'}:{'border-top-color': '#3c8dbc'}]"
           >
             <div class="box-header with-border">
-              <span class="box-title pointer" data-widget="collapse">
-                <i class="fa fa-user"></i>&nbsp;&nbsp;User Registration Information
-                <span
-                  v-if="!codeData.allowEdit"
-                >-- Must Fill!</span>
+              <span
+                class="box-title pointer"
+                data-widget="collapse"
+                :class="{'text-red':error.first_name_error||error.last_name_error}"
+              >
+                <i class="fa fa-user"></i>&nbsp;&nbsp;Register Info
+                <span v-if="!codeData.allowEdit">-- Must Fill!</span>
               </span>
               
               <a class="box-tools pull-right">
@@ -87,7 +87,7 @@
                   placeholder="F."
                   @blur="clearError('first_name')"
                 >
-                <span class="help-block">&nbsp;{{error.first_name_error}}</span>
+                <span class="help-block">{{error.first_name_error}}</span>
               </div>
               <div class="form-group">
                 <label>Middle Initial</label>
@@ -101,12 +101,11 @@
                   placeholder="L."
                   @blur="clearError('last_name')"
                 >
-                <span class="help-block">&nbsp;{{error.last_name_error}}</span>
+                <span class="help-block">{{error.last_name_error}}</span>
               </div>
-
-              <!-- /input-group -->
             </div>
-            <!-- /.box-body -->
+
+            <!-- Submit button -->
           </div>
           <button class="btn btn-primary btn-lg" @click="generateRegisterCode">
             <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Generate
@@ -132,8 +131,17 @@ export default {
   },
 
   mounted() {
+    var self = this;
     //initialize editor
-    $("#wysihtml5-textarea").wysihtml5();
+    ClassicEditor.create(document.querySelector("#editor"))
+      .then(editor => {
+        self.editor = editor;
+        // bind code contetn to editor data
+        editor.model.document.on("change", () => {
+          self.codeData.content = editor.getData();
+        });
+      })
+      .catch(e => self.setGlobalError(e));
 
     //initialize collapse box
     $(".collapsed-box").boxWidget({
@@ -153,30 +161,23 @@ export default {
         mid_initial: null,
         last_name: null,
         email: null,
-        allowEdit: true
+        allowEdit: true,
+        content: null
       },
       error: {
         first_name_error: null,
         last_name_error: null,
         email_error: null
-      }
+      },
+      editor: null
     };
-  },
-
-  watch: {
-    message() {
-      consoel.log(this.message);
-    }
   },
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),
     //submit code data and perform http request
     generateRegisterCode() {
-      this.codeData.content = $("#wysihtml5-textarea").val();
-      var dialogTitle = "hi",
-        dialogBtnText,
-        dialogContent;
+      var dialogTitle, dialogBtnText, dialogContent;
 
       HTTP()
         .post(`/regist-code`, this.codeData)
@@ -191,7 +192,7 @@ export default {
                this.codeData.email
              }.</i>`
             );
-            router.push("/user-list");
+            this.resetCodeData();
           } else {
             this.setErrorMessage(data);
             this.showDialog(
@@ -249,17 +250,22 @@ export default {
         mid_initial: null,
         last_name: null,
         email: null,
-        allowEdit: true
+        allowEdit: true,
+        content: null
       };
       this.error = {
         first_name_error: null,
         last_name_error: null,
         email_error: null
       };
+      this.editor.setData("");
     }
   }
 };
 </script>
 
 <style>
+.ck-editor__editable {
+  height: 250px;
+}
 </style>

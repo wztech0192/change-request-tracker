@@ -40,7 +40,7 @@ class DevController {
      */
     async createTodo({auth, request}){
         const {content}=request.all();
-        return CrudService.create(auth, DevTodo, {
+        return await CrudService.create(auth, DevTodo, {
             verify: (user) => AuthorizationService.verifyRole(user, ['Developer']),
             work: async (devTodo) => {
                 devTodo.content=content;
@@ -81,7 +81,7 @@ class DevController {
     async createTask({auth, request, params}){
         const {content} = request.all();
         const devTodo = await DevTodo.find(params.id);
-        return CrudService.create(auth, DevTask, {
+        return await CrudService.create(auth, DevTask, {
             verify: (user) => AuthorizationService.verifyPermission(devTodo, user, ['Developer']),
             work: async (devTask) => {
                  //fill in data then save to its parent
@@ -175,7 +175,7 @@ class DevController {
      */
     async createRef({auth, request}){
         const {description,link} = request.all();
-        return CrudService.create(auth, DevRef,{
+        return await CrudService.create(auth, DevRef,{
             verify: (user) => AuthorizationService.verifyRole(user, ['Developer']),
             work: async (devRef) => {
                 devRef.fill({description,link});
@@ -189,7 +189,7 @@ class DevController {
      */
     async getRef({auth}){
         const user= await auth.getUser();
-        return CrudService.getAll(DevRef,{
+        return await CrudService.getAll(DevRef,{
             verify: ()=>AuthorizationService.verifyRole(user, ['Developer']) 
         });
     }

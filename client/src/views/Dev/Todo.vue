@@ -298,7 +298,7 @@ export default {
 
     // reload collapse box event
     reloadCollapseEvent() {
-      setTimeout(() => {
+      out(() => {
         $(".collapsed-box").boxWidget({
           animationSpeed: 500,
           collapseTrigger: "[data-widget='collapse']",
@@ -368,6 +368,7 @@ export default {
       // determine increasing or decreasing on percentage
       dPercent = task.isCompleted ? dPercent : -dPercent;
       todo.percentage += dPercent;
+      todo.percentage = Math.round(todo.percentage);
       if (todo.percentage > 100) {
         todo.percentage = 100;
       } else if (todo.percentage < 0) {
@@ -471,7 +472,7 @@ export default {
       parent.percentage -= dPercent;
       parent.task_num--;
       parent.percentage =
-        ((parent.task_num + 1) * parent.percentage) / parent.task_num;
+        Math.round(((parent.task_num + 1) * parent.percentage) / parent.task_num);
 
       HTTP()
         .delete(`/dev/task/${item.id}`)

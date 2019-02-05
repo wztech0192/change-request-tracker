@@ -38,14 +38,37 @@ class ChangeRequestController {
      * @returns {ChangeRequest}
      */
     async create({auth, request}){
-        const {title, details} = request.all();
-        return CrudService.create(auth, ChangeRequest, {
+        const data = request.only(['title','details']);
+        let uid;
+
+        //throw error if title or details is empty
+        if(!data.title || !data.details){
+            throw new Exception("Something is wrong"); 
+        }
+
+        let {message} = request.only(['message']);
+        return await CrudService.create(auth, ChangeRequest, {
             work: async (changeRequest, user)=>{
+                uid=user.id;
                 //fill in data then save to its creator
-                changeRequest.fill({title, details});  
+                changeRequest.fill(data);  
                 await user.change_requests().save(changeRequest);
+            },
+            after: (changeRequest, user) =>{
+                //save change request message is message exist
+                if(message){
+                    // replace < and > to html code &#60; and &#62 for security
+                    message = message.replace(/([\<])/g,'&#60;');
+                    message = message.replace(/([\>])/g,'&#62');
+                    var crmsg = new ChangeRequestMessage();
+                    crmsg.fill({
+                        content : message,
+                        user_id : user.id
+                    });
+                    changeRequest.messages().save(crmsg);
+                }
             }
-        });
+        });        
     }
 
     /**
@@ -90,7 +113,7 @@ class ChangeRequestController {
         const data = request.only('content');
         const change_request = await ChangeRequest.find(params.id);
 
-        return CrudService.create(auth, ChangeRequestMessage, {
+        return await CrudService.create(auth, ChangeRequestMessage, {
             verify: (user) => AuthorizationService.verifyPermission(change_request, user, ['Developer','Admin'], true),
             work: async (message, user)=>{
                 //fill in data then save to its owner

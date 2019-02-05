@@ -28,11 +28,7 @@ class RegistrationCodeService{
     
     //return validation messages if data fails. Else return false
     async registrationCodeIsFail(data){
-        //validate email input
-        const emailValidate = await Validator.validate(data, RegistrationCode.registerEmailRules)
-        if(emailValidate.fails()){
-            return emailValidate.messages();
-        }
+    
         //if allowEdit is false, validate registor information input
         if(!data.allowEdit){
             const validation =  await Validator.validateAll(
@@ -43,7 +39,13 @@ class RegistrationCodeService{
             if (validation.fails()) { 
                 return validation.messages();
             }
-        }    
+        }else{
+            //validate email input
+            const emailValidate = await Validator.validate(data, RegistrationCode.registerEmailRules)
+            if(emailValidate.fails()){
+                return emailValidate.messages();
+            }
+        }
         return false;
     }
 

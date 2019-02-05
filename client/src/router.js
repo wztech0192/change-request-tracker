@@ -7,6 +7,7 @@ import UserList from './views/Admin/UserList.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
 import CRForm from './views/ChangeRequest/ChangeRequestForm.vue';
+import CRList from "./views/ChangeRequest/ChangeRequestList.vue";
 import store from './store/index';
 
 
@@ -49,19 +50,19 @@ export default new Router({
     },
 
     {
-      path: '/devtodo',
+      path: '/dev/todo',
       component: DevTodo,
       beforeEnter: Authenication
     },
 
     {
-      path: '/user-list',
+      path: '/admin/user-list',
       component: UserList,
       beforeEnter: Authenication
     },
 
     {
-      path: '/generate-code',
+      path: '/admin/generate-code',
       component: CreateRegisterCode,
       beforeEnter: Authenication
     },
@@ -69,6 +70,12 @@ export default new Router({
     {
       path: '/change-request/form',
       component: CRForm,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/change-request/list',
+      component: CRList,
       beforeEnter: Authenication
     }
   ]

@@ -1,6 +1,6 @@
 <template>
   <header class="main-header">
-    <Logo/>
+    <Logo style="transition:0.4s ease;"/>
 
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -46,7 +46,7 @@
               <!-- Task item -->
               <a href="#">
                 <h3>
-                  {{task.content}}
+                  {{computeTaskContent(task.content)}}
                   <small class="pull-right">{{task.percentage}}%</small>
                 </h3>
                 <div class="progress xs active">
@@ -65,13 +65,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="adminLTE/dist/img/avatar5.png" class="user-image" alt="User Image">
+              <img src="/adminLTE/dist/img/avatar5.png" class="user-image" alt="User Image">
               <span class="capitalize hidden-xs">{{user.first_name}} {{user.last_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="adminLTE/dist/img/avatar5.png" class="img-circle" alt="User Image">
+                <img src="/adminLTE/dist/img/avatar5.png" class="img-circle" alt="User Image">
 
                 <p class="capitalize">
                   {{user.first_name}} {{user.last_name}} - {{user.role}}
@@ -208,10 +208,26 @@ export default {
         return "progress-bar-primary";
       }
       return "progress-bar-success";
+    },
+
+    // display maximum of 35 characters
+    computeTaskContent(content){
+      if(content.length>35){
+        //split from the last empty space
+        var i = content.indexOf(" ", 30);
+        if (i<0) i=35;
+        return content.substring(0,content.indexOf(" ", i)) +"..."
+      }else{
+        return content;
+      }
     }
   }
 };
 </script>
 
 <style>
+
+.navbar a{
+  transition:0.3s ease;
+}
 </style>

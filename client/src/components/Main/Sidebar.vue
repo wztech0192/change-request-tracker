@@ -20,14 +20,14 @@
 
           <span v-if="item.split">{{item.split}}</span>
           <router-link v-else :to="item.link">
-            <i :class="item.icon"></i> {{item.name}}
+            <i :class="item.icon"></i> <span>&nbsp; {{item.name}}</span>
           </router-link>
         </li>
         
         <li class="treeview">
           <a href="#">
             <i class="fa fa-book"></i>
-            <span>Document</span>
+            <span>&nbsp; Document</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -35,7 +35,7 @@
           <ul class="treeview-menu">
             <li>
               <a href="pages/tables/simple.html">
-                <i class="fa fa-circle-o"></i> Simple tables
+                <i class="fa fa-circle-o"></i>Simple tables
               </a>
             </li>
             <li>
@@ -60,7 +60,7 @@ export default {
           split: "Developer"
         },
         {
-          link: "/devtodo",
+          link: "/dev/todo",
           icon: "fa fa-code",
           name: "Todo List"
         },
@@ -68,22 +68,22 @@ export default {
           split: "Admin"
         },
         {
-          link: "/",
+          link: "/1",
           icon: "fa fa-list",
           name: "Request Track"
         },
         {
-          link: "/",
+          link: "/2",
           icon: "fa fa-pie-chart",
           name: "Request Chart"
         },
         {
-          link: "/user-list",
+          link: "/admin/user-list",
           icon: "fa fa-users",
           name: "Manage User"
         },
         {
-          link: "/generate-code",
+          link: "/admin/generate-code",
           icon: "fa fa-user-plus",
           name: "Register Code"
         },
@@ -101,17 +101,17 @@ export default {
           name: "Change Request"
         },
         {
-          link: "/",
+          link: "/change-request/list",
           icon: "fa fa-table",
           name: "Track Status"
         },
         {
-          link: "/",
+          link: "/5",
           icon: "fa fa-calendar",
           name: "Calendar"
         },
         {
-          link: "/",
+          link: "/6",
           icon: "fa fa-envelope",
           name: "Mailbox"
         }
@@ -121,9 +121,23 @@ export default {
   //data from parent
   props: {
     user: { type: Object, required: false, default: "Anonymous" }
+  },
+  created(){
+    $('.sidebar-menu li>a').click(()=>{
+      $('.selected').removeClass('selected');
+      $(this).addClass('selected');
+    })
   }
 };
 </script>
 
 <style>
+
+.sidebar-menu>li>a{
+  transition:0.3s ease;
+}
+.sidebar-menu li .router-link-exact-active{
+    background-color:#ecf0f5 !important;
+    color:black !important;
+}
 </style>

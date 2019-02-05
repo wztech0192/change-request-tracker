@@ -126,7 +126,7 @@ export default {
     //verify user's role
     if (this.user.role !== "Admin" && this.user.role !== "Developer") {
       router.push("/");
-      this.setGlobalError("Only admin allows to enter this page");
+      this.setGlobalError("Only admin are allow to enter this page");
     }
   },
 

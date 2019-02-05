@@ -45,7 +45,9 @@
             <tbody>
               <tr v-for="(user, i) in userList" :id="i">
                 <th>{{i+1}}</th>
-                <td class="capitalize">{{user.first_name}} {{user.mid_initial || ""}} {{user.last_name}}</td>
+                <td
+                  class="capitalize"
+                >{{user.first_name}} {{user.mid_initial || ""}} {{user.last_name}}</td>
                 <td>{{user.role}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.created_at}}</td>
@@ -79,12 +81,13 @@ export default {
   created() {
     //verify user's role
     if (this.user.role !== "Admin" && this.user.role !== "Developer") {
-      this.setGlobalError("Only admin allows to enter this page");
+      this.setGlobalError("Only admin are allow to enter this page");
       router.push("/");
-    }   //fetch user list
-    this.fetchUserList();
+    } else {
+      //fetch user list
+      this.fetchUserList();
+    }
   },
-
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),

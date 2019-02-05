@@ -50,10 +50,12 @@ class UserController {
 
         //set username as email
         userInfo.username = userInfo.email;
-        userInfo.mid_initial = userInfo.mid_initial+"."
+        if(userInfo.mid_initial){
+            userInfo.mid_initial = userInfo.mid_initial+"."
+        }
         //create user
         await User.create(userInfo)
-
+        
         //create welcome message
         MessageService.addRegistrationCodeMessage(code,userInfo)
 

@@ -283,12 +283,14 @@ export default {
 
   created() {
     //verify user's role
-    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
+    if (this.user.role !== "Developer") {
       router.push("/");
-      this.setGlobalError("Only admin allows to enter this page");
-    } 
-    //fetch todolist data from database
-    this.fetchDevTodo();
+      this.setGlobalError("Only developer are allow to enter this page");
+    } else{
+      //fetch todolist data from database
+      this.fetchDevTodo();
+    }
+   
   },
 
 
@@ -298,14 +300,14 @@ export default {
 
     // reload collapse box event
     reloadCollapseEvent() {
-      out(() => {
+      setTimeout(() => {
         $(".collapsed-box").boxWidget({
           animationSpeed: 500,
           collapseTrigger: "[data-widget='collapse']",
           collapseIcon: "fa-minus",
           expandIcon: "fa-plus"
         });
-      }, 200);
+      }, 10);
     },
 
     // fetch dev todo list

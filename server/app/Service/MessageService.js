@@ -36,13 +36,17 @@ class MessageService{
 
     //create a message for Registration code
     async addRegistrationCodeMessage(code, receiver){ 
+
+        
         const data={
-            content : code.content,
             receiverEmail : receiver.email,
             senderEmail : code.creator_email,
             senderName : code.creator_name,
             title: "Welcome to CRTracker!"
         }
+        data.content= (code.content)
+        ? code.content
+        : "<p>Welcome !!!</p>"
         return await this.createMessage(data);
     }
     

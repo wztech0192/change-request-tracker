@@ -1,13 +1,13 @@
 <template>
-  <div style="transition:0.2s ease" :class="{'fade': !ChangeRequestList}">
+  <div v-if="ChangeRequestList">
     <section class="content-header">
       <h1>
         <i class="fa fa-th-list"></i>&nbsp;&nbsp;Change Request List
       </h1>
       <div class="pull-right" style="margin-top:-30px">
-        <button type="button" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" @click="openSelectedRow">
           <span class="mobile-hide">Review &nbsp;</span>
-          <i class="fa fa-edit"></i>
+          <i class="fa fa-eye"></i>
         </button>
       </div>
     </section>
@@ -100,7 +100,7 @@ export default {
 
     //initialize data table
     initiateTable() {
-      var _showChanegRoleDialog = this.showChanegRoleDialog;
+      var _showRequestDetail = this.showRequestDetail;
       setTimeout(() => {
         var table = $("#change-request-table").DataTable({
           //resize based on widht
@@ -121,17 +121,19 @@ export default {
 
         //double click event
         $("#change-request-table tbody").on("dblclick", "tr", function() {
-          var i = $(this).attr("id");
+          self.requestID = $(this).find('th').text();
+          _showRequestDetail(requestID);
         });
       }, 10);
     },
 
     //get selected row index and show dialog, alert when fail
-    openSelectedRow(callBack) {
-      var selectIndex = $("change-request-table .selected").attr("id");
-      if (selectIndex) {
+    openSelectedRow() {
+      var requestID = $("#change-request-table .selected th").text();
+
+      if (requestID) {
         //display target dialog
-        callBack(selectIndex);
+        this.showRequestDetail(requestID);
       } else {
         //display no selection error massage
         this.$modal.show("dialog", {
@@ -148,6 +150,11 @@ export default {
           ]
         });
       }
+    },
+
+    //direct to change request detail view
+    showRequestDetail(id){
+      router.push(`change-request/${id}`);
     },
 
     //get status label class

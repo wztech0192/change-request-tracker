@@ -5,7 +5,7 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <a  class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
 
@@ -16,7 +16,7 @@
           <Nav-Menu :num="msgList.length" type="messages">
             <li v-for="msg in msgList">
               <!-- start message -->
-              <a href="#">
+              <a >
                 <div class="pull-left">
                   <img :src="msg.avatar" class="img-circle" alt="User Image">
                 </div>
@@ -34,7 +34,7 @@
 
           <Nav-Menu :num="noteList.length" type="notifications">
             <li v-for="note in noteList">
-              <a href="#">
+              <a >
                 <i class="fa" :class="convertSignClass(note.sign)"></i>
                 {{note.body}}
               </a>
@@ -44,7 +44,7 @@
           <Nav-Menu :num="taskList.length" type="tasks">
             <li v-for="task in taskList">
               <!-- Task item -->
-              <a href="#">
+              <a >
                 <h3>
                   {{computeTaskContent(task.content)}}
                   <small class="pull-right">{{task.percentage}}%</small>
@@ -64,7 +64,7 @@
           </Nav-Menu>
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <a  class="dropdown-toggle" data-toggle="dropdown">
               <img src="/adminLTE/dist/img/avatar5.png" class="user-image" alt="User Image">
               <span class="capitalize hidden-xs">{{user.first_name}} {{user.last_name}}</span>
             </a>
@@ -82,13 +82,13 @@
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
-                    <a href="#">Button</a>
+                    <a >Button</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="#">Button</a>
+                    <a >Button</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="#">Button</a>
+                    <a >Button</a>
                   </div>
                 </div>
                 <!-- /.row -->
@@ -96,7 +96,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  <a  class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <router-link to="/login" class="btn btn-default btn-flat">Sign out</router-link>
@@ -106,7 +106,7 @@
           </li>
           <!-- Control Sidebar Toggle Button -->
           <li>
-            <a href="#" data-toggle="control-sidebar">
+            <a  data-toggle="control-sidebar">
               <i class="fa fa-gears"></i>
             </a>
           </li>

@@ -1,6 +1,6 @@
 <template>
   <li class="dropdown" :class="getMenuClass(type)">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown">
       <i :class="getIcon(type)"></i>
       <span class="label" :class="getLabelClass(type)">{{num}}</span>
     </a>

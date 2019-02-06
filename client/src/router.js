@@ -6,8 +6,9 @@ import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
-import CRForm from './views/ChangeRequest/ChangeRequestForm.vue';
-import CRList from "./views/ChangeRequest/ChangeRequestList.vue";
+import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
+import CRList from './views/ChangeRequest/ChangeRequestList.vue';
+import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
 import store from './store/index';
 
 
@@ -68,14 +69,20 @@ export default new Router({
     },
 
     {
-      path: '/change-request/form',
-      component: CRForm,
+      path: '/change-request/entry',
+      component: CREntry,
       beforeEnter: Authenication
     },
 
     {
-      path: '/change-request/list',
+      path: '/change-request',
       component: CRList,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/change-request/:id',
+      component: CRDetail,
       beforeEnter: Authenication
     }
   ]

@@ -70,14 +70,14 @@ class User extends Model {
    * return all change request belongs to this user
    */
   change_requests() {
-    return this.hasMany('App/Models/ChangeRequest')
+    return this.hasMany('App/Models/ChangeRequest/ChangeRequest')
   }
 
   /**
    * return all change request messages belongs to this user
    */
   change_requests_messages() {
-    return this.hasMany('App/Models/ChangeRequestMessage')
+    return this.hasMany('App/Models/ChangeRequest/ChangeRequestMessage')
   }
 }
 

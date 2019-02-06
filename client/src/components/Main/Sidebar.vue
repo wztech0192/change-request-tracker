@@ -61,7 +61,7 @@ export default {
         },
         {
           link: "/dev/todo",
-          icon: "fa fa-code",
+          icon: "fa fa-th",
           name: "Todo List"
         },
         {
@@ -70,7 +70,7 @@ export default {
         {
           link: "/1",
           icon: "fa fa-list",
-          name: "Request Track"
+          name: "Manage Request"
         },
         {
           link: "/2",
@@ -96,14 +96,14 @@ export default {
           name: "Dashboard"
         },
         {
-          link: "/change-request/form",
+          link: "/change-request/entry",
           icon: "fa fa-edit",
-          name: "Change Request"
+          name: "Enter Change Request"
         },
         {
-          link: "/change-request/list",
-          icon: "fa fa-table",
-          name: "Track Status"
+          link: "/change-request",
+          icon: "fa fa-tasks",
+          name: "Track Request Status"
         },
         {
           link: "/5",

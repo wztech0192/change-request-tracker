@@ -41,6 +41,7 @@ class UserController {
             userInfo.last_name = code.last_name;
             userInfo.mid_initial = code.mid_initial;
         }
+    
         
         //validate all request data, return message if fails
         const validation =  await Validator.validateAll(userInfo, User.registerRules);
@@ -50,9 +51,14 @@ class UserController {
 
         //set username as email
         userInfo.username = userInfo.email;
+
         if(userInfo.mid_initial){
-            userInfo.mid_initial = userInfo.mid_initial+"."
+            userInfo.mid_initial = this._modifyString(userInfo.mid_initial)+".";
         }
+
+        userInfo.last_name = this._modifyString(userInfo.last_name);
+        userInfo.first_name= this._modifyString(userInfo.first_name);
+
         //create user
         await User.create(userInfo)
         
@@ -181,6 +187,11 @@ class UserController {
         }
         //return null if list is empty
         return TaskList;
+    }
+
+    // capitalize the first letter of the word and lowercase the rest
+    _modifyString(string){
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 
 }

@@ -2,7 +2,7 @@
   <div>
     <section class="content-header">
       <h1>
-        <i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Generator
+        <i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Form
       </h1>
     </section>
     <section class="content">
@@ -53,14 +53,14 @@
             :style="[(error.first_name_error||error.last_name_error)?{'border-top-color': '#f56954'}:{'border-top-color': '#3c8dbc'}]"
           >
             <div class="box-header with-border">
-              <span
-                class="box-title pointer"
+              <a
+                class="box-title"
                 data-widget="collapse"
                 :class="{'text-red':error.first_name_error||error.last_name_error}"
               >
                 <i class="fa fa-user"></i>&nbsp;&nbsp;Register Info
                 <span v-if="!codeData.allowEdit">-- Must Fill!</span>
-              </span>
+              </a>
               
               <a class="box-tools pull-right">
                 <button

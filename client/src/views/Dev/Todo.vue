@@ -1,13 +1,12 @@
 <template>
-  <div style="transition:0.2s ease" :class="{'fade': !todoList}">
-    <section class="content-header">
+  <div v-if="todoList">
+    <section class="content">
       <!-- Custom Tabs (Pulled to the right) -->
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
           <li :class="{'active':todoType==='COMPLETE'}">
             <a
               @click.prevent="setTodoType('COMPLETE')"
-              href="#COMPLETE"
               data-toggle="tab"
               aria-expanded="false"
             >Completed</a>
@@ -15,13 +14,12 @@
           <li :class="{'active':todoType==='FLAG'}">
             <a
               @click="setTodoType('FLAG')"
-              href="#FLAG"
               data-toggle="tab"
               aria-expanded="false"
             >Flagged</a>
           </li>
           <li :class="{'active':todoType==='ALL'}">
-            <a @click="setTodoType('ALL')" href="#ALL" data-toggle="tab" aria-expanded="true">All</a>
+            <a @click="setTodoType('ALL')" data-toggle="tab" aria-expanded="true">All</a>
           </li>
           <!-- Add New ToDo Button  -->
           <a

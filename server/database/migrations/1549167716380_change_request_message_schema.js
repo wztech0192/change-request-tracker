@@ -9,6 +9,8 @@ class ChangeRequestMessageSchema extends Schema {
       table.increments()
       table.integer('change_request_id').unsigned().references('id').inTable('change_requests').onDelete('CASCADE').onUpdate('CASCADE')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE')
+      table.string('senderEmail', 100).notNullable()
+      table.string('senderName', 100).notNullable()
       table.text('content','longtext')
       table.timestamps()
     })

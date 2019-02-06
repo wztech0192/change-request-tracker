@@ -75,13 +75,14 @@ Route.group(() => {
 
   //Change Request Route
   Route.get('change-request', "ChangeRequestController.index")
+  Route.get('change-request/all', "ChangeRequestController.getAll")
+  Route.get('change-request/:id', "ChangeRequestController.detail")
   Route.post('change-request', "ChangeRequestController.create")
   Route.delete('change-request/:id', "ChangeRequestController.destroy")
   Route.patch('change-request/:id', "ChangeRequestController.update")
-  Route.get('change-request/all', "ChangeRequestController.getAll")
 
   //Change Request Message Route
-  Route.get('change-request/:id/msg', "ChangeRequestController.getCRMessages")
+  Route.get('change-request/:id/msg', "ChangeRequestController.getCRMessage")
   Route.post('change-request/:id/msg', "ChangeRequestController.createCRMessage")
   Route.delete('change-request/msg/:id', "ChangeRequestController.destroyCRMessage")
   Route.patch('change-request/msg/:id', "ChangeRequestController.updateCRMessage")

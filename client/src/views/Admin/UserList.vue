@@ -1,5 +1,5 @@
 <template>
-  <div style="transition:0.2s ease" :class="{'fade': !userList}">
+  <div v-if="userList">
     <section class="content-header">
       <h1>
         <i class="fa fa-users"></i>&nbsp;&nbsp;User List

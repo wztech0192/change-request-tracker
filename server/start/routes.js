@@ -13,15 +13,10 @@
 |
 */
 
+
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
-
-
-Route.get('/', () => {
-  return {
-    greeting: 'Hello world in JSON'
-  }
-})
+const Helpers = use('Helpers')
 
 /**
  * API Route
@@ -88,3 +83,5 @@ Route.group(() => {
   Route.patch('change-request/msg/:id', "ChangeRequestController.updateCRMessage")
 
 }).middleware('auth').prefix('api');
+
+Route.any('/', ({response}) => response.download(Helpers.publicPath('main.html')))

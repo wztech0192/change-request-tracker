@@ -84,4 +84,4 @@ Route.group(() => {
 
 }).middleware('auth').prefix('api');
 
-Route.any('/', ({response}) => response.download(Helpers.publicPath('main.html')))
+Route.any('*', ({response}) => response.download(Helpers.publicPath('index.html')))

@@ -11,8 +11,9 @@ module.exports = {
         target: 'http://localhost:3333'
       }
     }
-  }
-  // publicPath: '/public/'
-
+  },
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/crt/'
+    : '/'
 
 };

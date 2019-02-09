@@ -5,6 +5,9 @@
 <script>
 export default {
 
+  props: {
+    name: String
+  },
 }
 </script>
 

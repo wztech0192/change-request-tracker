@@ -32,7 +32,7 @@ export default {
     ...mapState("authentication", ["user", "taskList"]),
   },
   mounted() {
-    document.body.className = "skin-blue sidebar-mini";
+    document.body.className = "skin-black sidebar-mini";
   },
 };
 </script>

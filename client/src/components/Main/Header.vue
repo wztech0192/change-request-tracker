@@ -65,13 +65,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a  class="dropdown-toggle" data-toggle="dropdown">
-              <img src="/adminLTE/dist/img/avatar5.png" class="user-image" alt="User Image">
+              <img src="@/assets/img/default.jpg" class="user-image" alt="User Image">
               <span class="capitalize hidden-xs">{{user.first_name}} {{user.last_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="/adminLTE/dist/img/avatar5.png" class="img-circle" alt="User Image">
+                <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
 
                 <p class="capitalize">
                   {{user.first_name}} {{user.last_name}} - {{user.role}}
@@ -131,19 +131,19 @@ export default {
       //array of message for header menu
       msgList: [
         {
-          avatar: "adminLTE/dist/img/avatar5.png",
+          avatar: "adminLTE/dist/img/default.jpg",
           sender: "Somebody",
           sendTime: 5,
           body: "Hey this is a testing67"
         },
         {
-          avatar: "adminLTE/dist/img/avatar2.png",
+          avatar: "adminLTE/dist/img/avatar2.jpg",
           sender: "Somebody2",
           sendTime: 2,
           body: "Hey this is a testing3"
         },
         {
-          avatar: "adminLTE/dist/img/avatar04.png",
+          avatar: "adminLTE/dist/img/avatar04.jpg",
           sender: "Somebody3",
           sendTime: 1,
           body: "Hey this is a testing2"

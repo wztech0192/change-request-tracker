@@ -11,8 +11,8 @@ module.exports = {
         target: 'http://localhost:3333'
       }
     }
-  },
-  publicPath: '/public/'
+  }
+  // publicPath: '/public/'
 
 
 };

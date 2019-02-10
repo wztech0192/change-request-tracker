@@ -44,13 +44,23 @@ export default {
       location.reload();
     }
   },
-  mounted() {
+
+  created() {
     // set user profile into authentication.user state if user is logged in
     if (this.isLoggedIn) {
       this.fetchUser();
       this.fetchTaskList();
     }
+  },
 
+  mounted() {
+    //prevent tab key
+    $(document).keydown(function(objEvent) {
+      if (objEvent.keyCode == 9) {
+        //tab pressed
+        objEvent.preventDefault(); // stops its action
+      }
+    });
     $("body").tooltip({
       selector: '[data-toggle="tooltip"]',
       trigger: "hover"
@@ -60,6 +70,7 @@ export default {
       trigger: "hover"
     });
   },
+
   methods: {
     ...mapActions("authentication", ["fetchUser", "fetchTaskList"]),
     ...mapActions("errorStore", ["clearGlobalError"])
@@ -69,8 +80,7 @@ export default {
 
 
 <style lang='scss'>
-
-.nav-tabs-custom>.nav-tabs>li.active{
+.nav-tabs-custom > .nav-tabs > li.active {
   border-top-color: black !important;
 }
 .form-background {
@@ -102,9 +112,8 @@ a {
 }
 
 body {
-
   /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-  font-size:150%;
+  font-size: 150%;
 
   max-width: 100% !important;
 }
@@ -160,6 +169,20 @@ a {
 
 h1 {
   font-weight: 800;
+}
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s;
+}
+.list-enter, .list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 @media (max-width: 480px) {

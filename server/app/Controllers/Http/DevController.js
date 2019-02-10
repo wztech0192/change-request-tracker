@@ -116,7 +116,11 @@ class DevController {
                 //determine percetange after item is deleted
                 parent.task_num --;
                 // total of completed divide by new total of task
-                parent.percentage = Math.round((old_task_num*parent.percentage)/parent.task_num);
+                if(parent.task_num === 0 ){
+                    parent.percentage === 0;
+                }else{
+                    parent.percentage = Math.round((old_task_num*parent.percentage)/parent.task_num);
+                }
                 await parent.save();
             }
         });

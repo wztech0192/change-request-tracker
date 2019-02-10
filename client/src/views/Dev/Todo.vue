@@ -12,11 +12,7 @@
             >Completed</a>
           </li>
           <li :class="{'active':todoType==='FLAG'}">
-            <a
-              @click="setTodoType('FLAG')"
-              data-toggle="tab"
-              aria-expanded="false"
-            >Flagged</a>
+            <a @click="setTodoType('FLAG')" data-toggle="tab" aria-expanded="false">Flagged</a>
           </li>
           <li :class="{'active':todoType==='ALL'}">
             <a @click="setTodoType('ALL')" data-toggle="tab" aria-expanded="true">All</a>
@@ -37,143 +33,147 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane active">
-            <!-- Loop and display all todo -->
-            <div
-              :style="[ todoFilter(todo) ? {'display':'none'} : {'display':'block'}] "
-              class="box box-widget box-solid box-default collapsed-box"
-              data-widget="box-widget"
-              v-for="(todo, i) in todoList"
-            >
+            <transition-group name="list" tag="p">
+              <!-- Loop and display all todo -->
               <div
-                class="box-header with-border todo-header"
-                style="padding-left:30px;"
-                :class="{'todo-flagged':todo.isFlagged}"
+                :style="[ todoFilter(todo) ? {'display':'none'} : {'display':'block'}] "
+                class="box box-widget box-solid box-default collapsed-box"
+                data-widget="box-widget"
+                v-for="(todo, i) in todoList"
+                :key="todo.id"
               >
                 <div
-                  class="box-tools pull-left"
-                  style="margin-left:-25px; position:relative;top:0; right:0;"
+                  class="box-header with-border todo-header"
+                  style="padding-left:30px;"
+                  :class="{'todo-flagged':todo.isFlagged}"
                 >
-                  <button
-                    class="btn btn-box-tool"
-                    data-widget="collapse"
-                  >
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </div>
-
-                <!-- Todo Edit -->
-                <button
-                  type="button"
-                  class="pull-right btn btn-box-tool"
-                  data-toggle="tooltip"
-                  title="Edit"
-                  @click="showPromptModal(true, 'Edit Todo #'+(i+1), todo)"
-                >
-                  <i class="fa fa-edit"></i>
-                </button>
-
-                <!-- Todo Delete -->
-                <button
-                  type="button"
-                  class="pull-right btn btn-box-tool"
-                  data-toggle="tooltip"
-                  title="Delete"
-                  @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Todo?',todo)"
-                >
-                  <i class="fa fa-trash"></i>
-                </button>
-
-                <!-- Task Add -->
-                <button
-                  type="button"
-                  class="pull-right btn btn-box-tool"
-                  data-toggle="tooltip"
-                  title="Add Task"
-                  @click="showPromptModal(false, 'Create New Task For Todo #'+(i+1), todo)"
-                >
-                  <i class="fa fa-plus-square"></i>
-                </button>
-
-                <!-- Todo Flag -->
-                <button
-                  type="button"
-                  class="pull-right btn btn-box-tool"
-                  data-toggle="tooltip"
-                  title="Flag"
-                  @click="flagTodo(todo)"
-                >
-                  <i v-if="!todo.isFlagged" class="fa fa-flag-o"></i>
-                  <i v-else class="fa fa-flag" style="color:blue;"></i>
-                </button>
-
-                <!-- Todo Information -->
-                <button
-                  type="button"
-                  class="pull-right btn btn-box-tool"
-                  data-toggle="tooltip"
-                  data-html="true"
-                  :data-original-title="getTodoInfo(todo)"
-                >
-                  <i class="fa fa-info-circle"></i>
-                </button>
-
-                <h5
-                  class="box-title"
-                  style="font-size:100%; padding: 5px 0; display:inline;"
-                >{{todo.content}}</h5>
-
-                <div class="progress xxs active" style="width:100%; margin-bottom:0;">
                   <div
-                    class="progress-bar progress-bar-primary progress-bar-striped"
-                    :class="{'progress-bar-success':todo.percentage>=100}"
-                    role="progressbar"
-                    :style="{width: todo.percentage + '%' }"
-                  ></div>
-                </div>
-              </div>
-              <div class="box-body" style="display:none; padding-left:30px;">
-                <!-- Loop and display each task inside each todo -->
-                <div
-                  v-for="task in todo.tasks"
-                  class="devtask-style"
-                  :class="{'devtask-completed':task.isCompleted}"
-                >
-                  <!-- Task Completion -->
-                  <button
-                    type="button"
-                    class="btn btn-box-tool"
-                    style="margin-left: -20px;"
-                    @click="setTaskCompleted({task:task, todo:todo})"
+                    class="box-tools pull-left"
+                    style="margin-left:-25px; position:relative;top:0; right:0;"
                   >
-                    <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
-                  </button>
-                  <!-- Task Edit -->
+                    <button class="btn btn-box-tool" data-widget="collapse">
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+
+                  <!-- Todo Edit -->
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Edit"
-                    @click="showPromptModal(true, 'Edit Task #'+(i+1), task, todo)"
+                    @click="showPromptModal(true, 'Edit Todo #'+(i+1), todo)"
                   >
                     <i class="fa fa-edit"></i>
                   </button>
 
-                  <!-- Task Delete -->
+                  <!-- Todo Delete -->
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
                     data-toggle="tooltip"
                     title="Delete"
-                    @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Task?',task, todo)"
+                    @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Todo?',todo)"
                   >
                     <i class="fa fa-trash"></i>
                   </button>
 
-                  <h5 style="display:inline;">{{task.content}}</h5>
+                  <!-- Task Add -->
+                  <button
+                    type="button"
+                    class="pull-right btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Add Task"
+                    @click="showPromptModal(false, 'Create New Task For Todo #'+(i+1), todo)"
+                  >
+                    <i class="fa fa-plus-square"></i>
+                  </button>
+
+                  <!-- Todo Flag -->
+                  <button
+                    type="button"
+                    class="pull-right btn btn-box-tool"
+                    data-toggle="tooltip"
+                    title="Flag"
+                    @click="flagTodo(todo)"
+                  >
+                    <i v-if="!todo.isFlagged" class="fa fa-flag-o"></i>
+                    <i v-else class="fa fa-flag" style="color:blue;"></i>
+                  </button>
+
+                  <!-- Todo Information -->
+                  <button
+                    type="button"
+                    class="pull-right btn btn-box-tool"
+                    data-toggle="tooltip"
+                    data-html="true"
+                    :data-original-title="getTodoInfo(todo)"
+                  >
+                    <i class="fa fa-info-circle"></i>
+                  </button>
+
+                  <h5
+                    class="box-title"
+                    style="font-size:100%; padding: 5px 0; display:inline;"
+                  >{{todo.content}}</h5>
+
+                  <div class="progress xxs active" style="width:100%; margin-bottom:0;">
+                    <div
+                      class="progress-bar progress-bar-primary progress-bar-striped"
+                      :class="{'progress-bar-success':todo.percentage>=100}"
+                      role="progressbar"
+                      :style="{width: todo.percentage + '%' }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="box-body" style="display:none; padding-left:30px;">
+                  <transition-group name="list" tag="p">
+                    <!-- Loop and display each task inside each todo -->
+                    <div
+                      v-for="task in todo.tasks"
+                      class="devtask-style"
+                      :class="{'devtask-completed':task.isCompleted}"
+                      :key="task.id"
+                    >
+                      <!-- Task Completion -->
+                      <button
+                        type="button"
+                        class="btn btn-box-tool"
+                        style="margin-left: -20px;"
+                        @click="setTaskCompleted({task:task, todo:todo})"
+                      >
+                        <i class="fa fa-square-o" :class="getCompletedClass(task.isCompleted)"></i>
+                      </button>
+                      <!-- Task Edit -->
+                      <button
+                        type="button"
+                        class="pull-right btn btn-box-tool"
+                        data-toggle="tooltip"
+                        title="Edit"
+                        @click="showPromptModal(true, 'Edit Task #'+(i+1), task, todo)"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+
+                      <!-- Task Delete -->
+                      <button
+                        type="button"
+                        class="pull-right btn btn-box-tool"
+                        data-toggle="tooltip"
+                        title="Delete"
+                        @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Task?',task, todo)"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+
+                      <h5 style="display:inline;">{{task.content}}</h5>
+                    </div>
+                  </transition-group>
                 </div>
               </div>
-            </div>
+            </transition-group>
           </div>
+
           <!-- /.tab-pane -->
         </div>
         <!-- /.tab-content -->
@@ -280,13 +280,11 @@ export default {
     if (this.user.role !== "Developer") {
       router.push("/");
       this.setGlobalError("Only developer are allow to enter this page");
-    } else{
+    } else {
       //fetch todolist data from database
       this.fetchDevTodo();
     }
-   
   },
-
 
   methods: {
     ...mapActions("authentication", ["fetchTaskList", "setExceptionError"]),
@@ -467,8 +465,9 @@ export default {
       var dPercent = item.isCompleted ? (1 / parent.task_num) * 100 : 0;
       parent.percentage -= dPercent;
       parent.task_num--;
-      parent.percentage =
-        Math.round(((parent.task_num + 1) * parent.percentage) / parent.task_num);
+      parent.percentage = Math.round(
+        ((parent.task_num + 1) * parent.percentage) / parent.task_num
+      );
 
       HTTP()
         .delete(`/dev/task/${item.id}`)

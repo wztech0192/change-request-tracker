@@ -78,7 +78,7 @@ Route.group(() => {
   Route.patch('change-request/:id', "ChangeRequestController.update")
 
   //Change Request Message Route
-  Route.get('change-request/:id/msg', "ChangeRequestController.getCRMessage")
+  Route.get('change-request/:id/msg/:num', "ChangeRequestController.getCRMessage")
   Route.post('change-request/:id/msg', "ChangeRequestController.createCRMessage")
   Route.delete('change-request/msg/:id', "ChangeRequestController.destroyCRMessage")
   Route.patch('change-request/msg/:id', "ChangeRequestController.updateCRMessage")

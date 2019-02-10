@@ -138,7 +138,10 @@ class ChangeRequestController {
         const user= await auth.getUser();
         const changeRequest = await ChangeRequest.find(params.id);
         AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true);
-        const message = await changeRequest.messages().fetch();
+        const message = await ChangeRequestMessage.query()
+        .where('change_request_id', changeRequest.id)
+        .orderBy('created_at', 'desc')
+        .limit(params.num).fetch();
         return message;
     }
 
@@ -155,6 +158,8 @@ class ChangeRequestController {
             work: async (message, user)=>{
                 //fill in data then save to its owner
                 data.user_id = user.id;
+                data.senderEmail= user.email;
+                data.senderName= user.first_name+" "+user.last_name;
                 message.fill(data);  
                 await change_request.messages().save(message);
             }

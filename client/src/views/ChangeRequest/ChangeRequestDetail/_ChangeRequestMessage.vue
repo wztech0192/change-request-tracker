@@ -1,5 +1,5 @@
 <template>
-  <div class="box box-comments">
+  <div class="box box-comments" style="box-shadow:0px 0px 5px grey;">
     <div v-if="!msgList || msgList.length<=0">
       <h3 style="text-align:center;">There is no message</h3>
     </div>
@@ -27,14 +27,12 @@
         </div>
       </transition-group>
     </div>
-    <div class="box-footer">
+    <div>
       <textarea id="editor" name="editor" style="width: 100%;"></textarea>
+      
       <button class="btn btn-primary btn-lg" style="width:100%;" @click="sendMsg">
         <i class="fa fa-share-square"></i> Send
       </button>
-      <transition name="slide-left" mode="out-in">
-        <button class="btn btn-default" style="width:100%;" :key="lock" @click="lock=!lock">{{ lock ? 'Unlock Scroll' : 'Lock Scroll' }}</button>
-      </transition>
     </div>
 
     <!-- /.box-comment -->
@@ -42,7 +40,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -53,8 +51,7 @@ export default {
       editor: null,
       newMsg: null,
       msgNum: 20,
-      refresher: null,
-      lock: true
+      refresher: null
     };
   },
 
@@ -65,42 +62,52 @@ export default {
   },
 
   created() {
+    this.setTab("message");
     var self = this;
-    this.fetchRequestMsg(this.msgNum, true);
+    this.fetchRequestMsg(this.msgNum);
 
     //update message each second to newest message
     this.refresher = setInterval(() => {
-      this.fetchRequestMsg(this.msgNum, this.lock);
+      this.fetchRequestMsg(this.msgNum);
     }, 1000);
-
-    this.scrollDown();
-    //add five etra message whenever user scoll to the top.
-    setTimeout(() => {
-      $("#cr-msg").on("scroll", function() {
-        if ($(this).scrollTop() === 0) {
-          self.fetchRequestMsg((self.msgNum += 5), false);
-        }
-      });
-    }, 50);
   },
 
   mounted() {
     var self = this;
     //initialize editor
-    ClassicEditor.create(document.querySelector("#editor"))
+    ClassicEditor.create(document.querySelector("#editor"),{
+        toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'],
+    })
       .then(editor => {
         self.editor = editor;
-        //editor.setData(self.requestData.details);
         // bind request detail to editor data
         editor.model.document.on("change", () => {
           self.newMsg = editor.getData();
         });
       })
       .catch(e => self.setGlobalError(e));
+
+    //add five etra message whenever user scoll to the top.
+    $("#cr-msg").on("scroll", function() {
+      if ($(this).scrollTop() === 0) {
+        self.fetchRequestMsg((self.msgNum += 5));
+      }
+    });
+  },
+
+  watch: {
+    msgList() {
+      var el = $("#cr-msg");
+      //perform a scroll to if the current position is bottom and messageList change
+      if (el.scrollTop() >= el[0].scrollHeight - el.outerHeight() - 10) {
+        this.scrollDown();
+      }
+    }
   },
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapMutations("changeRequest", ["setTab"]),
 
     //fetch request message
     fetchRequestMsg(num, scroll) {
@@ -108,33 +115,35 @@ export default {
         .get(`/change-request/${this.$route.params.id}/msg/${num}`)
         .then(({ data }) => {
           this.msgList = data.reverse();
-          if (scroll) {
-            this.scrollDown();
-          }
         })
         .catch(e => {
           this.setGlobalError(e);
         });
     },
 
+    //scroll to the bottom of the message box
     scrollDown() {
       setTimeout(() => {
         $("#cr-msg").scrollTop($("#cr-msg")[0].scrollHeight);
       }, 20);
     },
+
     //http request to post new message
     sendMsg() {
-      return HTTP()
-        .post(`/change-request/${this.$route.params.id}/msg`, {
-          content: this.newMsg
-        })
-        .then(({ data }) => {
-          this.editor.setData("");
-          this.fetchRequestMsg(this.msgNum, true);
-        })
-        .catch(e => {
-          this.setGlobalError(e);
-        });
+      // block empty message
+      if (this.newMsg && this.newMsg !== "" && this.newMsg!=="<p>&nbsp;</p>") {
+        return HTTP()
+          .post(`/change-request/${this.$route.params.id}/msg`, {
+            content: this.newMsg
+          })
+          .then(({ data }) => {
+            this.editor.setData("");
+            this.fetchRequestMsg(this.msgNum, true);
+          })
+          .catch(e => {
+            this.setGlobalError(e);
+          });
+      }
     },
 
     //calculate duration
@@ -157,7 +166,7 @@ export default {
         hour = hour.substring(0, 5);
         var head = hour[0] + hour[1];
         if (head >= 12) {
-          hour = 24 - head + hour.substring(2, 6);
+          hour = head-12 + hour.substring(2, 6);
           hour += " PM";
         } else {
           hour += " AM";

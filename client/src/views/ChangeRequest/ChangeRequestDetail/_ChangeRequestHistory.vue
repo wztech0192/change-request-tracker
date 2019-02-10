@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -43,11 +43,13 @@ export default {
   },
 
   created() {
+    this.setTab("history");
     this.fetchRequestHistory();
   },
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapMutations("changeRequest", ["setTab"]),
 
     //fetch request history
     fetchRequestHistory() {

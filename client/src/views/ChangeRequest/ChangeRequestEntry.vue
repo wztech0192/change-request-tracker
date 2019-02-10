@@ -286,7 +286,7 @@ export default {
                     } else {
                       this.clearAllData();
                       this.$modal.hide("dialog");
-                      router.push(`/change-request/${data.id}`);
+                      router.push(`/change-request/${data.id}/content`);
                     }
                   })
                   .catch(e => {

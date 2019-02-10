@@ -28,7 +28,7 @@ class ChangeRequestController {
 
        /* //set request message and history
         changeRequest.messages = await changeRequest.messages().fetch();
-        changeRequest.history = await changeRequest.history().fetch();*/
+        changeRequest.history = await changeRequest.histories().fetch();*/
         changeRequest.client = await changeRequest.user().fetch();
         return changeRequest;
     }
@@ -191,10 +191,10 @@ class ChangeRequestController {
     /**
      * private method to save history of change request
      */
-    _createCRHistory(changeRequest, content, type){
+    _createCRHistory(changeRequest, type, content){
         var crHistory = new ChangeRequestHistory();
-        crHistory.fill({ content });
-        changeRequest.history().save(crHistory);
+        crHistory.fill({ type, content });
+        changeRequest.histories().save(crHistory);
     }
 
     /**

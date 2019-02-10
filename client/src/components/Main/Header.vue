@@ -18,7 +18,7 @@
               <!-- start message -->
               <a >
                 <div class="pull-left">
-                  <img :src="msg.avatar" class="img-circle" alt="User Image">
+                  <img src='@/assets/img/default.jpg' class="img-circle" alt="User Image">
                 </div>
                 <h4>
                   {{msg.sender}}

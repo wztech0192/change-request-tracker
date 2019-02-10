@@ -134,10 +134,10 @@ export default {
 <style>
 
 .sidebar-menu>li>a{
-  transition:0.3s ease;
+  transition:0.2s ease;
 }
 .sidebar-menu li .router-link-exact-active{
-    background-color:#ecf0f5 !important;
+    background:#ecf0f5 !important;
     color:black !important;
 }
 </style>

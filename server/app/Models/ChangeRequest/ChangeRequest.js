@@ -22,7 +22,7 @@ class ChangeRequest extends Model {
   /**
    * return all history in this change request
    */
-  history() {
+  histories() {
     return this.hasMany('App/Models/ChangeRequest/ChangeRequestHistory')
   }
 }

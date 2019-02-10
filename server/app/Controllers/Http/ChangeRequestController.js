@@ -7,6 +7,7 @@
 
 
 const ChangeRequest = use('App/Models/ChangeRequest/ChangeRequest')
+const User=use('App/Models/User');
 const ChangeRequestMessage = use('App/Models/ChangeRequest/ChangeRequestMessage')
 const ChangeRequestHistory = use('App/Models/ChangeRequest/ChangeRequestHistory')
 const AuthorizationService = use('App/Service/AuthorizationService')
@@ -25,9 +26,9 @@ class ChangeRequestController {
         //only allow dev, admin, and request submitter to receive the data
         AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true) 
 
-        //set request message and history
+       /* //set request message and history
         changeRequest.messages = await changeRequest.messages().fetch();
-        changeRequest.history = await changeRequest.history().fetch();
+        changeRequest.history = await changeRequest.history().fetch();*/
         changeRequest.client = await changeRequest.user().fetch();
         return changeRequest;
     }
@@ -59,42 +60,53 @@ class ChangeRequestController {
      */
     async create({auth, request}){
         const data = request.only(['title','details']);
-
         //throw error if title or details is empty
         if(!data.title || !data.details){
             throw new Exception("Something is wrong"); 
         }
 
-        let {message} = request.only(['message']);
-        return await CrudService.create(auth, ChangeRequest, {
-            work: async (changeRequest, user)=>{
-                //fill in data then save to its creator
-                changeRequest.fill(data);  
-                await user.change_requests().save(changeRequest);
-            },
-            after: (changeRequest, user) =>{
-                //save change request message is message exist
-                if(message){
-                    // replace < and > to html code &#60; and &#62 for security
-                    message = message.replace(/([\<])/g,'&#60;');
-                    message = message.replace(/([\>])/g,'&#62');
-                    var crmsg = new ChangeRequestMessage();
-                    crmsg.fill({
-                        content : `<p>${message}</p>`,
-                        user_id : user.id,
-                        senderEmail: user.email,
-                        senderName: user.first_name+" "+user.last_name
-                    });
-                    changeRequest.messages().save(crmsg);
-                }
-
-                //create change request history
-                this._createCRHistory(changeRequest, 
-                    `Change Request ID ${changeRequest.id} has been posted by ${user.first_name+" "+user.last_name} in ${changeRequest.created_at}`
-                );
+        let {message, client} = request.only(['message', 'client']);
+        const user=await auth.getUser();
+        let requester;
+        //get requester if current user is a admin. Else requester is current user.
+        if(user.role === "Admin" || user.role === "Developer"){
+            requester = await User.find(client);
+            if(!requester){
+                throw new Exception("Something is wrong"); 
             }
-        });        
+        }else{
+            requester = user;
+        }
+        
+        const changeRequest=new ChangeRequest();
+        //fill in data then save to its creator
+        changeRequest.fill(data);  
+        await requester.change_requests().save(changeRequest);
+     
+         //save change request message is message exist
+         if(message){
+            // replace < and > to html code &#60; and &#62 for security
+            message = message.replace(/([\<])/g,'&#60;');
+            message = message.replace(/([\>])/g,'&#62');
+            var crmsg = new ChangeRequestMessage();
+            crmsg.fill({
+                content : `<p>${message}</p>`,
+                user_id : user.id,
+                senderEmail: user.email,
+                senderName: user.first_name+" "+user.last_name
+            });
+            changeRequest.messages().save(crmsg);
+
+        }  
+        //create change request history
+        this._createCRHistory(changeRequest, 
+            'Create',
+            `Change Request ID ${changeRequest.id} has been posted by ${user.first_name+" "+user.last_name} in ${changeRequest.created_at}`
+            );
+
+        return changeRequest;
     }
+
 
     /**
      * delete target change request
@@ -124,8 +136,9 @@ class ChangeRequestController {
      */
     async getCRMessage({auth, params}){
         const user= await auth.getUser();
-        const message = await ChangeRequestMessage.find(params.id);
-        AuthorizationService.verifyPermission(message, user, ['Developer','Admin'], true);
+        const changeRequest = await ChangeRequest.find(params.id);
+        AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true);
+        const message = await changeRequest.messages().fetch();
         return message;
     }
 
@@ -173,10 +186,22 @@ class ChangeRequestController {
     /**
      * private method to save history of change request
      */
-    _createCRHistory(changeRequest, content){
+    _createCRHistory(changeRequest, content, type){
         var crHistory = new ChangeRequestHistory();
         crHistory.fill({ content });
         changeRequest.history().save(crHistory);
+    }
+
+    /**
+     * Get all histories belongs to this change request
+     * @returns {ChangeRequestMessage[]}
+     */
+    async getCRHistory({auth, params}){
+        const user= await auth.getUser();
+        const changeRequest = await ChangeRequest.find(params.id);
+        AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true);
+        let histories = await changeRequest.histories().fetch();
+        return histories;
     }
 
 }

@@ -60,8 +60,9 @@ class AuthorizationService{
             //if not allow self update or target is not current user, do a role check
             if(!allowSelf || targetUser.id != user.id){
                 //throw a InvalidAccessException if the current user's role is not in allowed roles list 
-                if(allowRoles.indexOf(user.role)==-1){
-                    throw new InvalidAccessException('user');
+                //or target user has equal authority level as current user
+                if(allowRoles.indexOf(targetUser.role)!=-1 || allowRoles.indexOf(user.role)==-1){
+                        throw new InvalidAccessException('user');
                 }
             }
         }
@@ -72,14 +73,14 @@ class AuthorizationService{
         this.verifyExistance(targetUser,'user');
 
         if (targetUser.id == user.id){
-            throw new InvalidAccessException("user due to self deleting");
+            throw new InvalidAccessException("user. Self deleting is not allowed");
         }
         else if(targetUser.isDev){
-            throw new InvalidAccessException("user due to the user is a developer");
+            throw new InvalidAccessException("user. The target user is a Developer");
         }
         else if(!user.isDev){
             //throw a InvalidAccessException if the current user's role is not in allowed roles list 
-            //or target user's role is in allowed roles list
+            //or target user has equal authority level as current user
             if(allowRoles.indexOf(targetUser.role)!=-1  || allowRoles.indexOf(user.role)==-1){
                 throw new InvalidAccessException('user');
             }

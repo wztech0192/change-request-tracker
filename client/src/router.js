@@ -9,6 +9,9 @@ import Dashboard from './views/Dashboard.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
 import CRList from './views/ChangeRequest/ChangeRequestList.vue';
 import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
+import CRContent from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestContent.vue';
+import CRMessage from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestMessage.vue';
+import CRHistory from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestHistory.vue';
 import store from './store/index';
 
 
@@ -83,7 +86,24 @@ export default new Router({
     {
       path: '/change-request/:id',
       component: CRDetail,
-      beforeEnter: Authenication
+      beforeEnter: Authenication,
+      children: [
+        {
+          // render CRContent when /user/:id/content is matched
+          path: 'content',
+          component: CRContent
+        },
+        {
+          // render CRMessage when /user/:id/message is matched
+          path: 'message',
+          component: CRMessage
+        },
+        {
+          // rendered CRHistory when /user/:id/history is matched
+          path: 'history',
+          component: CRHistory
+        }
+      ]
     }
   ]
 });

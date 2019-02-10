@@ -69,6 +69,10 @@ export default {
 
 
 <style lang='scss'>
+
+.nav-tabs-custom>.nav-tabs>li.active{
+  border-top-color: black !important;
+}
 .form-background {
   background-color: transparent;
 }
@@ -99,7 +103,9 @@ a {
 
 body {
 
-  font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;
+  /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+  font-size:150%;
+
   max-width: 100% !important;
 }
 

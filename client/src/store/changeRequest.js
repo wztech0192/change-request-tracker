@@ -11,12 +11,17 @@ export default {
   state: {
     requestData: {
       title: null,
-      details: ""
+      details: "",
+      client: ""
     },
     error: {
       title_error: false,
-      detail_error: false
-    }
+      detail_error: false,
+      client_error: false
+    },
+
+    // detail tab
+    tab: "content"
   },
 
 
@@ -24,6 +29,11 @@ export default {
    * Make changes to the state
    */
   mutations: {
+
+    // set detail tab
+    setTab(state, tab) {
+      state.tab = tab;
+    },
 
     // set request title
     setTitle(state, el) {
@@ -33,6 +43,11 @@ export default {
     // set message
     setMessage(state, message) {
       state.requestData.message = message;
+    },
+
+    // set message
+    setClient(state, client) {
+      state.requestData.client = client;
     },
 
     // set request detail
@@ -54,11 +69,13 @@ export default {
     clearAll(state) {
       state.requestData = {
         title: null,
-        details: ""
+        details: "",
+        client: ""
       };
       state.error = {
         title_error: false,
-        detail_error: false
+        detail_error: false,
+        client_error: false
       };
     }
 

@@ -39,7 +39,7 @@
                 <th>User Name</th>
                 <th>Role</th>
                 <th>Email</th>
-                <th>Join On</th>
+                <th>Join Date</th>
               </tr>
             </thead>
             <tbody>
@@ -114,7 +114,9 @@ export default {
           //resize based on widht
           responsive: true,
           //order by first col in ascending order
-          order: [[0, "asc"]]
+          order: [[0, "asc"]],
+          iDisplayLength: 20,
+          lengthMenu: [10, 20, 40, 60, 80, 100]
         });
 
         //click select event

@@ -55,8 +55,6 @@
                 >
                   <button
                     class="btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Collapse"
                     data-widget="collapse"
                   >
                     <i class="fa fa-plus"></i>
@@ -144,8 +142,6 @@
                   <button
                     type="button"
                     class="btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Complete"
                     style="margin-left: -20px;"
                     @click="setTaskCompleted({task:task, todo:todo})"
                   >

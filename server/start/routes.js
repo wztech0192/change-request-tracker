@@ -34,6 +34,7 @@ Route.group(() => {
   Route.get('user/all', "UserController.getAll")
   Route.get('user/task', "UserController.getTaskList")
   Route.get('user/:id', "UserController.get")
+  Route.get('user/by-role/:role', "UserController.getRoleList")
   Route.delete('user/:id', "UserController.destroy")
   Route.patch('user/:id', "UserController.update")
 
@@ -81,6 +82,9 @@ Route.group(() => {
   Route.post('change-request/:id/msg', "ChangeRequestController.createCRMessage")
   Route.delete('change-request/msg/:id', "ChangeRequestController.destroyCRMessage")
   Route.patch('change-request/msg/:id', "ChangeRequestController.updateCRMessage")
+
+  //Change Request History Route
+  Route.get('change-request/:id/hist', "ChangeRequestController.getCRHistory")
 
 }).middleware('auth').prefix('api');
 

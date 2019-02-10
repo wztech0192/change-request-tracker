@@ -13,6 +13,7 @@ class RegistrationCodeSchema extends Schema {
       table.string('email', 254)
       table.string('first_name',30)
       table.string('last_name',30)
+      table.string('role',30).defaultTo("Client")
       table.string('mid_initial',5)
       table.string('content',999)
       table.boolean('allowEdit').defaultTo(0);

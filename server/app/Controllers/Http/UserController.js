@@ -34,6 +34,7 @@ class UserController {
         const code = await RegistrationCodeService.getMatchCode(request.only('code'));
       
         const userInfo = request.except(['code','password_retype']);
+
         //if not allow to edit, set registration data to code data
         if(code.allowEdit === 0){
             userInfo.email = code.email;
@@ -55,7 +56,7 @@ class UserController {
         if(userInfo.mid_initial){
             userInfo.mid_initial = this._modifyString(userInfo.mid_initial)+".";
         }
-
+        userInfo.role = code.role;
         userInfo.last_name = this._modifyString(userInfo.last_name);
         userInfo.first_name= this._modifyString(userInfo.first_name);
 
@@ -101,6 +102,17 @@ class UserController {
         const targetUser =await User.find(params.id);
         AuthorizationService.verifyPermissionForUser(targetUser, user, null, true)
         return targetUser;
+    }
+
+    /**
+     * Get RoleList
+     * @return {user}
+     */
+    async getRoleList({auth, params}){
+        const user=await auth.getUser();
+        AuthorizationService.verifyRole(user, ['Developer','Admin'])
+        const userQuery = await User.query().where('role', params.role).fetch();
+        return userQuery.rows;
     }
 
     /**

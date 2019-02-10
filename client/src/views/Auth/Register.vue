@@ -97,7 +97,7 @@
           </div>
           <div class="col-xs-4">
             <button type="submit" class="btn btn-primary btn-block">
-              Register&nbsp;&nbsp;&nbsp;
+              Register
               <i class="fa fa-sign-in"></i>
             </button>
           </div>

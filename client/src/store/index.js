@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import authentication from './authentication';
 import errorStore from './errorStore';
-import changeRequest from './change_request';
+import changeRequest from './changeRequest';
 
 Vue.use(Vuex);
 

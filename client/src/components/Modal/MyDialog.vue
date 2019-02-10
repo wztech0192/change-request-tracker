@@ -152,12 +152,12 @@ export default {
 }
 
 .vue-dialog-confirm:hover {
-  background-color: lightgreen;
-  color: white;
+  background: rgb(143, 235, 143) !important;
+  color: rgb(255, 255, 255) !important;
 }
 
 .vue-dialog-cancel:hover {
-  background-color: lightcoral;
-  color: white;
+  background: rgb(238, 118, 118) !important;
+  color: rgb(255, 255, 255) !important;
 }
 </style>

@@ -33,7 +33,6 @@
               <tr v-for="(changeRequest, i) in ChangeRequestList" :id="i">
                 <th>{{changeRequest.id}}</th>
                 <td style="text-align:center;">
-                    
                   <label
                     class="label"
                     style="padding: 5px 10px;"
@@ -67,7 +66,8 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user"])
+    ...mapState("authentication", ["user"]),
+    ...mapState("changeRequest", ["tab"])
   },
 
   created() {
@@ -106,7 +106,9 @@ export default {
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[2, "asc"]]
+          order: [[2, "asc"]],
+          iDisplayLength: 20,
+          lengthMenu: [10, 20, 40, 60, 80, 100]
         });
 
         //click select event
@@ -121,7 +123,9 @@ export default {
 
         //double click event
         $("#change-request-table tbody").on("dblclick", "tr", function() {
-          self.requestID = $(this).find('th').text();
+          self.requestID = $(this)
+            .find("th")
+            .text();
           _showRequestDetail(requestID);
         });
       }, 10);
@@ -153,8 +157,8 @@ export default {
     },
 
     //direct to change request detail view
-    showRequestDetail(id){
-      router.push(`change-request/${id}`);
+    showRequestDetail(id) {
+      router.push(`change-request/${id}/${this.tab}`);
     },
 
     //get status label class

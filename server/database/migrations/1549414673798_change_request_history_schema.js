@@ -9,6 +9,7 @@ class ChangeRequestHistorySchema extends Schema {
       table.increments()
       table.integer('change_request_id').unsigned().references('id').inTable('change_requests').onDelete('CASCADE').onUpdate('CASCADE')
       table.text('content','longtext')
+      table.string('type',12);
       table.timestamps()
     })
   }

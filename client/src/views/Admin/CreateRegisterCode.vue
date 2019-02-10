@@ -6,7 +6,7 @@
       </h1>
     </section>
     <section class="content">
-      <div class="box">
+      <form class="box" @submit.prevent="generateRegisterCode">
         <div class="box-body form-background">
           <span class="pull-right">
             <a
@@ -103,15 +103,23 @@
                 >
                 <span class="help-block">{{error.last_name_error}}</span>
               </div>
+              <div class="form-group">
+                <label>Role</label>
+                <select class="form-control" id="code-role" @change="changeRole">
+                  <option>Client</option>
+                  <option>Admin</option>
+                  <option>Developer</option>
+                </select>
+              </div>
             </div>
 
             <!-- Submit button -->
           </div>
-          <button class="btn btn-primary btn-lg" @click="generateRegisterCode">
+          <button class="btn btn-primary btn-lg">
             <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Generate
           </button>
         </div>
-      </div>
+      </form>
     </section>
   </div>
 </template>
@@ -162,7 +170,8 @@ export default {
         last_name: null,
         email: null,
         allowEdit: true,
-        content: null
+        content: null,
+        role: "Client"
       },
       error: {
         first_name_error: null,
@@ -175,6 +184,11 @@ export default {
 
   methods: {
     ...mapActions("errorStore", ["setGlobalError"]),
+
+    changeRole() {
+      this.codeData.role = $("#code-role option:selected").text();
+    },
+
     //submit code data and perform http request
     generateRegisterCode() {
       var dialogTitle, dialogBtnText, dialogContent;
@@ -251,7 +265,8 @@ export default {
         last_name: null,
         email: null,
         allowEdit: true,
-        content: null
+        content: null,
+        role: "Client"
       };
       this.error = {
         first_name_error: null,
@@ -259,6 +274,7 @@ export default {
         email_error: null
       };
       this.editor.setData("");
+      $("#code-role").val("Client");
     }
   }
 };

@@ -15,6 +15,10 @@ class ChangeRequestSchema extends Schema {
       table.string('title', 254).notNullable()
       table.string('status', 20).notNullable().defaultTo("To Do")
       table.text('details','longtext')
+      table.boolean('isFlagged').defaultTo(false)
+      table.string('clientName',100).notNullable()
+      table.integer('totalMessage').defaultTo(0);
+      table.integer('totalHistory').defaultTo(0);
       table.timestamps()
     })
   }

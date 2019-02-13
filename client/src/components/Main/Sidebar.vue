@@ -15,15 +15,15 @@
         </div>
       </div>
       <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul  class="sidebar-menu" data-widget="tree">
+      <ul class="sidebar-menu" data-widget="tree">
         <li v-for="item in navItem" :class="{'header':item.split}">
-
           <span v-if="item.split">{{item.split}}</span>
           <router-link v-else :to="item.link">
-            <i :class="item.icon"></i> <span>&nbsp; {{item.name}}</span>
+            <i :class="item.icon"></i>
+            <span>&nbsp; {{item.name}}</span>
           </router-link>
         </li>
-        
+
         <li class="treeview">
           <a href="#">
             <i class="fa fa-book"></i>
@@ -65,12 +65,22 @@ export default {
           name: "Todo List"
         },
         {
+          link: "/dev/tool",
+          icon: "fa fa-wrench",
+          name: "Dev Tool"
+        },
+        {
           split: "Admin"
         },
         {
-          link: "/1",
+          link: "/admin/change-request/",
           icon: "fa fa-list",
           name: "Manage Request"
+        },
+        {
+          link: "/1",
+          icon: "fa fa-search",
+          name: "Find Request"
         },
         {
           link: "/2",
@@ -122,22 +132,21 @@ export default {
   props: {
     user: { type: Object, required: false, default: "Anonymous" }
   },
-  created(){
-    $('.sidebar-menu li>a').click(()=>{
-      $('.selected').removeClass('selected');
-      $(this).addClass('selected');
-    })
+  created() {
+    $(".sidebar-menu li>a").click(() => {
+      $(".selected").removeClass("selected");
+      $(this).addClass("selected");
+    });
   }
 };
 </script>
 
 <style>
-
-.sidebar-menu>li>a{
-  transition:0.2s ease;
+.sidebar-menu > li > a {
+  transition: 0.2s ease;
 }
-.sidebar-menu li .router-link-exact-active{
-    background:#ecf0f5 !important;
-    color:black !important;
+.sidebar-menu li .router-link-exact-active {
+  background: #ecf0f5 !important;
+  color: black !important;
 }
 </style>

@@ -13,12 +13,18 @@
         </a>
         &nbsp;&nbsp;Change Request
         <span class="pull-right">
-          <label class="label label-warning">{{requestData.status}}</label>
+          <label
+            class="label cr-status-trans"
+            :class="'label'+getStatusLabel(requestData.status)"
+          >{{requestData.status}}</label>
         </span>
       </h1>
     </section>
     <section class="content">
-      <div class="box form-background" :class="'box'+getStatusLabel(requestData.status)">
+      <div
+        class="box form-background cr-status-trans"
+        :class="'box'+getStatusLabel(requestData.status)"
+      >
         <div class="box-body">
           <div>
             <span class="pull-right">
@@ -42,23 +48,39 @@
           </div>
           <div>
             <label
-              class="cr-status label"
-              :class="{'label-danger':requestData.status==='Canceled'}"
+              class="cr-status label clickable"
+              :class="{'label-danger':requestData.status==='Cancelled'}"
+              @click="changeStatus('Cancelled')"
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Cancelled"
             >CANCEL</label>
             
             <label
-              class="cr-status label"
+              class="cr-status label clickable"
               :class="{'label-warning':requestData.status==='To Do'}"
+              @click="changeStatus('To Do')"
+              data-toggle="tooltip"
+              title="To Do"
+              data-placement="bottom"
             >TO DO</label>
             
             <label
-              class="cr-status label"
-              :class="{'label-primary':requestData.status==='Progress'}"
-            >PROGRESS</label>
+              class="cr-status label clickable"
+              :class="{'label-primary':requestData.status==='In Progress'}"
+              @click="changeStatus('In Progress')"
+              data-toggle="tooltip"
+              title="In Progress"
+              data-placement="bottom"
+            >In PROGRESS</label>
             
             <label
-              class="cr-status label"
-              :class="{'label-success':requestData.status==='Completed'}"
+              class="cr-status label clickable"
+              :class="{'label-success':requestData.status==='Complete'}"
+              @click="changeStatus('Complete')"
+              data-toggle="tooltip"
+              title="Complete"
+              data-placement="bottom"
             >COMPLETE</label>
           </div>
           <hr>
@@ -66,17 +88,17 @@
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="cr-tab" :class="{'active':tab === 'content'}" @click="setTab('content')">
-                <router-link :to="baseurl+'content'">
+                <router-link :to="baseURL+'/content'">
                   <i class="fa fa-info-circle"></i> Content
                 </router-link>
               </li>
               <li class="cr-tab" :class="{'active':tab === 'message'}" @click="setTab('message')">
-                <router-link :to="baseurl+'message'">
+                <router-link :to="baseURL+'/message'">
                   <i class="fa fa-comments"></i> Message
                 </router-link>
               </li>
               <li class="cr-tab" :class="{'active':tab === 'history'}" @click="setTab('history')">
-                <router-link :to="baseurl+'history'">
+                <router-link :to="baseURL+'/history'">
                   <i class="fa fa-history"></i> History
                 </router-link>
               </li>
@@ -115,10 +137,8 @@ export default {
   },
 
   beforeRouteEnter(to, from, next) {
-
     //save previous route
     next(vm => {
-
       vm.previousRoute = from;
     });
   },
@@ -127,8 +147,11 @@ export default {
     ...mapState("authentication", ["user"]),
     ...mapState("changeRequest", ["tab"]),
 
-    baseurl() {
-      return `/change-request/${this.$route.params.id}/`;
+    baseURL() {
+      return `/change-request/${this.$route.params.id}`;
+    },
+    isAdmin() {
+      return this.user.role === "Admin" || this.user.role === "Developer";
     }
   },
 
@@ -156,15 +179,53 @@ export default {
         });
     },
 
+    //change status, admin only
+    changeStatus(status) {
+      if (this.isAdmin) {
+        //confirm modal to confirm the action
+        this.$modal.show("dialog", {
+          title: `<i class='fa fa-user-spinner'></i> Update Status`,
+          maxWidth: 250,
+          template: `<div style='text-align:center'><label>Current Status</label> : <label class="label label${this.getStatusLabel(
+            this.requestData.status
+          )}">${
+            this.requestData.status
+          }</label><br><label>New Status</label> : <label  class="label label${this.getStatusLabel(
+            status
+          )}">${status}</label></div>`,
+          buttons: [
+            {
+              title: "Confirm",
+              default: true,
+              handler: () => {
+                HTTP()
+                  .patch(this.baseURL, { status })
+                  .catch(e => {
+                    //if fail, reset data
+                    this.setGlobalError(e);
+                    this.fetchRequestData();
+                  });
+                this.requestData.status = status;
+                this.$modal.hide("dialog");
+              }
+            },
+            {
+              title: "Cancel"
+            }
+          ]
+        });
+      }
+    },
+
     //get statu colors class
     getStatusLabel(status) {
       {
         switch (status) {
           case "To Do":
             return "-warning";
-          case "Process":
+          case "In Progress":
             return "-primary";
-          case "Completed":
+          case "Complete":
             return "-success";
           default:
             return "-danger";
@@ -188,6 +249,11 @@ export default {
   width: 25%;
   color: transparent;
   border-radius: 0;
+  transition: 0.3s ease;
   padding: 5px 0;
+}
+
+.cr-status-trans {
+  transition: 0.3s ease;
 }
 </style>

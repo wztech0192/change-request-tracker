@@ -19,7 +19,7 @@ export default {
       detail_error: false,
       client_error: false
     },
-
+    listTab: 'active',
     // detail tab
     tab: "content"
   },
@@ -29,6 +29,10 @@ export default {
    * Make changes to the state
    */
   mutations: {
+
+    setListTab(state, tab) {
+      state.listTab = tab;
+    },
 
     // set detail tab
     setTab(state, tab) {

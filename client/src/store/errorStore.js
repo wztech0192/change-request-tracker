@@ -32,11 +32,13 @@ export default {
         commit('setGlobalError', msg);
       } else {
         try {
-          const errorData = msg.response.data.error;
-          if (typeof errorData === 'string') {
-            commit('setGlobalError', errorData);
-          } else {
+          const errorData = msg.response.data;
+          if (errorData.message) {
             commit('setGlobalError', errorData.message);
+          } else if (typeof errorData.error === 'string') {
+            commit('setGlobalError', errorData.error);
+          } else {
+            commit('setGlobalError', errorData.error.message);
             // if error is expired jwt token, redirect to login page
             if (errorData.name === "ExpiredJwtToken") {
               router.push("/login");

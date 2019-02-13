@@ -32,7 +32,7 @@
                 <option
                   v-for="(client, i) in clientList"
                   :value="i"
-                >{{client.first_name}} {{client.last_name}} {{client.mid_initial}} ({{client.email}})</option>
+                >{{client.first_name}} {{client.mid_initial}} {{client.last_name}} ({{client.email}})</option>
               </select>
             </div>
           </div>
@@ -116,6 +116,9 @@ import HTTP from "@/http";
 import router from "@/router";
 
 export default {
+  created() {
+ 
+  },
   mounted() {
     var self = this;
     if (this.isAdmin) {

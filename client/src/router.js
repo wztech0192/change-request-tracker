@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import DevTodo from "./views/Dev/Todo.vue";
+import DevTool from "./views/Dev/Tool.vue";
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
@@ -8,6 +9,7 @@ import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
 import CRList from './views/ChangeRequest/ChangeRequestList.vue';
+import CRAdminList from './views/ChangeRequest/ChangeRequestAdmin.vue';
 import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
 import CRContent from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestContent.vue';
 import CRMessage from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestMessage.vue';
@@ -60,6 +62,12 @@ export default new Router({
     },
 
     {
+      path: '/dev/tool',
+      component: DevTool,
+      beforeEnter: Authenication
+    },
+
+    {
       path: '/admin/user-list',
       component: UserList,
       beforeEnter: Authenication
@@ -80,6 +88,12 @@ export default new Router({
     {
       path: '/change-request',
       component: CRList,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/admin/change-request/',
+      component: CRAdminList,
       beforeEnter: Authenication
     },
 

@@ -4,7 +4,7 @@
       <h3 style="text-align:center;">There is no message</h3>
     </div>
     <div id="cr-msg">
-      <transition-group name="list" tag="p">
+      <transition-group name="list" tag="div">
         <div
           v-for="msg in msgList"
           :key="msg.id"

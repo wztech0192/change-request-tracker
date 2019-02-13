@@ -16,23 +16,34 @@
         <div class="box-body">
           <table
             id="change-request-table"
-            class="table table-bordered table-hover display nowrap"
-            style="width:100%"
+            class="table table-bordered table-hover display"
+            style="width:100%;"
           >
             <thead>
               <tr>
-                <th style="max-width:20px">ID</th>
-
-                <th style="width:75px; text-align:center;">Status</th>
-                <th style="width:100px">Creation</th>
-                <th style="width:100px">Last Update</th>
-                <th>Request Title</th>
+                <th class="all">ID</th>
+                <th class="all">Status</th>
+                <th class="all">Creation</th>
+                <th class="desktop">Last Update</th>
+                <th class="desktop">Messages</th>
+                <th class="desktop">Hitories</th>
+                <th class="none">Title</th>
+              </tr>
+              <!-- Datatable filter dropdown-->
+              <tr>
+                <th class="all"></th>
+                <th class="all"></th>
+                <th class="all"></th>
+                <th class="tablet-hide"></th>
+                <th class="tablet-hide"></th>
+                <th class="tablet-hide"></th>
+                <th style="display:none;"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(changeRequest, i) in ChangeRequestList" :id="i">
                 <th>{{changeRequest.id}}</th>
-                <td style="text-align:center;">
+                <td>
                   <label
                     class="label"
                     style="padding: 5px 10px;"
@@ -41,9 +52,12 @@
                 </td>
                 <td>{{changeRequest.created_at.split(" ")[0]}}</td>
                 <td>{{changeRequest.updated_at.split(" ")[0]}}</td>
+                <td>{{changeRequest.totalMessage}}</td>
+                <td>{{changeRequest.totalHistory}}</td>
                 <td>{{changeRequest.title}}</td>
               </tr>
             </tbody>
+
           </table>
         </div>
         <!-- /.box-body -->
@@ -108,25 +122,67 @@ export default {
           //order by third col in ascending order
           order: [[2, "asc"]],
           iDisplayLength: 20,
-          lengthMenu: [10, 20, 40, 60, 80, 100]
+          lengthMenu: [10, 20, 40, 60, 80, 100],
+
+             orderCellsTop: true,
+          initComplete: function() {
+            this.api()
+              .columns([0, 1, 2, 3, 4, 5])
+              .every(function() {
+                var column = this;
+                var select = $(
+                  '<select class="select2"><option value="">ALL</option></select>'
+                ).on("change", function() {
+                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                  column.search(val ? "^" + val + "$" : "", true, false).draw();
+                });
+                if (column.index() === 1) {
+                  select.append(
+                    '<option value="Cancelled">Cancelled</option>',
+                    '<option value="To Do">To Do</option>',
+                    '<option value="In Progress">In Progress</option>',
+                    '<option value="Complete">Complete</option>'
+                  );
+                } else {
+                  column
+                    .data()
+                    .unique()
+                    .sort()
+                    .each(function(d, j) {
+                      select.append(
+                        '<option value="' + d + '">' + d + "</option>"
+                      );
+                    });
+                }
+
+                $(
+                  `#change-request-table thead tr:eq(1) th:eq(${column.index()})`
+                ).html(select);
+              });
+            $(".select2").select2({ width: "80%" });
+          }
         });
 
         //click select event
         $("#change-request-table tbody").on("click", "tr", function() {
-          if ($(this).hasClass("selected")) {
-            $(this).removeClass("selected");
-          } else {
-            table.$("tr.selected").removeClass("selected");
-            $(this).addClass("selected");
+          if (!$(this).hasClass("child")) {
+            if ($(this).hasClass("selected")) {
+              $(this).removeClass("selected");
+            } else {
+              table.$("tr.selected").removeClass("selected");
+              $(this).addClass("selected");
+            }
           }
         });
 
         //double click event
         $("#change-request-table tbody").on("dblclick", "tr", function() {
-          self.requestID = $(this)
-            .find("th")
-            .text();
-          _showRequestDetail(requestID);
+          if (!$(this).hasClass("child")) {
+            var requestID = $(this)
+              .find("th")
+              .text();
+            _showRequestDetail(requestID);
+          }
         });
       }, 10);
     },
@@ -167,9 +223,9 @@ export default {
         switch (status) {
           case "To Do":
             return "label-warning";
-          case "Process":
+          case "In Progress":
             return "label-primary";
-          case "Completed":
+          case "Complete":
             return "label-success";
           default:
             return "label-danger";

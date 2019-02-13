@@ -12,6 +12,7 @@ const MessageService = use('App/Service/MessageService')
 const Hash = use('Hash')
 const Validator = use('Validator')
 const Database = use('Database')
+const ltr="abcdefghijklmnoprqstuvewxz";
 
 class UserController {
 
@@ -77,11 +78,35 @@ class UserController {
     /**
      * Generate number of users, for testing purpose
      */
-    async generateUsers({request}){
-        var {num} = request.all();
-        for (var i=0; i<num; i++){
+    async generateUsers({auth, params}){
+        const user=await auth.getUser();
+     
+        AuthorizationService.verifyRole(user, ['Developer'])
+        const usersList=new Array(params.num);
+        for (let i=0; i<params.num; i++){
+        
 
+            let email = this._getLTR(6)+"@"+this._getLTR(4)+".com";
+            let username = email;
+            let password = this._getLTR(8);
+            let role = "Client";
+            let first_name = this._getLTR(6);
+            let mid_initial = "T."
+            let last_name = this._getLTR(6);
+            usersList[i] = {email, username, password, role, first_name, mid_initial, last_name};
         }
+
+        await User.createMany(usersList)
+        return "OK";
+    }
+
+
+    _getLTR(length){
+        let str="";
+        for(let i = 0; i<length; i++){
+            str+=ltr.charAt(Math.round(Math.random()*(ltr.length-1)));
+        }
+        return str;
     }
 
    /**
@@ -147,7 +172,7 @@ class UserController {
     async update({auth, request, params}){
         const user=await auth.getUser();
         const targetUser =await User.find(params.id);
-        var data=request.all();
+        let data=request.all();
 
         //if request a role change, verify current user's role then update target user
         if(data.role){

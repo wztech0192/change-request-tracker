@@ -6,10 +6,9 @@
     :classes="['v--modal', 'box' , 'vue-dialog', this.params.class]"
     width="80%"
     :max-width="maxWidth"
-    :resizable="true"
-    :draggable="true"
+
     :pivot-y="0.3"
-    :clickToClose="clickToClose"
+
     :transition="transition"
     @before-open="beforeOpened"
     @before-close="beforeClosed"

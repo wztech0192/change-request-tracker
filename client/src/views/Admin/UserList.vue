@@ -1,9 +1,11 @@
 <template>
+
   <div v-if="userList">
     <section class="content-header">
       <h1>
         <i class="fa fa-users"></i>&nbsp;&nbsp;User List
       </h1>
+      
       <div class="pull-right" style="margin-top:-30px">
         <div class="btn-group">
           <button
@@ -35,9 +37,9 @@
           >
             <thead>
               <tr>
-                <th width="20px">#</th>
-                <th>User Name</th>
-                <th>Role</th>
+                <th class="all" width="20px">#</th>
+                <th class="all">User Name</th>
+                <th class="all">Role</th>
                 <th>Email</th>
                 <th>Join Date</th>
               </tr>
@@ -60,6 +62,7 @@
     </section>
     <!-- /.box -->
   </div>
+
 </template>
 
 <script>
@@ -121,18 +124,22 @@ export default {
 
         //click select event
         $("#user-table tbody").on("click", "tr", function() {
-          if ($(this).hasClass("selected")) {
-            $(this).removeClass("selected");
-          } else {
-            table.$("tr.selected").removeClass("selected");
-            $(this).addClass("selected");
+          if (!$(this).hasClass("child")) {
+            if ($(this).hasClass("selected")) {
+              $(this).removeClass("selected");
+            } else {
+              table.$("tr.selected").removeClass("selected");
+              $(this).addClass("selected");
+            }
           }
         });
 
         //double click event
         $("#user-table tbody").on("dblclick", "tr", function() {
-          var i = $(this).attr("id");
-          _showChanegRoleDialog(i);
+          if (!$(this).hasClass("child")) {
+            var i = $(this).attr("id");
+            _showChanegRoleDialog(i);
+          }
         });
       }, 10);
     },

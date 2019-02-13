@@ -55,12 +55,12 @@ export default {
 
   mounted() {
     //prevent tab key
-    $(document).keydown(function(objEvent) {
+    /*  $(document).keydown(function(objEvent) {
       if (objEvent.keyCode == 9) {
         //tab pressed
         objEvent.preventDefault(); // stops its action
       }
-    });
+    });*/
     $("body").tooltip({
       selector: '[data-toggle="tooltip"]',
       trigger: "hover"
@@ -80,6 +80,11 @@ export default {
 
 
 <style lang='scss'>
+.overlay > h2 {
+  font-size: 10vw;
+  padding: 10vw;
+  text-align: center;
+}
 .nav-tabs-custom > .nav-tabs > li.active {
   border-top-color: black !important;
 }
@@ -106,16 +111,12 @@ export default {
 a {
   cursor: pointer;
 }
+.clickable {
+  cursor: pointer;
+}
 
 .content-wrapper {
   background-color: #f4f6f9 !important;
-}
-
-body {
-  /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-  font-size: 150%;
-
-  max-width: 100% !important;
 }
 
 #loading-screen {
@@ -126,7 +127,9 @@ body {
   position: fixed;
   font-size: 1000%;
 }
-
+.v--modal-overlay {
+  z-index: 999999999;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.1s;
@@ -163,9 +166,6 @@ body {
 .v--modal-box {
   overflow: auto !important;
 }
-a {
-  -webkit-user-drag: none;
-}
 
 h1 {
   font-weight: 800;
@@ -188,6 +188,19 @@ h1 {
 @media (max-width: 480px) {
   .mobile-hide {
     display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tablet-hide {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+    font-size: 150%;
   }
 }
 </style>

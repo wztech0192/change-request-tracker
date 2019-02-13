@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="box">
     <section class="content-header">
       <h1>
         <i class="fa fa-user-plus"></i>&nbsp;&nbsp;Registration Code Form

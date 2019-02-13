@@ -26,9 +26,6 @@ class ChangeRequestController {
         //only allow dev, admin, and request submitter to receive the data
         AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true) 
 
-       /* //set request message and history
-        changeRequest.messages = await changeRequest.messages().fetch();
-        changeRequest.history = await changeRequest.histories().fetch();*/
         changeRequest.client = await changeRequest.user().fetch();
         return changeRequest;
     }
@@ -44,14 +41,30 @@ class ChangeRequestController {
     }
     
     /**
-     * Get all change request
+     * Get change request list by filter
      * @returns {ChangeRequest[]}
      */
-    async getAll({auth}){
+    async getRequestList({auth, request}){
+        
         const user= await auth.getUser();
-        return CrudService.getAll(ChangeRequest,{
-            verify:()=>AuthorizationService.verifyRole(user, ['Developer','Admin'])
-        });
+        AuthorizationService.verifyRole(user, ['Developer','Admin'])
+        const filter = request.all();
+    //    console.log(filter);
+        //filter by type
+        if(filter.method === "tab"){
+            switch(filter.tab){
+            case "all":
+                return await ChangeRequest.all();
+            case "active":
+                //return all change request except the one with cancelled status
+                return await ChangeRequest.query().whereNot('status', 'Cancelled').fetch();
+            default:
+                return await ChangeRequest.query().where('status', filter.tab).fetch();
+            }
+        }
+        else{
+            //fiter by search input
+        }
     }
 
     /**
@@ -67,21 +80,24 @@ class ChangeRequestController {
 
         let {message, client} = request.only(['message', 'client']);
         const user=await auth.getUser();
-        let requester;
-        //get requester if current user is a admin. Else requester is current user.
+        //get client if current user is a admin. Else client is current user.
         if(user.role === "Admin" || user.role === "Developer"){
-            requester = await User.find(client);
-            if(!requester){
+            client = await User.find(client);
+            if(!client){
                 throw new Exception("Something is wrong"); 
             }
         }else{
-            requester = user;
+            client = user;
         }
         
         const changeRequest=new ChangeRequest();
+        data.totalMessage = 0;
+        data.totalHistory = 0;
+        data.clientName = `${client.first_name} ${client.mid_initial||""} ${client.last_name}`
         //fill in data then save to its creator
         changeRequest.fill(data);  
-        await requester.change_requests().save(changeRequest);
+        
+        await client.change_requests().save(changeRequest);
      
          //save change request message is message exist
          if(message){
@@ -96,7 +112,7 @@ class ChangeRequestController {
                 senderName: user.first_name+" "+user.last_name
             });
             changeRequest.messages().save(crmsg);
-
+            changeRequest.totalMessage++;
         }  
         //create change request history
         this._createCRHistory(changeRequest, 
@@ -124,9 +140,26 @@ class ChangeRequestController {
      * @returns {ChangeRequest}
      */
     async update({auth, request, params}){
+        const requestData = request.only(['title','details','status']);
         return CrudService.update(auth, params, ChangeRequest, {
             verify: (user, changeRequest) => (AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true)),
-            work: (changeRequest) => changeRequest.merge(request.only(['title','details']))
+            work: (changeRequest) => changeRequest.merge(requestData),
+            after: (changeRequest, user) =>{
+                
+            let type, content;
+            // history for status update
+            if(requestData.status){
+                type =`New Status: ${requestData.status.toUpperCase()}`;
+                content = `The status has been updated to ${requestData.status.toUpperCase()} by ${user.first_name+" "+user.last_name}`
+            }
+            else{
+                //history for content modify
+                type = 'Edit Content';
+                content = `Change Request Content has been modified by ${user.first_name+" "+user.last_name}`
+            }
+            //create change request history
+            this._createCRHistory(changeRequest, type, content);
+            }
         });
     }
 
@@ -162,6 +195,8 @@ class ChangeRequestController {
                 data.senderName= user.first_name+" "+user.last_name;
                 message.fill(data);  
                 await change_request.messages().save(message);
+                change_request.totalMessage++;
+                change_request.save();
             }
         });
     }
@@ -195,6 +230,8 @@ class ChangeRequestController {
         var crHistory = new ChangeRequestHistory();
         crHistory.fill({ type, content });
         changeRequest.histories().save(crHistory);
+        changeRequest.totalHistory++;
+        changeRequest.save();
     }
 
     /**
@@ -205,8 +242,27 @@ class ChangeRequestController {
         const user= await auth.getUser();
         const changeRequest = await ChangeRequest.find(params.id);
         AuthorizationService.verifyPermission(changeRequest, user, ['Developer','Admin'], true);
-        let histories = await changeRequest.histories().fetch();
+        let histories = await ChangeRequestHistory.query()
+            .where('change_request_id', changeRequest.id)
+            .orderBy('created_at', 'desc').fetch();
         return histories;
+    }
+
+    /**
+     * Adjust change request data, for dev
+     */
+    async adjustChangeRequest({auth}){
+        const user= await auth.getUser();
+        AuthorizationService.verifyRole(user, ['Developer']);
+        const CRList = await ChangeRequest.all();
+    
+        for ( let cr of CRList.rows){
+            cr.totalHistory = await cr.histories().getCount();
+            cr.totalMessage = await cr.messages().getCount();
+            let client = await cr.user().fetch();
+            cr.clientName = `${client.first_name} ${client.mid_initial||""} ${client.last_name}`
+            cr.save();
+        }
     }
 
 }

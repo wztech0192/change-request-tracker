@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -99,6 +99,7 @@ export default {
       "setToken",
       "setRegistrationCode"
     ]),
+    ...mapActions("errorStore", ["setGlobalError"]),
 
     //show registration code dialog
     registrationCodeDialog() {
@@ -176,7 +177,7 @@ export default {
           if (errorData.length > 0) {
             this.showErrorAndClearPW("Wrong Password or Email!");
           } else {
-            this.showErrorAndClearPW(errorData.error.message);
+            this.setGlobalError(e);
           }
         })
         .finally(() => {

@@ -21,11 +21,19 @@ const Helpers = use('Helpers')
 /**
  * API Route
  */
+
+Route.group(() => {
+  //testing route
+  Route.get('test/generate/user/:num', "UserController.generateUsers")
+  Route.get('test/correctCR',"ChangeRequestController.adjustChangeRequest")
+}).middleware('auth').prefix('api')
+
+
 Route.group(() => {
   //User Authenication
-  Route.post('auth/register', "UserController.register");
-  Route.post('auth/login', "UserController.login");
-  Route.post('regist-code/verify', "RegistrationCodeController.verifyRegistrationCode");
+  Route.post('auth/register', "UserController.register")
+  Route.post('auth/login', "UserController.login")
+  Route.post('regist-code/verify', "RegistrationCodeController.verifyRegistrationCode")
 }).prefix('api')
 
 Route.group(() => {
@@ -71,7 +79,7 @@ Route.group(() => {
 
   //Change Request Route
   Route.get('change-request', "ChangeRequestController.index")
-  Route.get('change-request/all', "ChangeRequestController.getAll")
+  Route.post('change-request/list', "ChangeRequestController.getRequestList")
   Route.get('change-request/:id', "ChangeRequestController.detail")
   Route.post('change-request', "ChangeRequestController.create")
   Route.delete('change-request/:id', "ChangeRequestController.destroy")

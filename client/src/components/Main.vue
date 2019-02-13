@@ -33,6 +33,7 @@ export default {
   },
   mounted() {
     document.body.className = "skin-black sidebar-mini";
+       document.body.style.overflow="auto";
   },
 };
 </script>

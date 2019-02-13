@@ -1,7 +1,11 @@
 <template>
   <div class="box">
     <div class="box-header with-border">
-      <h4 v-if="!isAdmin || !editMode" class="capitalize" style="min-height:57px;">{{requestData.title}}</h4>
+      <h4
+        v-if="!isAdmin || !editMode"
+        class="capitalize"
+        style="min-height:57px;"
+      >{{requestData.title}}</h4>
       <textarea
         v-if="isAdmin && editMode"
         calss="form-control"
@@ -16,7 +20,7 @@
         <textarea id="editor" name="editor" style="width: 100%" v-html="requestData.details"></textarea>
       </div>
     </div>
-    <div class="box-footer">
+    <div class="box-footer" v-if="isAdmin">
       <div>
         <transition name="slide-left" mode="out-in">
           <button v-if="!editMode" @click="toggleEditMode" class="btn btn-secondary" key="1">
@@ -37,7 +41,7 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions, mapGetters } from "vuex";
 import HTTP from "@/http";
 
 export default {
@@ -46,9 +50,7 @@ export default {
     user: Object
   },
   computed: {
-    isAdmin() {
-      return this.user.role === "Admin" || this.user.role === "Developer";
-    }
+    ...mapGetters("authentication", ["isAdmin"])
   },
   data() {
     return {
@@ -94,7 +96,7 @@ export default {
         console.log(this.newContent);
         HTTP()
           .patch(`/change-request/${this.$route.params.id}`, this.newContent)
-          .then(({data}) => {
+          .then(({ data }) => {
             this.requestData.details = data.details;
             this.requestData.title = data.title;
             this.newContent = {};

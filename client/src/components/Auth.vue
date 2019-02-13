@@ -11,9 +11,8 @@ export default {
   name: "Auth",
   beforeCreate: () => {
     document.body.className = "login-page";
+    document.body.style.overflow="hidden";
   }
 };
 </script>
 
-<style>
-</style>

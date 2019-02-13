@@ -23,7 +23,27 @@ Vue.use(Router);
 function Authenication(to, from, next) {
   if (!store.getters['authentication/isLoggedIn']) {
     next('/login');
-  } else next();
+  } else {
+    // check the parent path is dev or admin
+    switch (to.fullPath.split("/")[1]) {
+      case "dev":
+        if (store.getters['authentication/isDev']) {
+          next();
+        } else {
+          store.commit('errorStore/setGlobalError', "Only Developer are allow to enter this page");
+        }
+        break;
+      case "admin":
+        if (store.getters['authentication/isAdmin']) {
+          next();
+        } else {
+          store.commit('errorStore/setGlobalError', "Only Admin are allow to enter this page");
+        }
+        break;
+      default:
+        next();
+    }
+  }
 }
 
 // reset token if user enter login/register page
@@ -101,22 +121,21 @@ export default new Router({
       path: '/change-request/:id',
       component: CRDetail,
       beforeEnter: Authenication,
-      children: [
-        {
-          // render CRContent when /user/:id/content is matched
-          path: 'content',
-          component: CRContent
-        },
-        {
-          // render CRMessage when /user/:id/message is matched
-          path: 'message',
-          component: CRMessage
-        },
-        {
-          // rendered CRHistory when /user/:id/history is matched
-          path: 'history',
-          component: CRHistory
-        }
+      children: [{
+        // render CRContent when /user/:id/content is matched
+        path: 'content',
+        component: CRContent
+      },
+      {
+        // render CRMessage when /user/:id/message is matched
+        path: 'message',
+        component: CRMessage
+      },
+      {
+        // rendered CRHistory when /user/:id/history is matched
+        path: 'history',
+        component: CRHistory
+      }
       ]
     }
   ]

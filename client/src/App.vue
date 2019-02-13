@@ -108,6 +108,7 @@ export default {
   text-transform: capitalize;
 }
 
+
 a {
   cursor: pointer;
 }
@@ -128,7 +129,7 @@ a {
   font-size: 1000%;
 }
 .v--modal-overlay {
-  z-index: 999999999;
+  z-index: 999999999 !important;
 }
 .fade-enter-active,
 .fade-leave-active {

@@ -130,14 +130,6 @@ import HTTP from "@/http";
 import router from "@/router";
 
 export default {
-  created() {
-    //verify user's role
-    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
-      router.push("/");
-      this.setGlobalError("Only admin are allow to enter this page");
-    }
-  },
-
   mounted() {
     var self = this;
     //initialize editor

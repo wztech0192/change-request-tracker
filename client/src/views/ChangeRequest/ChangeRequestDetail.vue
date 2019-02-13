@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 import HTTP from "@/http";
 import router from "@/router";
 
@@ -146,12 +146,10 @@ export default {
   computed: {
     ...mapState("authentication", ["user"]),
     ...mapState("changeRequest", ["tab"]),
+    ...mapGetters("authentication", ["isAdmin"]),
 
     baseURL() {
       return `/change-request/${this.$route.params.id}`;
-    },
-    isAdmin() {
-      return this.user.role === "Admin" || this.user.role === "Developer";
     }
   },
 

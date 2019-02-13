@@ -80,6 +80,16 @@ export default {
     isLoggedIn(state) {
       //! return true when empty, another ! make it return false when empty
       return !!state.token;
+    },
+
+    // check if user is admin
+    isAdmin(state) {
+      return state.user.role === "Developer" || state.user.role === "Admin";
+    },
+
+    // check if user is developer
+    isDev(state) {
+      return state.user.role === "Developer";
     }
   },
 

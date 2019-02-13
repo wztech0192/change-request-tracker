@@ -276,14 +276,8 @@ export default {
   },
 
   created() {
-    //verify user's role
-    if (this.user.role !== "Developer") {
-      router.push("/");
-      this.setGlobalError("Only developer are allow to enter this page");
-    } else {
-      //fetch todolist data from database
-      this.fetchDevTodo();
-    }
+    //fetch todolist data from database
+    this.fetchDevTodo();
   },
 
   methods: {

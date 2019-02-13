@@ -70,8 +70,7 @@
             class="form-control"
             placeholder="Password"
             autocomplete="new-password"
-            data-toggle="tooltip"
-            title="Minimum of 8 Characters"
+
             v-model="registerData.password"
           >
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>

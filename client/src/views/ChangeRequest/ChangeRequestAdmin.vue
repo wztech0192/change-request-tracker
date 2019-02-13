@@ -141,12 +141,6 @@ export default {
   },
 
   created() {
-    /* //verify user's role
-    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
-      this.setGlobalError("Only admin allows to enter this page");
-      router.push("/");
-    } */
-
     this.fetchChangeRequestList();
   },
 
@@ -210,7 +204,7 @@ export default {
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[0, "asc"]],
+          order: [[3, "desc"]],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
 

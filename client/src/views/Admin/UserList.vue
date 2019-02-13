@@ -82,14 +82,8 @@ export default {
   },
 
   created() {
-    //verify user's role
-    if (this.user.role !== "Admin" && this.user.role !== "Developer") {
-      this.setGlobalError("Only admin are allow to enter this page");
-      router.push("/");
-    } else {
       //fetch user list
       this.fetchUserList();
-    }
   },
 
   methods: {

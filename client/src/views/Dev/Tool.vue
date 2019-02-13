@@ -23,12 +23,15 @@
 
 <script>
 import HTTP from "@/http";
+
 export default {
+
   data() {
     return {
       num: 0
     };
   },
+
   methods: {
     generateUser() {
       return HTTP()

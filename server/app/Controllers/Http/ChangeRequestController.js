@@ -56,8 +56,8 @@ class ChangeRequestController {
             case "all":
                 return await ChangeRequest.all();
             case "active":
-                //return all change request except the one with cancelled status
-                return await ChangeRequest.query().whereNot('status', 'Cancelled').fetch();
+                //return all change request except the one with cancelled or complete status
+                return await ChangeRequest.query().whereNotIn('status',['Cancelled', 'Complete']).fetch();
             default:
                 return await ChangeRequest.query().where('status', filter.tab).fetch();
             }

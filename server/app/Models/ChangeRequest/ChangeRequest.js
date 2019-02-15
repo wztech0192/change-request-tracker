@@ -1,10 +1,9 @@
-'use strict'
+'use strict';
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Model = use('Model')
+const Model = use('Model');
 
 class ChangeRequest extends Model {
-
   /**
    * return the belonging user
    */
@@ -16,15 +15,15 @@ class ChangeRequest extends Model {
    * return all messages in this change request
    */
   messages() {
-    return this.hasMany('App/Models/ChangeRequest/ChangeRequestMessage')
+    return this.hasMany('App/Models/ChangeRequest/ChangeRequestMessage');
   }
 
   /**
    * return all history in this change request
    */
   histories() {
-    return this.hasMany('App/Models/ChangeRequest/ChangeRequestHistory')
+    return this.hasMany('App/Models/ChangeRequest/ChangeRequestHistory');
   }
 }
 
-module.exports = ChangeRequest
+module.exports = ChangeRequest;

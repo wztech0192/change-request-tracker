@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import { mapMutations, mapActions, mapGetters } from "vuex";
-import HTTP from "@/http";
+import { mapMutations, mapActions, mapGetters } from 'vuex';
+import HTTP from '@/http';
 
 export default {
   props: {
@@ -50,7 +50,7 @@ export default {
     user: Object
   },
   computed: {
-    ...mapGetters("authentication", ["isAdmin"])
+    ...mapGetters('authentication', ['isAdmin'])
   },
   data() {
     return {
@@ -61,17 +61,17 @@ export default {
   },
 
   created() {
-    this.setTab("content");
+    this.setTab('content');
   },
 
   mounted() {
     var self = this;
     //initialize editor
-    ClassicEditor.create(document.querySelector("#editor"))
+    ClassicEditor.create(document.querySelector('#editor'))
       .then(editor => {
         self.editor = editor;
         // bind edited data
-        editor.model.document.on("change", () => {
+        editor.model.document.on('change', () => {
           self.newContent.details = editor.getData();
         });
       })
@@ -79,8 +79,8 @@ export default {
   },
 
   methods: {
-    ...mapMutations("changeRequest", ["setTab"]),
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapMutations('changeRequest', ['setTab']),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     //toggle edit mode
     toggleEditMode() {

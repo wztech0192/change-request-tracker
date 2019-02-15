@@ -111,14 +111,12 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
-  created() {
- 
-  },
+  created() {},
   mounted() {
     var self = this;
     if (this.isAdmin) {
@@ -127,39 +125,39 @@ export default {
     } else {
       this.requester = this.user;
     }
-    
+
     //initialize editor
-    ClassicEditor.create(document.querySelector("#editor"))
+    ClassicEditor.create(document.querySelector('#editor'))
       .then(editor => {
         self.editor = editor;
         editor.setData(self.requestData.details);
         // clear detail error when blur
         editor.ui.focusTracker.on(
-          "change:isFocused",
+          'change:isFocused',
           (evt, name, isFocused) => {
             if (!isFocused) {
-              self.clearError("detail");
+              self.clearError('detail');
             }
           }
         );
         // bind request detail to editor data
-        editor.model.document.on("change", () => {
+        editor.model.document.on('change', () => {
           self.setDetail(editor.getData());
         });
       })
       .catch(e => self.setGlobalError(e));
 
     //initialize collapse box
-    $(".collapsed-box").boxWidget({
+    $('.collapsed-box').boxWidget({
       animationSpeed: 500,
       collapseTrigger: "[data-widget='collapse']"
     });
   },
 
   computed: {
-    ...mapState("authentication", ["user"]),
-    ...mapState("changeRequest", ["requestData", "error"]),
-    ...mapGetters("authentication", ["isAdmin"])
+    ...mapState('authentication', ['user']),
+    ...mapState('changeRequest', ['requestData', 'error']),
+    ...mapGetters('authentication', ['isAdmin'])
   },
 
   data() {
@@ -171,31 +169,31 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
-    ...mapMutations("changeRequest", [
-      "setTitle",
-      "setDetail",
-      "setError",
-      "clearError",
-      "clearAll",
-      "setMessage",
-      "setClient"
+    ...mapActions('errorStore', ['setGlobalError']),
+    ...mapMutations('changeRequest', [
+      'setTitle',
+      'setDetail',
+      'setError',
+      'clearError',
+      'clearAll',
+      'setMessage',
+      'setClient'
     ]),
 
     //fetch client list if user is admin or developer
     fetchClientList() {
       var self = this;
       HTTP()
-        .get("/user/by-role/Client")
+        .get('/user/by-role/Client')
         .then(({ data }) => {
           //if return data not exist, push for error
           if (!data) {
-            this.setGlobalError("Something is wrong");
+            this.setGlobalError('Something is wrong');
           } else {
             this.clientList = data;
             //initalize dropdown box
-            $(".select2").select2({
-              placeholder: "Select a client"
+            $('.select2').select2({
+              placeholder: 'Select a client'
             });
 
             //initialize select
@@ -203,12 +201,12 @@ export default {
               if (self.requestData.client) {
                 self.requester = self.clientList[self.requestData.client];
               }
-              $("#clientselect")
+              $('#clientselect')
                 .val(self.requestData.client)
-                .trigger("change");
+                .trigger('change');
               //select event
-              $("#clientselect").on("select2:select", function(e) {
-                self.clearError("client");
+              $('#clientselect').on('select2:select', function(e) {
+                self.clearError('client');
                 var index = e.params.data.id;
                 self.setClient(index);
                 self.requester = index ? self.clientList[index] : {};
@@ -223,10 +221,10 @@ export default {
 
     clearAllData() {
       this.clearAll();
-      this.editor.setData("");
-      $("#clientselect")
-        .val("")
-        .trigger("change");
+      this.editor.setData('');
+      $('#clientselect')
+        .val('')
+        .trigger('change');
     },
 
     //submit request
@@ -236,19 +234,19 @@ export default {
       // notify error if detail or title is empty
       if (
         !this.requestData.details ||
-        this.requestData.details === "<p>&nbsp;</p>"
+        this.requestData.details === '<p>&nbsp;</p>'
       ) {
-        this.setError("detail");
+        this.setError('detail');
         validFail = true;
       }
       if (!this.requestData.title) {
-        this.setError("title");
+        this.setError('title');
         validFail = true;
       }
 
       //if current user is admin or dev, give error if select client is empty
       if (this.isAdmin && !this.requestData.client) {
-        this.setError("client");
+        this.setError('client');
         validFail = true;
       }
 
@@ -259,22 +257,22 @@ export default {
     },
 
     showDialog() {
-      this.$modal.show("dialog", {
+      this.$modal.show('dialog', {
         title: `<i class='fa fa-envelope'></i> Change Request Confirmation`,
         maxWidth: 300,
         template: this.getConfirmTemplate(this.requester),
 
         buttons: [
           {
-            title: "Confirm",
+            title: 'Confirm',
             handler: spinner => {
               //if acknowledge checkbox is checked, perform post request, else display error
-              if (!$(".acknowledge-ck").is(":checked")) {
-                $(".acknowledge-ck")
+              if (!$('.acknowledge-ck').is(':checked')) {
+                $('.acknowledge-ck')
                   .parent()
-                  .addClass("text-red");
+                  .addClass('text-red');
               } else {
-                this.setMessage($(".request-message").val());
+                this.setMessage($('.request-message').val());
                 this.setClient(this.requester.id);
                 spinner.loading = true;
                 //verify and post change request
@@ -283,10 +281,10 @@ export default {
                   .then(({ data }) => {
                     //if return data not exist, push for error
                     if (!data) {
-                      $(".dialog-error").text("Something is wrong");
+                      $('.dialog-error').text('Something is wrong');
                     } else {
                       this.clearAllData();
-                      this.$modal.hide("dialog");
+                      this.$modal.hide('dialog');
                       router.push(`/change-request/${data.id}/content`);
                     }
                   })
@@ -300,7 +298,7 @@ export default {
             }
           },
           {
-            title: "Cancel"
+            title: 'Cancel'
           }
         ]
       });
@@ -309,7 +307,7 @@ export default {
     //confirm dialog template
     getConfirmTemplate(user) {
       var template = `<label>Requester Name</label>
-          <p class='capitalize'>${user.first_name} ${user.mid_initial || ""} ${
+          <p class='capitalize'>${user.first_name} ${user.mid_initial || ''} ${
         user.last_name
       }</p>
           <label>Requester Email</label>

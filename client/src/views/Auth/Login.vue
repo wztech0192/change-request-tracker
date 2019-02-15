@@ -68,12 +68,12 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapMutations, mapActions } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
-  name: "Login",
+  name: 'Login',
 
   data() {
     return {
@@ -89,21 +89,21 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user", "ex_error"])
+    ...mapState('authentication', ['user', 'ex_error'])
   },
 
   methods: {
-    ...mapMutations("authentication", [
-      "setExceptionError",
-      "setLoading",
-      "setToken",
-      "setRegistrationCode"
+    ...mapMutations('authentication', [
+      'setExceptionError',
+      'setLoading',
+      'setToken',
+      'setRegistrationCode'
     ]),
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     //show registration code dialog
     registrationCodeDialog() {
-      this.$modal.show("dialog", {
+      this.$modal.show('dialog', {
         title:
           "<i class='fa fa-sign-in'></i>&nbsp;&nbsp;Enter Registration Code",
         template:
@@ -111,26 +111,26 @@ export default {
         maxWidth: 300,
         buttons: [
           {
-            title: "Confirm",
+            title: 'Confirm',
             handler: spinner => {
               spinner.loading = true;
               HTTP()
-                .post("/regist-code/verify", { code: $(".regist-code").val() })
+                .post('/regist-code/verify', { code: $('.regist-code').val() })
                 .then(({ data }) => {
                   //if data exist set registration code to state, then direct to register page
                   if (data) {
                     this.setRegistrationCode(data.code);
-                    this.$modal.hide("dialog");
-                    router.push("/register");
+                    this.$modal.hide('dialog');
+                    router.push('/register');
                   } else {
-                    $(".dialog-error").text(
-                      "Your Registration Code Is Incorrect"
+                    $('.dialog-error').text(
+                      'Your Registration Code Is Incorrect'
                     );
                   }
                 })
                 .catch(() => {
-                  $(".dialog-error").text(
-                    "Your Registration Code Is Incorrect"
+                  $('.dialog-error').text(
+                    'Your Registration Code Is Incorrect'
                   );
                 })
                 .finally(() => {
@@ -139,7 +139,7 @@ export default {
             }
           },
           {
-            title: "Cancel"
+            title: 'Cancel'
           }
         ]
       });
@@ -162,20 +162,20 @@ export default {
       this.setExceptionError(null);
       this.setLoading(true);
       return HTTP()
-        .post("/auth/login", this.login)
+        .post('/auth/login', this.login)
         .then(({ data }) => {
           // redirect router if data has token, else show error message
           if (data.token) {
             this.setToken(data.token);
-            router.push("/");
+            router.push('/');
           } else {
-            this.showErrorAndClearPW("Wrong Password or Email!");
+            this.showErrorAndClearPW('Wrong Password or Email!');
           }
         })
         .catch(e => {
-          var errorData =e.response.data;
+          var errorData = e.response.data;
           if (errorData.length > 0) {
-            this.showErrorAndClearPW("Wrong Password or Email!");
+            this.showErrorAndClearPW('Wrong Password or Email!');
           } else {
             this.setGlobalError(e);
           }

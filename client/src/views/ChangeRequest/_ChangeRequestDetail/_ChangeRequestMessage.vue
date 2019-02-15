@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapActions, mapMutations } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   data() {
@@ -62,7 +62,7 @@ export default {
   },
 
   created() {
-    this.setTab("message");
+    this.setTab('message');
     var self = this;
     this.fetchRequestMsg(this.msgNum);
 
@@ -75,20 +75,29 @@ export default {
   mounted() {
     var self = this;
     //initialize editor
-    ClassicEditor.create(document.querySelector("#editor"),{
-        toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'],
+    ClassicEditor.create(document.querySelector('#editor'), {
+      toolbar: [
+        'bold',
+        'italic',
+        'link',
+        'bulletedList',
+        'numberedList',
+        'blockQuote',
+        'undo',
+        'redo'
+      ]
     })
       .then(editor => {
         self.editor = editor;
         // bind request detail to editor data
-        editor.model.document.on("change", () => {
+        editor.model.document.on('change', () => {
           self.newMsg = editor.getData();
         });
       })
       .catch(e => self.setGlobalError(e));
 
     //add five etra message whenever user scoll to the top.
-    $("#cr-msg").on("scroll", function() {
+    $('#cr-msg').on('scroll', function() {
       if ($(this).scrollTop() === 0) {
         self.fetchRequestMsg((self.msgNum += 5));
       }
@@ -97,7 +106,7 @@ export default {
 
   watch: {
     msgList() {
-      var el = $("#cr-msg");
+      var el = $('#cr-msg');
       //perform a scroll to if the current position is bottom and messageList change
       if (el.scrollTop() >= el[0].scrollHeight - el.outerHeight() - 10) {
         this.scrollDown();
@@ -106,8 +115,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
-    ...mapMutations("changeRequest", ["setTab"]),
+    ...mapActions('errorStore', ['setGlobalError']),
+    ...mapMutations('changeRequest', ['setTab']),
 
     //fetch request message
     fetchRequestMsg(num, scroll) {
@@ -124,20 +133,24 @@ export default {
     //scroll to the bottom of the message box
     scrollDown() {
       setTimeout(() => {
-        $("#cr-msg").scrollTop($("#cr-msg")[0].scrollHeight);
+        $('#cr-msg').scrollTop($('#cr-msg')[0].scrollHeight);
       }, 20);
     },
 
     //http request to post new message
     sendMsg() {
       // block empty message
-      if (this.newMsg && this.newMsg !== "" && this.newMsg!=="<p>&nbsp;</p>") {
+      if (
+        this.newMsg &&
+        this.newMsg !== '' &&
+        this.newMsg !== '<p>&nbsp;</p>'
+      ) {
         return HTTP()
           .post(`/change-request/${this.$route.params.id}/msg`, {
             content: this.newMsg
           })
           .then(({ data }) => {
-            this.editor.setData("");
+            this.editor.setData('');
             this.fetchRequestMsg(this.msgNum, true);
           })
           .catch(e => {
@@ -156,22 +169,22 @@ export default {
         var diff = now - msgDate;
         var day = Math.round(diff / 86400000);
         if (day <= 0) {
-          time = Math.round(diff / 3600000) + " hours ago";
+          time = Math.round(diff / 3600000) + ' hours ago';
         } else {
           time = `${day} days ago`;
         }
       } else {
         //convert 24 hour to 12 hour + AM/PN
-        var hour = date.split(" ")[1];
+        var hour = date.split(' ')[1];
         hour = hour.substring(0, 5);
         var head = hour[0] + hour[1];
         if (head >= 12) {
-          hour = head-12 + hour.substring(2, 6);
-          hour += " PM";
+          hour = head - 12 + hour.substring(2, 6);
+          hour += ' PM';
         } else {
-          hour += " AM";
+          hour += ' AM';
         }
-        time = hour + " Today";
+        time = hour + ' Today';
       }
       return time;
     }

@@ -8,10 +8,10 @@
 
 <script>
 export default {
-  name: "Auth",
+  name: 'Auth',
   beforeCreate: () => {
-    document.body.className = "login-page";
-    document.body.style.overflow="hidden";
+    document.body.className = 'login-page';
+    document.body.style.overflow = 'hidden';
   }
 };
 </script>

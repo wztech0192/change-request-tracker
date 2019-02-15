@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from "vuex";
-import Header from "@/components/_Main/Header.vue";
-import Sidebar from "@/components/_Main/Sidebar.vue";
-import Controlbar from "@/components/_Main/Controlbar.vue";
+import { mapGetters, mapActions, mapState } from 'vuex';
+import Header from '@/components/_Main/Header.vue';
+import Sidebar from '@/components/_Main/Sidebar.vue';
+import Controlbar from '@/components/_Main/Controlbar.vue';
 
 export default {
-  name: "Main",
+  name: 'Main',
   namedspaced: false,
   components: {
     Header,
@@ -28,13 +28,13 @@ export default {
     Controlbar
   },
   computed: {
-    ...mapGetters("authentication", "isLoggedIn"),
-    ...mapState("authentication", ["user", "taskList"]),
+    ...mapGetters('authentication', 'isLoggedIn'),
+    ...mapState('authentication', ['user', 'taskList'])
   },
   mounted() {
-    document.body.className = "skin-black sidebar-mini";
-       document.body.style.overflow="auto";
-  },
+    document.body.className = 'skin-black sidebar-mini';
+    document.body.style.overflow = 'auto';
+  }
 };
 </script>
 

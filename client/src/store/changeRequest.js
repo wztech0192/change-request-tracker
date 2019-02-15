@@ -2,7 +2,6 @@
  * Store change_request details
  */
 
-
 export default {
   namespaced: true,
   /**
@@ -11,8 +10,8 @@ export default {
   state: {
     requestData: {
       title: null,
-      details: "",
-      client: ""
+      details: '',
+      client: ''
     },
     error: {
       title_error: false,
@@ -21,15 +20,13 @@ export default {
     },
     listTab: 'active',
     // detail tab
-    tab: "content"
+    tab: 'content'
   },
-
 
   /**
    * Make changes to the state
    */
   mutations: {
-
     setListTab(state, tab) {
       state.listTab = tab;
     },
@@ -73,8 +70,8 @@ export default {
     clearAll(state) {
       state.requestData = {
         title: null,
-        details: "",
-        client: ""
+        details: '',
+        client: ''
       };
       state.error = {
         title_error: false,
@@ -82,6 +79,5 @@ export default {
         client_error: false
       };
     }
-
   }
 };

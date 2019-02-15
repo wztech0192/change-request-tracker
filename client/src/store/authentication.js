@@ -25,28 +25,37 @@ export default {
    * do action related to current state
    */
   actions: {
-
     // fetch user profile
     fetchUser({ commit }) {
-      return HTTP().get('/user')
-        // if user exist set user information in state, else set error message then redirect to login view
-        .then(({ data }) => {
-          if (data) {
-            commit('setUser', data);
-          } else {
-            commit('setExceptionError', "Cannot find the user. Try to Re-login.");
+      return (
+        HTTP()
+          .get('/user')
+          // if user exist set user information in state, else set error message then redirect to login view
+          .then(({ data }) => {
+            if (data) {
+              commit('setUser', data);
+            } else {
+              commit(
+                'setExceptionError',
+                'Cannot find the user. Try to Re-login.'
+              );
+              router.push('/login');
+            }
+          })
+          .catch(() => {
+            commit(
+              'setExceptionError',
+              'Cannot find the user. Try to Re-login.'
+            );
             router.push('/login');
-          }
-        })
-        .catch(() => {
-          commit('setExceptionError', "Cannot find the user. Try to Re-login.");
-          router.push('/login');
-        });
+          })
+      );
     },
 
     // get user task list
     fetchTaskList({ commit }) {
-      return HTTP().get('/user/task')
+      return HTTP()
+        .get('/user/task')
         .then(({ data }) => {
           if (data) {
             commit('setTaskList', data);
@@ -55,7 +64,7 @@ export default {
           }
         })
         .catch(() => {
-          commit('setExceptionError', "Cannot find the user. Try to Re-login.");
+          commit('setExceptionError', 'Cannot find the user. Try to Re-login.');
           router.push('/login');
         });
     },
@@ -69,7 +78,6 @@ export default {
     logoutToken({ commit }) {
       commit('setToken', null);
     }
-
   },
 
   /**
@@ -84,12 +92,12 @@ export default {
 
     // check if user is admin
     isAdmin(state) {
-      return state.user.role === "Developer" || state.user.role === "Admin";
+      return state.user.role === 'Developer' || state.user.role === 'Admin';
     },
 
     // check if user is developer
     isDev(state) {
-      return state.user.role === "Developer";
+      return state.user.role === 'Developer';
     }
   },
 
@@ -97,7 +105,6 @@ export default {
    * Make changes to the state
    */
   mutations: {
-
     setRegistrationCode(state, code) {
       state.registrationCode = code;
     },
@@ -127,6 +134,5 @@ export default {
       state.user.password = null;
       state.ex_error = string;
     }
-
   }
 };

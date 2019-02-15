@@ -1,11 +1,10 @@
 <template>
-
   <div v-if="userList">
     <section class="content-header">
       <h1>
         <i class="fa fa-users"></i>&nbsp;&nbsp;User List
       </h1>
-      
+
       <div class="pull-right" style="margin-top:-30px">
         <div class="btn-group">
           <button
@@ -62,13 +61,12 @@
     </section>
     <!-- /.box -->
   </div>
-
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   data() {
@@ -78,28 +76,28 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user"])
+    ...mapState('authentication', ['user'])
   },
 
   created() {
-      //fetch user list
-      this.fetchUserList();
+    //fetch user list
+    this.fetchUserList();
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     // fetch dev todo list
     fetchUserList() {
       return HTTP()
-        .get("/user/all")
+        .get('/user/all')
         .then(({ data }) => {
           this.userList = data;
           this.initiateTable();
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -107,31 +105,31 @@ export default {
     initiateTable() {
       var _showChanegRoleDialog = this.showChanegRoleDialog;
       setTimeout(() => {
-        var table = $("#user-table").DataTable({
+        var table = $('#user-table').DataTable({
           //resize based on widht
           responsive: true,
           //order by first col in ascending order
-          order: [[0, "asc"]],
+          order: [[0, 'asc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100]
         });
 
         //click select event
-        $("#user-table tbody").on("click", "tr", function() {
-          if (!$(this).hasClass("child")) {
-            if ($(this).hasClass("selected")) {
-              $(this).removeClass("selected");
+        $('#user-table tbody').on('click', 'tr', function() {
+          if (!$(this).hasClass('child')) {
+            if ($(this).hasClass('selected')) {
+              $(this).removeClass('selected');
             } else {
-              table.$("tr.selected").removeClass("selected");
-              $(this).addClass("selected");
+              table.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
             }
           }
         });
 
         //double click event
-        $("#user-table tbody").on("dblclick", "tr", function() {
-          if (!$(this).hasClass("child")) {
-            var i = $(this).attr("id");
+        $('#user-table tbody').on('dblclick', 'tr', function() {
+          if (!$(this).hasClass('child')) {
+            var i = $(this).attr('id');
             _showChanegRoleDialog(i);
           }
         });
@@ -140,13 +138,13 @@ export default {
 
     //get selected row index and show dialog, alert when fail
     openSelectedRow(callBack) {
-      var selectIndex = $("#user-table .selected").attr("id");
+      var selectIndex = $('#user-table .selected').attr('id');
       if (selectIndex) {
         //display target dialog
         callBack(selectIndex);
       } else {
         //display no selection error massage
-        this.$modal.show("dialog", {
+        this.$modal.show('dialog', {
           title:
             "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
           template:
@@ -154,7 +152,7 @@ export default {
           maxWidth: 300,
           buttons: [
             {
-              title: "Ok",
+              title: 'Ok',
               default: true
             }
           ]
@@ -165,21 +163,21 @@ export default {
     //display delete user dialog
     showDeleteDialog(selectIndex) {
       var user = this.userList[selectIndex];
-      this.$modal.show("dialog", {
+      this.$modal.show('dialog', {
         title: `<span class='text-red'><i class='fa fa-trash'></i> Delete User</span>`,
         maxWidth: 300,
         template: this.getDeleteTemplate(user),
         buttons: [
           {
-            title: "Confirm",
+            title: 'Confirm',
             default: true,
             handler: spinner => {
               //if acknowledge checkbox is checked, perform delete request
               //else show alert
-              if (!$(".acknowledge-ck").is(":checked")) {
-                $(".acknowledge-ck")
+              if (!$('.acknowledge-ck').is(':checked')) {
+                $('.acknowledge-ck')
                   .parent()
-                  .addClass("text-red");
+                  .addClass('text-red');
               } else {
                 spinner.loading = true;
                 //verify and remove user from database
@@ -188,19 +186,19 @@ export default {
                   .then(({ data }) => {
                     //if return data not exist, push for error
                     if (!data) {
-                      $(".dialog-error").text("Something is wrong");
+                      $('.dialog-error').text('Something is wrong');
                     } else {
                       //remove row from table and hide dialog
-                      $("#user-table")
+                      $('#user-table')
                         .DataTable()
-                        .row($("#user-table .selected"))
+                        .row($('#user-table .selected'))
                         .remove()
                         .draw();
-                      this.$modal.hide("dialog");
+                      this.$modal.hide('dialog');
                     }
                   })
                   .catch(e => {
-                    $(".dialog-error").text(e.response.data.error);
+                    $('.dialog-error').text(e.response.data.error);
                   })
                   .finally(() => {
                     spinner.loading = false;
@@ -209,7 +207,7 @@ export default {
             }
           },
           {
-            title: "Cancel"
+            title: 'Cancel'
           }
         ]
       });
@@ -218,21 +216,21 @@ export default {
     //display dialog
     showChanegRoleDialog(selectIndex) {
       var user = this.userList[selectIndex];
-      this.$modal.show("dialog", {
+      this.$modal.show('dialog', {
         title: `<i class='fa fa-user-circle'></i> Change Role`,
         maxWidth: 300,
         template: this.getRoleTemplate(user),
         buttons: [
           {
-            title: "Confirm",
+            title: 'Confirm',
             default: true,
             handler: spinner => {
               //http request to change user role.
-              var newRole = $(".role-selector option:selected").text();
+              var newRole = $('.role-selector option:selected').text();
               //close dialog if selected role did not change
               //else do http request for role changing
               if (newRole === user.role) {
-                this.$modal.hide("dialog");
+                this.$modal.hide('dialog');
               } else {
                 spinner.loading = true;
                 HTTP()
@@ -240,15 +238,15 @@ export default {
                   .then(({ data }) => {
                     //if return data not exist, push for error
                     if (!data) {
-                      $(".dialog-error").text("Something is wrong");
+                      $('.dialog-error').text('Something is wrong');
                     } else {
                       //change table data
                       user.role = newRole;
-                      this.$modal.hide("dialog");
+                      this.$modal.hide('dialog');
                     }
                   })
                   .catch(e => {
-                    $(".dialog-error").text(e.response.data.error);
+                    $('.dialog-error').text(e.response.data.error);
                   })
                   .finally(() => {
                     spinner.loading = false;
@@ -257,7 +255,7 @@ export default {
             }
           },
           {
-            title: "Cancel"
+            title: 'Cancel'
           }
         ]
       });
@@ -266,7 +264,7 @@ export default {
     //get user information template
     getUserInfo(user) {
       var template = ` <label>User Name</label>
-        <p class='capitalize'>${user.first_name} ${user.mid_initial || ""} ${
+        <p class='capitalize'>${user.first_name} ${user.mid_initial || ''} ${
         user.last_name
       }</p>
         <label>User Email</label>
@@ -300,9 +298,9 @@ export default {
       var template = `${this.getUserInfo(user)}
         <label>User Role</label>
         <select class="form-control role-selector" style="width: 100%;">
-          <option ${this.getSelectedRole(user, "Client")}>Client</option>
-          <option ${this.getSelectedRole(user, "Admin")}>Admin</option>
-          <option ${this.getSelectedRole(user, "Developer")}>Developer</option>
+          <option ${this.getSelectedRole(user, 'Client')}>Client</option>
+          <option ${this.getSelectedRole(user, 'Admin')}>Admin</option>
+          <option ${this.getSelectedRole(user, 'Developer')}>Developer</option>
         </select>`;
 
       return template;
@@ -311,7 +309,7 @@ export default {
     // allow dropdown box to select current role
     getSelectedRole(user, role) {
       if (user.role === role) return 'selected="selected"';
-      return "";
+      return '';
     }
   }
 };

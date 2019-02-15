@@ -31,7 +31,9 @@
     "mysql": "^2.16.0",
     "session": "^0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "1.16.4"
+  },
   "autoload": {
     "App": "./app"
   }

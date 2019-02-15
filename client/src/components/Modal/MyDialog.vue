@@ -6,9 +6,7 @@
     :classes="['v--modal', 'box' , 'vue-dialog', this.params.class]"
     width="80%"
     :max-width="maxWidth"
-
     :pivot-y="0.3"
-
     :transition="transition"
     @before-open="beforeOpened"
     @before-close="beforeClosed"
@@ -44,7 +42,7 @@
 </template>
 <script>
 export default {
-  name: "VueJsDialog",
+  name: 'VueJsDialog',
   props: {
     width: {
       type: [Number, String],
@@ -56,20 +54,19 @@ export default {
     },
     transition: {
       type: String,
-      default: "fade"
+      default: 'fade'
     }
   },
   data() {
     return {
       params: {},
-      defaultButtons: [{ title: "CLOSE" }],
+      defaultButtons: [{ title: 'CLOSE' }],
       spinner: {
-          loading: false
+        loading: false
       }
     };
   },
   computed: {
-
     maxWidth() {
       return this.params.maxWidth || 400;
     },
@@ -89,24 +86,24 @@ export default {
   },
   methods: {
     beforeOpened(event) {
-      window.addEventListener("keyup", this.onKeyUp);
+      window.addEventListener('keyup', this.onKeyUp);
 
       this.params = event.params || {};
-      this.$emit("before-opened", event);
+      this.$emit('before-opened', event);
     },
     beforeClosed(event) {
-      window.removeEventListener("keyup", this.onKeyUp);
+      window.removeEventListener('keyup', this.onKeyUp);
 
       this.params = {};
-      this.$emit("before-closed", event);
+      this.$emit('before-closed', event);
     },
-    click(spinner, i, event, source = "click") {
+    click(spinner, i, event, source = 'click') {
       const button = this.buttons[i];
 
-      if (button && typeof button.handler === "function") {
+      if (button && typeof button.handler === 'function') {
         button.handler(spinner, i, event, { source });
       } else {
-        this.$modal.hide("dialog");
+        this.$modal.hide('dialog');
       }
     },
     onKeyUp(event) {
@@ -117,27 +114,27 @@ export default {
             : this.buttons.findIndex(button => button.default);
 
         if (buttonIndex !== -1) {
-          this.click(buttonIndex, event, "keypress");
+          this.click(buttonIndex, event, 'keypress');
         }
       }
     },
     getButtonIcon(title) {
       switch (title) {
-        case "Confirm":
-        case "Ok":
-          return "fa fa-check";
-        case "Cancel":
-          return "fa fa-times";
+        case 'Confirm':
+        case 'Ok':
+          return 'fa fa-check';
+        case 'Cancel':
+          return 'fa fa-times';
       }
     },
 
     getButtonClass(title) {
       switch (title) {
-        case "Confirm":
-        case "Ok":
-          return "vue-dialog-confirm";
-        case "Cancel":
-          return "vue-dialog-cancel";
+        case 'Confirm':
+        case 'Ok':
+          return 'vue-dialog-confirm';
+        case 'Cancel':
+          return 'vue-dialog-cancel';
       }
     }
   }

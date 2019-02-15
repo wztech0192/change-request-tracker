@@ -250,12 +250,12 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapActions, mapState } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
-  name: "DevTodo",
+  name: 'DevTodo',
 
   data: () => {
     return {
@@ -267,12 +267,12 @@ export default {
       errorMsg: null,
 
       //filtering type
-      todoType: "ALL"
+      todoType: 'ALL'
     };
   },
 
   computed: {
-    ...mapState("authentication", ["user"])
+    ...mapState('authentication', ['user'])
   },
 
   created() {
@@ -281,17 +281,17 @@ export default {
   },
 
   methods: {
-    ...mapActions("authentication", ["fetchTaskList", "setExceptionError"]),
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapActions('authentication', ['fetchTaskList', 'setExceptionError']),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     // reload collapse box event
     reloadCollapseEvent() {
       setTimeout(() => {
-        $(".collapsed-box").boxWidget({
+        $('.collapsed-box').boxWidget({
           animationSpeed: 500,
           collapseTrigger: "[data-widget='collapse']",
-          collapseIcon: "fa-minus",
-          expandIcon: "fa-plus"
+          collapseIcon: 'fa-minus',
+          expandIcon: 'fa-plus'
         });
       }, 10);
     },
@@ -299,7 +299,7 @@ export default {
     // fetch dev todo list
     fetchDevTodo() {
       return HTTP()
-        .get("/dev", {
+        .get('/dev', {
           // request params to pass data from get requests
           params: {
             type: this.todoType
@@ -311,7 +311,7 @@ export default {
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -321,11 +321,11 @@ export default {
     //filter display todo
     todoFilter(todo) {
       switch (this.todoType) {
-        case "ALL":
+        case 'ALL':
           return false;
-        case "FLAG":
+        case 'FLAG':
           return !todo.isFlagged || todo.isFlagged !== 1;
-        case "COMPLETE":
+        case 'COMPLETE':
           return todo.percentage < 100;
       }
     },
@@ -392,8 +392,8 @@ export default {
     //return css class based on the task completion
     getCompletedClass(isCompleted) {
       return isCompleted || isCompleted === 1
-        ? "fa-check-square text-green"
-        : "fa-square-o";
+        ? 'fa-check-square text-green'
+        : 'fa-square-o';
     },
 
     //setup modal data then display confirm modal
@@ -408,7 +408,7 @@ export default {
         this.modalInfo.parent = parent;
         this.modalInfo.btnEvent = this.deleteTask;
       }
-      this.$modal.show("ConfirmModal");
+      this.$modal.show('ConfirmModal');
     },
 
     //setup modal data then display prompt modal
@@ -429,7 +429,7 @@ export default {
       } else {
         this.modalInfo.btnEvent = item ? this.addTask : this.addTodo;
       }
-      this.$modal.show("PromptModal");
+      this.$modal.show('PromptModal');
     },
 
     //remove selected todo
@@ -446,7 +446,7 @@ export default {
         .catch(e => {
           this.setGlobalError(e);
         });
-      this.$modal.hide("ConfirmModal");
+      this.$modal.hide('ConfirmModal');
     },
 
     //remove selected task
@@ -471,19 +471,19 @@ export default {
         .catch(e => {
           this.setGlobalError(e);
         });
-      this.$modal.hide("ConfirmModal");
+      this.$modal.hide('ConfirmModal');
     },
 
     //add new todo
     addTodo() {
       if (this.modalHasInput()) {
         HTTP()
-          .post("/dev/todo", this.modalInfo)
+          .post('/dev/todo', this.modalInfo)
           .then(({ data }) => {
             this.fetchDevTodo();
           });
 
-        this.$modal.hide("PromptModal");
+        this.$modal.hide('PromptModal');
       }
     },
 
@@ -499,7 +499,7 @@ export default {
           .catch(e => {
             this.setGlobalError(e);
           });
-        this.$modal.hide("PromptModal");
+        this.$modal.hide('PromptModal');
       }
     },
 
@@ -516,15 +516,15 @@ export default {
           .catch(e => {
             this.setGlobalError(e);
           });
-        this.$modal.hide("PromptModal");
+        this.$modal.hide('PromptModal');
       }
     },
 
     //verify modal input is not empty
     modalHasInput() {
       if (this.modalInfo.content === null) {
-        this.errorMsg = "Input cannot be empty!";
-        this.setGlobalError("wow");
+        this.errorMsg = 'Input cannot be empty!';
+        this.setGlobalError('wow');
         return false;
       }
       return true;

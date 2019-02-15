@@ -29,21 +29,27 @@ export default {
   methods: {
     //convert menu type into type-menu css class
     getMenuClass: type => {
-      return type + "-menu";
+      return type + '-menu';
     },
     //convert menu type into type-label symbol
     getLabelClass: type => {
-      switch(type){
-        case "messages": return 'label-success';
-        case "notifications": return "label-warning";
-        case "tasks": return "label-danger";
+      switch (type) {
+        case 'messages':
+          return 'label-success';
+        case 'notifications':
+          return 'label-warning';
+        case 'tasks':
+          return 'label-danger';
       }
     },
     getIcon: type => {
-           switch(type){
-        case "messages": return "fa fa-envelope-o";
-        case "notifications": return "fa fa-bell-o";
-        case "tasks": return "fa fa-flag-o";
+      switch (type) {
+        case 'messages':
+          return 'fa fa-envelope-o';
+        case 'notifications':
+          return 'fa fa-bell-o';
+        case 'tasks':
+          return 'fa fa-flag-o';
       }
     }
   }

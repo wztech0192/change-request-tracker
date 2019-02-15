@@ -57,7 +57,6 @@
                 <td>{{changeRequest.title}}</td>
               </tr>
             </tbody>
-
           </table>
         </div>
         <!-- /.box-body -->
@@ -68,9 +67,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   data() {
@@ -80,8 +79,8 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user"]),
-    ...mapState("changeRequest", ["tab"])
+    ...mapState('authentication', ['user']),
+    ...mapState('changeRequest', ['tab'])
   },
 
   created() {
@@ -90,19 +89,19 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     // fetch dev todo list
     fetchChangeRequestList() {
       return HTTP()
-        .get("/change-request")
+        .get('/change-request')
         .then(({ data }) => {
           this.ChangeRequestList = data;
           this.initiateTable();
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -110,15 +109,15 @@ export default {
     initiateTable() {
       var _showRequestDetail = this.showRequestDetail;
       setTimeout(() => {
-        var table = $("#change-request-table").DataTable({
+        var table = $('#change-request-table').DataTable({
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[3, "desc"]],
+          order: [[3, 'desc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
 
-             orderCellsTop: true,
+          orderCellsTop: true,
           initComplete: function() {
             this.api()
               .columns([0, 1, 2, 3, 4, 5])
@@ -126,9 +125,9 @@ export default {
                 var column = this;
                 var select = $(
                   '<select class="select2"><option value="">ALL</option></select>'
-                ).on("change", function() {
+                ).on('change', function() {
                   var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                  column.search(val ? "^" + val + "$" : "", true, false).draw();
+                  column.search(val ? '^' + val + '$' : '', true, false).draw();
                 });
                 if (column.index() === 1) {
                   select.append(
@@ -144,7 +143,7 @@ export default {
                     .sort()
                     .each(function(d, j) {
                       select.append(
-                        '<option value="' + d + '">' + d + "</option>"
+                        '<option value="' + d + '">' + d + '</option>'
                       );
                     });
                 }
@@ -153,27 +152,27 @@ export default {
                   `#change-request-table thead tr:eq(1) th:eq(${column.index()})`
                 ).html(select);
               });
-            $(".select2").select2({ width: "80%" });
+            $('.select2').select2({ width: '80%' });
           }
         });
 
         //click select event
-        $("#change-request-table tbody").on("click", "tr", function() {
-          if (!$(this).hasClass("child")) {
-            if ($(this).hasClass("selected")) {
-              $(this).removeClass("selected");
+        $('#change-request-table tbody').on('click', 'tr', function() {
+          if (!$(this).hasClass('child')) {
+            if ($(this).hasClass('selected')) {
+              $(this).removeClass('selected');
             } else {
-              table.$("tr.selected").removeClass("selected");
-              $(this).addClass("selected");
+              table.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
             }
           }
         });
 
         //double click event
-        $("#change-request-table tbody").on("dblclick", "tr", function() {
-          if (!$(this).hasClass("child")) {
+        $('#change-request-table tbody').on('dblclick', 'tr', function() {
+          if (!$(this).hasClass('child')) {
             var requestID = $(this)
-              .find("th")
+              .find('th')
               .text();
             _showRequestDetail(requestID);
           }
@@ -183,14 +182,14 @@ export default {
 
     //get selected row index and show dialog, alert when fail
     openSelectedRow() {
-      var requestID = $("#change-request-table .selected th").text();
+      var requestID = $('#change-request-table .selected th').text();
 
       if (requestID) {
         //display target dialog
         this.showRequestDetail(requestID);
       } else {
         //display no selection error massage
-        this.$modal.show("dialog", {
+        this.$modal.show('dialog', {
           title:
             "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
           template:
@@ -198,7 +197,7 @@ export default {
           maxWidth: 300,
           buttons: [
             {
-              title: "Ok",
+              title: 'Ok',
               default: true
             }
           ]
@@ -215,14 +214,14 @@ export default {
     getStatusLabel(status) {
       {
         switch (status) {
-          case "To Do":
-            return "label-warning";
-          case "In Progress":
-            return "label-primary";
-          case "Complete":
-            return "label-success";
+          case 'To Do':
+            return 'label-warning';
+          case 'In Progress':
+            return 'label-primary';
+          case 'Complete':
+            return 'label-success';
           default:
-            return "label-danger";
+            return 'label-danger';
         }
       }
     }

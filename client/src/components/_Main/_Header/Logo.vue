@@ -7,7 +7,8 @@
     </span>
     <!-- logo for regular state and mobile devices -->
     <span class="logo-lg">
-     <b> C</b>RTracker <i class="fa fa-spinner"></i>
+      <b>C</b>RTracker
+      <i class="fa fa-spinner"></i>
     </span>
   </a>
 </template>

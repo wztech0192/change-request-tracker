@@ -24,9 +24,7 @@ export default {
   },
 
   actions: {
-    setGlobalError({
-      commit
-    }, msg) {
+    setGlobalError({ commit }, msg) {
       // set error message if msg is a string
       if (typeof msg === 'string') {
         commit('setGlobalError', msg);
@@ -40,19 +38,17 @@ export default {
           } else {
             commit('setGlobalError', errorData.error.message);
             // if error is expired jwt token, redirect to login page
-            if (errorData.name === "ExpiredJwtToken") {
-              router.push("/login");
+            if (errorData.name === 'ExpiredJwtToken') {
+              router.push('/login');
             }
           }
         } catch (e) {
-          commit('setGlobalError', "Unknow Error Occurs");
+          commit('setGlobalError', 'Unknow Error Occurs');
         }
       }
     },
 
-    clearGlobalError({
-      commit
-    }) {
+    clearGlobalError({ commit }) {
       commit('clearGlobalError');
     }
   },

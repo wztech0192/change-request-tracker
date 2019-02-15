@@ -22,10 +22,9 @@
 </template>
 
 <script>
-import HTTP from "@/http";
+import HTTP from '@/http';
 
 export default {
-
   data() {
     return {
       num: 0

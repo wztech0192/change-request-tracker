@@ -1,20 +1,20 @@
-'use strict'
+'use strict';
 
-const {LogicalException} = require('@adonisjs/generic-exceptions')
+const { LogicalException } = require('@adonisjs/generic-exceptions');
 
 /**
  * Child of Logical Exception
  */
-class InvalidAccessException extends LogicalException{
-    /**
-     *  Handle Invalid User Access exceptions
-     */
+class InvalidAccessException extends LogicalException {
+  /**
+   *  Handle Invalid User Access exceptions
+   */
 
-     handle (error , {response}){
-         return response.status(403).json({
-             error:"invalid access to "+error.message
-         });
-     }
+  handle(error, { response }) {
+    return response.status(403).json({
+      error: 'invalid access to ' + error.message
+    });
+  }
 }
 
-module.exports = InvalidAccessException
+module.exports = InvalidAccessException;

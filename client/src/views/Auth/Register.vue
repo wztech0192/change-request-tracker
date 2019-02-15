@@ -70,7 +70,6 @@
             class="form-control"
             placeholder="Password"
             autocomplete="new-password"
-
             v-model="registerData.password"
           >
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
@@ -114,9 +113,9 @@
 </template>
 
 <script>
-import { mapMutations, mapActions, mapState } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapMutations, mapActions, mapState } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   data() {
@@ -128,7 +127,7 @@ export default {
         last_name: null,
         email: null,
         password: null,
-        password_retype: null,
+        password_retype: null
       },
       error: {
         first_name_error: null,
@@ -151,7 +150,7 @@ export default {
   //verify registration code before created
   created() {
     HTTP()
-      .post("/regist-code/verify", { code: this.registrationCode })
+      .post('/regist-code/verify', { code: this.registrationCode })
       .then(({ data }) => {
         if (data) {
           //fill in register data from the registration code
@@ -162,18 +161,18 @@ export default {
           this.allowEdit = data.allowEdit === 1;
           this.registerData.code = data.code;
         } else {
-          this.setGlobalError("Registration code failed!");
-          router.push("/login");
+          this.setGlobalError('Registration code failed!');
+          router.push('/login');
         }
       })
       .catch(e => {
         this.setGlobalError(e);
-        router.push("/login");
+        router.push('/login');
       });
   },
 
   computed: {
-    ...mapState("authentication", ["registrationCode"]),
+    ...mapState('authentication', ['registrationCode']),
     password() {
       return this.registerData.password;
     },
@@ -183,8 +182,8 @@ export default {
   },
 
   methods: {
-    ...mapMutations("authentication", ["setLoading", "setToken"]),
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapMutations('authentication', ['setLoading', 'setToken']),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     //clear register datas by set it to empty object
     clearRegisterData() {
@@ -204,12 +203,12 @@ export default {
     confirmPassword(rd) {
       if (rd.password && rd.password.length < 6) {
         this.error.password_error =
-          "Password need to have more than 6 characters";
+          'Password need to have more than 6 characters';
         return false;
       }
       if (rd.password !== rd.password_retype) {
         this.error.password_error =
-          "Your password and confirmation password do not match.";
+          'Your password and confirmation password do not match.';
         return false;
       }
       this.error.password_error = null;
@@ -218,13 +217,13 @@ export default {
 
     //clear selector's error message
     clearError(selector) {
-      this.error[selector + "_error"] = null;
+      this.error[selector + '_error'] = null;
     },
 
     // loop through all exception error then set message to the associated field
     setErrorMessage(exceptionArr) {
       exceptionArr.forEach(({ field, message }) => {
-        this.error[field + "_error"] = message;
+        this.error[field + '_error'] = message;
       });
     },
 
@@ -234,14 +233,14 @@ export default {
       if (this.confirmPassword(rd)) {
         this.setLoading(true);
         HTTP()
-          .post("/auth/register", rd)
+          .post('/auth/register', rd)
           .then(({ data }) => {
             // Set token and clear register data if token is avaliable, else return validation error
             if (data.token) {
               this.setToken(data.token);
               // redirect route plus reload page
               // window.location.href = "/";
-              router.push("/");
+              router.push('/');
             } else {
               this.setErrorMessage(data);
             }

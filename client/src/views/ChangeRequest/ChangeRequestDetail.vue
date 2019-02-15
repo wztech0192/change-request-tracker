@@ -127,9 +127,9 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   created() {
@@ -144,9 +144,9 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user"]),
-    ...mapState("changeRequest", ["tab"]),
-    ...mapGetters("authentication", ["isAdmin"]),
+    ...mapState('authentication', ['user']),
+    ...mapState('changeRequest', ['tab']),
+    ...mapGetters('authentication', ['isAdmin']),
 
     baseURL() {
       return `/change-request/${this.$route.params.id}`;
@@ -161,8 +161,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
-    ...mapMutations("changeRequest", ["setTab"]),
+    ...mapActions('errorStore', ['setGlobalError']),
+    ...mapMutations('changeRequest', ['setTab']),
 
     //fetch request detail
     fetchRequestData() {
@@ -173,7 +173,7 @@ export default {
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -181,7 +181,7 @@ export default {
     changeStatus(status) {
       if (this.isAdmin) {
         //confirm modal to confirm the action
-        this.$modal.show("dialog", {
+        this.$modal.show('dialog', {
           title: `<i class='fa fa-user-spinner'></i> Update Status`,
           maxWidth: 250,
           template: `<div style='text-align:center'><label>Current Status</label> : <label class="label label${this.getStatusLabel(
@@ -193,7 +193,7 @@ export default {
           )}">${status}</label></div>`,
           buttons: [
             {
-              title: "Confirm",
+              title: 'Confirm',
               default: true,
               handler: spinner => {
                 spinner.loading = true;
@@ -201,19 +201,20 @@ export default {
                   .patch(this.baseURL, { status })
                   .then(({ data }) => {
                     this.requestData.status = data.status;
-                    this.$modal.hide("dialog");
+                    this.$modal.hide('dialog');
                   })
                   .catch(e => {
                     //if fail, reset data
                     this.setGlobalError(e);
                     this.fetchRequestData();
-                  }).finally(()=>{
-                    spinner.loading=false;
                   })
+                  .finally(() => {
+                    spinner.loading = false;
+                  });
               }
             },
             {
-              title: "Cancel"
+              title: 'Cancel'
             }
           ]
         });
@@ -224,14 +225,14 @@ export default {
     getStatusLabel(status) {
       {
         switch (status) {
-          case "To Do":
-            return "-warning";
-          case "In Progress":
-            return "-primary";
-          case "Complete":
-            return "-success";
+          case 'To Do':
+            return '-warning';
+          case 'In Progress':
+            return '-primary';
+          case 'Complete':
+            return '-success';
           default:
-            return "-danger";
+            return '-danger';
         }
       }
     }

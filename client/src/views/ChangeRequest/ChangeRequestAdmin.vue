@@ -117,9 +117,9 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions, mapMutations } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   data() {
@@ -136,8 +136,8 @@ export default {
   },
 
   computed: {
-    ...mapState("authentication", ["user"]),
-    ...mapState("changeRequest", ["listTab", "tab"])
+    ...mapState('authentication', ['user']),
+    ...mapState('changeRequest', ['listTab', 'tab'])
   },
 
   created() {
@@ -145,32 +145,32 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
-    ...mapMutations("changeRequest", ["setListTab"]),
+    ...mapActions('errorStore', ['setGlobalError']),
+    ...mapMutations('changeRequest', ['setListTab']),
 
     isTab(tab) {
       if (tab === this.listTab) {
-        return "active";
+        return 'active';
       }
     },
 
     isOtherTab() {
-      if (this.listTab !== "active" && this.listTab !== "all") {
-        return "active";
+      if (this.listTab !== 'active' && this.listTab !== 'all') {
+        return 'active';
       }
     },
 
     // fetch change request list, filter by tab
     fetchChangeRequestList() {
       return HTTP()
-        .post("/change-request/list", { method: "tab", tab: this.listTab })
+        .post('/change-request/list', { method: 'tab', tab: this.listTab })
         .then(({ data }) => {
           this.ChangeRequestList = data;
           this.initiateTable(data);
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -180,21 +180,21 @@ export default {
 
       //set timeout give a pause for data to setup
       setTimeout(() => {
-        var table = $("#change-request-table").DataTable({
+        var table = $('#change-request-table').DataTable({
           destroy: true,
           data: data,
           columns: [
-            { data: "id" },
-            { data: "clientName" },
-            { data: "status" },
-            { data: "created_at" },
-            { data: "updated_at" },
-            { data: "totalMessage" },
-            { data: "totalHistory" },
-            { data: "title" }
+            { data: 'id' },
+            { data: 'clientName' },
+            { data: 'status' },
+            { data: 'created_at' },
+            { data: 'updated_at' },
+            { data: 'totalMessage' },
+            { data: 'totalHistory' },
+            { data: 'title' }
           ],
           createdRow: function(row, data, dataIndex) {
-            $(row).find("td:eq(2)").html(`
+            $(row).find('td:eq(2)').html(`
             <label
                
                 style="padding: 5px 10px;"
@@ -204,7 +204,7 @@ export default {
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[3, "desc"]],
+          order: [[3, 'desc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
 
@@ -216,9 +216,9 @@ export default {
                 var column = this;
                 var select = $(
                   '<select class="select2"><option value="">ALL</option></select>'
-                ).on("change", function() {
+                ).on('change', function() {
                   var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                  column.search(val ? "^" + val + "$" : "", true, false).draw();
+                  column.search(val ? '^' + val + '$' : '', true, false).draw();
                 });
                 if (column.index() === 2) {
                   select.append(
@@ -234,7 +234,7 @@ export default {
                     .sort()
                     .each(function(d, j) {
                       select.append(
-                        '<option value="' + d + '">' + d + "</option>"
+                        '<option value="' + d + '">' + d + '</option>'
                       );
                     });
                 }
@@ -243,26 +243,26 @@ export default {
                   `#change-request-table thead tr:eq(1) th:eq(${column.index()})`
                 ).html(select);
               });
-            $(".select2").select2({ width: "80%" });
+            $('.select2').select2({ width: '80%' });
           }
         });
         //click select event
-        $("#change-request-table tbody").on("click", "tr", function() {
-          if (!$(this).hasClass("child")) {
-            if ($(this).hasClass("selected")) {
-              $(this).removeClass("selected");
+        $('#change-request-table tbody').on('click', 'tr', function() {
+          if (!$(this).hasClass('child')) {
+            if ($(this).hasClass('selected')) {
+              $(this).removeClass('selected');
             } else {
-              table.$("tr.selected").removeClass("selected");
-              $(this).addClass("selected");
+              table.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
             }
           }
         });
 
         //double click event
-        $("#change-request-table tbody").on("dblclick", "tr", function() {
-          if (!$(this).hasClass("child")) {
+        $('#change-request-table tbody').on('dblclick', 'tr', function() {
+          if (!$(this).hasClass('child')) {
             var requestID = $(this)
-              .find("td:eq(0)")
+              .find('td:eq(0)')
               .text();
             self.showRequestDetail(requestID);
           }
@@ -272,14 +272,14 @@ export default {
 
     //get selected row index and show dialog, alert when fail
     openSelectedRow() {
-      var requestID = $("#change-request-table .selected td:eq(0)").text();
+      var requestID = $('#change-request-table .selected td:eq(0)').text();
 
       if (requestID) {
         //display target dialog
         this.showRequestDetail(requestID);
       } else {
         //display no selection error massage
-        this.$modal.show("dialog", {
+        this.$modal.show('dialog', {
           title:
             "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
           template:
@@ -287,7 +287,7 @@ export default {
           maxWidth: 300,
           buttons: [
             {
-              title: "Ok",
+              title: 'Ok',
               default: true
             }
           ]
@@ -304,14 +304,14 @@ export default {
     getStatusLabel(status) {
       {
         switch (status) {
-          case "To Do":
-            return "label-warning";
-          case "In Progress":
-            return "label-primary";
-          case "Complete":
-            return "label-success";
+          case 'To Do':
+            return 'label-warning';
+          case 'In Progress':
+            return 'label-primary';
+          case 'Complete':
+            return 'label-success';
           default:
-            return "label-danger";
+            return 'label-danger';
         }
       }
     }

@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapActions, mapMutations } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   props: {
@@ -66,13 +66,13 @@ export default {
   },
 
   created() {
-    this.setTab("history");
+    this.setTab('history');
     this.fetchRequestHistory();
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
-    ...mapMutations("changeRequest", ["setTab"]),
+    ...mapActions('errorStore', ['setGlobalError']),
+    ...mapMutations('changeRequest', ['setTab']),
 
     //fetch request history
     fetchRequestHistory() {
@@ -83,7 +83,7 @@ export default {
         })
         .catch(e => {
           this.setGlobalError(e);
-          router.push("/");
+          router.push('/');
         });
     },
 
@@ -92,11 +92,11 @@ export default {
       var diff = new Date() - Date.parse(date);
       var time;
       if (diff > 86400000) {
-        time = Math.round(diff / 86400000) + " days ago";
+        time = Math.round(diff / 86400000) + ' days ago';
       } else if (diff > 3600000) {
-        time = Math.round(diff / 3600000) + " hours ago";
+        time = Math.round(diff / 3600000) + ' hours ago';
       } else {
-        time = Math.round(diff / 60000) + " mins ago";
+        time = Math.round(diff / 60000) + ' mins ago';
       }
       return time;
     },
@@ -104,18 +104,18 @@ export default {
     //return type icon
     chooseIcon(type) {
       switch (type) {
-        case "Create":
-          return "bg-blue fa-upload";
-        case "Edit Content":
-          return "bg-gray fa-edit";
-        case "New Status: TO DO":
-          return "bg-yellow fa-spinner";
-        case "New Status: IN PROGRESS":
-          return "bg-blue fa-refresh";
-        case "New Status: COMPLETE":
-          return "bg-green fa-check";
-        case "New Status: CANCELLED":
-          return "bg-red fa-ban";
+        case 'Create':
+          return 'bg-blue fa-upload';
+        case 'Edit Content':
+          return 'bg-gray fa-edit';
+        case 'New Status: TO DO':
+          return 'bg-yellow fa-spinner';
+        case 'New Status: IN PROGRESS':
+          return 'bg-blue fa-refresh';
+        case 'New Status: COMPLETE':
+          return 'bg-green fa-check';
+        case 'New Status: CANCELLED':
+          return 'bg-red fa-ban';
       }
     },
 
@@ -126,7 +126,7 @@ export default {
       var filterHist = [];
       while (j < histories.length) {
         var hist = histories[j];
-        var datetime = hist.created_at.split(" ");
+        var datetime = hist.created_at.split(' ');
         var fh = filterHist[i];
         if (!fh) {
           filterHist.push({

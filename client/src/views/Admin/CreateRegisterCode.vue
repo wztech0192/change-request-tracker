@@ -125,33 +125,33 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import HTTP from "@/http";
-import router from "@/router";
+import { mapState, mapActions } from 'vuex';
+import HTTP from '@/http';
+import router from '@/router';
 
 export default {
   mounted() {
     var self = this;
     //initialize editor
-    ClassicEditor.create(document.querySelector("#editor"))
+    ClassicEditor.create(document.querySelector('#editor'))
       .then(editor => {
         self.editor = editor;
         // bind code contetn to editor data
-        editor.model.document.on("change", () => {
+        editor.model.document.on('change', () => {
           self.codeData.content = editor.getData();
         });
       })
       .catch(e => self.setGlobalError(e));
 
     //initialize collapse box
-    $(".collapsed-box").boxWidget({
+    $('.collapsed-box').boxWidget({
       animationSpeed: 500,
       collapseTrigger: "[data-widget='collapse']"
     });
   },
 
   computed: {
-    ...mapState("authentication", ["user"])
+    ...mapState('authentication', ['user'])
   },
 
   data() {
@@ -163,7 +163,7 @@ export default {
         email: null,
         allowEdit: true,
         content: null,
-        role: "Client"
+        role: 'Client'
       },
       error: {
         first_name_error: null,
@@ -175,10 +175,10 @@ export default {
   },
 
   methods: {
-    ...mapActions("errorStore", ["setGlobalError"]),
+    ...mapActions('errorStore', ['setGlobalError']),
 
     changeRole() {
-      this.codeData.role = $("#code-role option:selected").text();
+      this.codeData.role = $('#code-role option:selected').text();
     },
 
     //submit code data and perform http request
@@ -192,7 +192,7 @@ export default {
           if (data.code) {
             this.showDialog(
               "<span class='text-green'><i class='fa fa-check'></i> SUCCESS! </span>",
-              "Got It!",
+              'Got It!',
               `Your registration code is <b>${data.code}</b>,
              and the code is automatically sent to <i>${
                this.codeData.email
@@ -203,7 +203,7 @@ export default {
             this.setErrorMessage(data);
             this.showDialog(
               "<span class='text-red'><i class='fa fa-window-close'></i> Oops! </span>",
-              "Ok",
+              'Ok',
               "<h4 style='text-align:center'>There are some fields need to be fix</h4>"
             );
           }
@@ -214,7 +214,7 @@ export default {
     },
 
     showDialog(dialogTitle, dialogBtnText, dialogContent) {
-      this.$modal.show("dialog", {
+      this.$modal.show('dialog', {
         title: dialogTitle,
         template: dialogContent,
         buttons: [
@@ -234,20 +234,20 @@ export default {
     //return css class
     getEditCondition() {
       return this.codeData.allowEdit
-        ? "fa fa-check-square text-green"
-        : "fa  fa-minus-square text-red";
+        ? 'fa fa-check-square text-green'
+        : 'fa  fa-minus-square text-red';
     },
 
     // loop through all exception error then set message to the associated field
     setErrorMessage(exceptionArr) {
       exceptionArr.forEach(({ field, message }) => {
-        this.error[field + "_error"] = message;
+        this.error[field + '_error'] = message;
       });
     },
 
     //clear selector's error message
     clearError(selector) {
-      this.error[selector + "_error"] = null;
+      this.error[selector + '_error'] = null;
     },
 
     resetCodeData() {
@@ -258,15 +258,15 @@ export default {
         email: null,
         allowEdit: true,
         content: null,
-        role: "Client"
+        role: 'Client'
       };
       this.error = {
         first_name_error: null,
         last_name_error: null,
         email_error: null
       };
-      this.editor.setData("");
-      $("#code-role").val("Client");
+      this.editor.setData('');
+      $('#code-role').val('Client');
     }
   }
 };

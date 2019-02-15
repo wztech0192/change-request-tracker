@@ -46,6 +46,9 @@ export default {
   },
 
   created() {
+    /* Resolve conflict in jQuery UI tooltip with Bootstrap tooltip */
+    $.widget.bridge("uibutton", $.ui.button);
+
     // set user profile into authentication.user state if user is logged in
     if (this.isLoggedIn) {
       this.fetchUser();
@@ -79,7 +82,7 @@ export default {
 </script>
 
 
-<style lang='scss'>
+<style>
 .overlay > h2 {
   font-size: 10vw;
   padding: 10vw;
@@ -107,7 +110,6 @@ export default {
 .capitalize {
   text-transform: capitalize;
 }
-
 
 a {
   cursor: pointer;
@@ -192,7 +194,7 @@ h1 {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1048px) {
   .tablet-hide {
     display: none;
   }

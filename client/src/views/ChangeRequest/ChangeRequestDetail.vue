@@ -195,16 +195,21 @@ export default {
             {
               title: "Confirm",
               default: true,
-              handler: () => {
+              handler: spinner => {
+                spinner.loading = true;
                 HTTP()
                   .patch(this.baseURL, { status })
+                  .then(({ data }) => {
+                    this.requestData.status = data.status;
+                    this.$modal.hide("dialog");
+                  })
                   .catch(e => {
                     //if fail, reset data
                     this.setGlobalError(e);
                     this.fetchRequestData();
-                  });
-                this.requestData.status = status;
-                this.$modal.hide("dialog");
+                  }).finally(()=>{
+                    spinner.loading=false;
+                  })
               }
             },
             {

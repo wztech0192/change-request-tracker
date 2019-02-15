@@ -114,7 +114,7 @@ export default {
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[2, "desc"]],
+          order: [[3, "desc"]],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
 

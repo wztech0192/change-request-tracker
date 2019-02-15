@@ -11,9 +11,9 @@ import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
 import CRList from './views/ChangeRequest/ChangeRequestList.vue';
 import CRAdminList from './views/ChangeRequest/ChangeRequestAdmin.vue';
 import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
-import CRContent from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestContent.vue';
-import CRMessage from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestMessage.vue';
-import CRHistory from './views/ChangeRequest/ChangeRequestDetail/_ChangeRequestHistory.vue';
+import CRContent from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestContent.vue';
+import CRMessage from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestMessage.vue';
+import CRHistory from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestHistory.vue';
 import store from './store/index';
 
 

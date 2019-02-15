@@ -117,8 +117,8 @@
 </template>
 
 <script>
-import Logo from "@/components/Main/Header/Logo.vue";
-import NavMenu from "@/components/Main/Header/NavMenu.vue";
+import Logo from "@/components/_Main/_Header/Logo.vue";
+import NavMenu from "@/components/_Main/_Header/NavMenu.vue";
 
 export default {
   name: "Header",

@@ -127,7 +127,7 @@ export default {
     } else {
       this.requester = this.user;
     }
-
+    
     //initialize editor
     ClassicEditor.create(document.querySelector("#editor"))
       .then(editor => {

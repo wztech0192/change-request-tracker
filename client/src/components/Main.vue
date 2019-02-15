@@ -15,9 +15,9 @@
 
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
-import Header from "@/components/Main/Header.vue";
-import Sidebar from "@/components/Main/Sidebar.vue";
-import Controlbar from "@/components/Main/Controlbar.vue";
+import Header from "@/components/_Main/Header.vue";
+import Sidebar from "@/components/_Main/Sidebar.vue";
+import Controlbar from "@/components/_Main/Controlbar.vue";
 
 export default {
   name: "Main",

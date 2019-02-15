@@ -2,6 +2,8 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    browser: true,
+    jquery: true
   },
   extends: [
     'plugin:vue/essential',

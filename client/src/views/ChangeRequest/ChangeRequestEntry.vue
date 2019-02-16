@@ -28,11 +28,11 @@
                 <span v-if="error.client_error">-- Client Cannot be empty</span>
               </label>
               
-              <select class="form-control select2" id="clientselect" style="width: 100%;">
+              <select class="form-control select2" id="clientselect">
                 <option
-                  v-for="(client, i) in clientList"
-                  :value="i"
-                >{{client.first_name}} {{client.mid_initial}} {{client.last_name}} ({{client.email}})</option>
+                  v-if="requestData.client"
+                  :value="requestData.client"
+                >{{requestData.client.substring(0,requestData.client.lastIndexOf(" "))}}</option>
               </select>
             </div>
           </div>
@@ -116,12 +116,26 @@ import HTTP from '@/http';
 import router from '@/router';
 
 export default {
-  created() {},
+  computed: {
+    ...mapState('authentication', ['user']),
+    ...mapState('changeRequest', ['requestData', 'error']),
+    ...mapGetters('authentication', ['isAdmin'])
+  },
+
+  data() {
+    return {
+      editor: null,
+      clientList: null,
+      requester: {}
+    };
+  },
+
   mounted() {
     var self = this;
     if (this.isAdmin) {
-      //populate client dropdown box
-      this.fetchClientList();
+      this.setRequesterData(this.requestData.client);
+      //initialize client select box
+      this.initClientSelect(this);
     } else {
       this.requester = this.user;
     }
@@ -154,20 +168,6 @@ export default {
     });
   },
 
-  computed: {
-    ...mapState('authentication', ['user']),
-    ...mapState('changeRequest', ['requestData', 'error']),
-    ...mapGetters('authentication', ['isAdmin'])
-  },
-
-  data() {
-    return {
-      editor: null,
-      clientList: null,
-      requester: {}
-    };
-  },
-
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
     ...mapMutations('changeRequest', [
@@ -180,43 +180,62 @@ export default {
       'setClient'
     ]),
 
-    //fetch client list if user is admin or developer
-    fetchClientList() {
-      var self = this;
-      HTTP()
-        .get('/user/by-role/Client')
-        .then(({ data }) => {
-          //if return data not exist, push for error
-          if (!data) {
-            this.setGlobalError('Something is wrong');
-          } else {
-            this.clientList = data;
-            //initalize dropdown box
-            $('.select2').select2({
-              placeholder: 'Select a client'
-            });
-
-            //initialize select
-            setTimeout(() => {
-              if (self.requestData.client) {
-                self.requester = self.clientList[self.requestData.client];
-              }
-              $('#clientselect')
-                .val(self.requestData.client)
-                .trigger('change');
-              //select event
-              $('#clientselect').on('select2:select', function(e) {
-                self.clearError('client');
-                var index = e.params.data.id;
-                self.setClient(index);
-                self.requester = index ? self.clientList[index] : {};
+    initClientSelect(self) {
+      //initialize select2 for client search
+      $('#clientselect').select2({
+        placeholder: 'Select a client',
+        width: '100%',
+        height: '40px',
+        allowClear: true,
+        ajax: {
+          delay: 250,
+          transport: function({ data }, success, failure) {
+            HTTP()
+              .post('user/search/Client', {
+                term: data.term || '',
+                page: data.page || 1
+              })
+              .then(({ data }) => {
+                success(data);
+              })
+              .catch(e => {
+                failure(e);
               });
-            }, 10);
+          },
+          processResults: function(data, params) {
+            // use full name as text and id for the options
+            data.results.forEach(d => {
+              d.text = `${d.full_name} (${d.email})`;
+              d.id = d.text + ` ${d.id}`;
+            });
+            return data;
           }
-        })
-        .catch(e => {
-          this.setGlobalError(e);
-        });
+        }
+      });
+      //select event
+      $('#clientselect').on('change', function(e) {
+        self.clearError('client');
+        var val = $(this).val();
+        self.setClient(val);
+        self.setRequesterData(val);
+      });
+    },
+
+    setRequesterData(val) {
+      if (val) {
+        //set requester data
+        val = val.split(' ');
+        this.requester = {
+          first_name: val[0],
+          mid_initial: val[1],
+          last_name: val[2],
+          email: val[3].substring(1, val[3].length - 1),
+          id: val[4]
+        };
+      } else {
+        //set empty requester if selected val is empty
+        this.requester = {};
+      }
     },
 
     clearAllData() {
@@ -307,7 +326,7 @@ export default {
     //confirm dialog template
     getConfirmTemplate(user) {
       var template = `<label>Requester Name</label>
-          <p class='capitalize'>${user.first_name} ${user.mid_initial || ''} ${
+          <p class='capitalize'>${user.first_name} ${user.mid_initial} ${
         user.last_name
       }</p>
           <label>Requester Email</label>

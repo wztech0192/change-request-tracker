@@ -54,25 +54,46 @@ class ChangeRequestController {
     const user = await auth.getUser();
     AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
     const filter = request.all();
+    let requestList;
     //    console.log(filter);
     //filter by type
     if (filter.method === 'tab') {
       switch (filter.tab) {
         case 'all':
-          return await ChangeRequest.all();
+          requestList = await ChangeRequest.all();
+          break;
         case 'active':
           //return all change request except the one with cancelled or complete status
-          return await ChangeRequest.query()
+          requestList = await ChangeRequest.query()
             .whereNotIn('status', ['Cancelled', 'Complete'])
             .fetch();
+          break;
         default:
-          return await ChangeRequest.query()
+          requestList = await ChangeRequest.query()
             .where('status', filter.tab)
             .fetch();
+          break;
       }
     } else {
-      //fiter by search input
+      if (filter.id) {
+        requestList = await ChangeRequest.find(filter.id);
+      } else {
+        const query = ChangeRequest.query();
+        query.where('status', 'like', `%${filter.status || ''}%`);
+        if (filter.clientsName) {
+          //if data has clients name, query all clients
+          query.whereIn('clientName', filter.clientsName);
+        }
+        if (filter.date) {
+          //if data has date range, query date range
+          query.whereBetween('created_at', filter.date.split('/'));
+        }
+        requestList = await query.fetch();
+      }
     }
+
+    //if requestList is not a array, arraylize it.
+    return requestList.rows ? requestList : [requestList];
   }
 
   /**
@@ -101,9 +122,7 @@ class ChangeRequestController {
     const changeRequest = new ChangeRequest();
     data.totalMessage = 0;
     data.totalHistory = 0;
-    data.clientName = `${client.first_name} ${client.mid_initial || ''} ${
-      client.last_name
-    }`;
+    data.clientName = client.full_name;
     //fill in data then save to its creator
     changeRequest.fill(data);
 
@@ -119,7 +138,7 @@ class ChangeRequestController {
         content: `<p>${message}</p>`,
         user_id: user.id,
         senderEmail: user.email,
-        senderName: user.first_name + ' ' + user.last_name
+        senderName: user.full_name
       });
       changeRequest.messages().save(crmsg);
       changeRequest.totalMessage++;
@@ -128,11 +147,9 @@ class ChangeRequestController {
     this._createCRHistory(
       changeRequest,
       'Create',
-      `Change Request ID ${
-        changeRequest.id
-      } has been posted by ${user.first_name + ' ' + user.last_name} in ${
-        changeRequest.created_at
-      }`
+      `Change Request ID ${changeRequest.id} has been posted by ${
+        user.full_name
+      } in ${changeRequest.created_at}`
     );
 
     return changeRequest;
@@ -172,15 +189,15 @@ class ChangeRequestController {
         // history for status update
         if (requestData.status) {
           type = `New Status: ${requestData.status.toUpperCase()}`;
-          content = `The status has been updated to ${requestData.status.toUpperCase()} by ${user.first_name +
-            ' ' +
-            user.last_name}`;
+          content = `The status has been updated to ${requestData.status.toUpperCase()} by ${
+            user.full_name
+          }`;
         } else {
           //history for content modify
           type = 'Edit Content';
-          content = `Change Request Content has been modified by ${user.first_name +
-            ' ' +
-            user.last_name}`;
+          content = `Change Request Content has been modified by ${
+            user.full_name
+          }`;
         }
         //create change request history
         this._createCRHistory(changeRequest, type, content);
@@ -229,7 +246,7 @@ class ChangeRequestController {
         //fill in data then save to its owner
         data.user_id = user.id;
         data.senderEmail = user.email;
-        data.senderName = user.first_name + ' ' + user.last_name;
+        data.senderName = user.full_name;
         message.fill(data);
         await change_request.messages().save(message);
         change_request.totalMessage++;
@@ -314,10 +331,42 @@ class ChangeRequestController {
       cr.totalHistory = await cr.histories().getCount();
       cr.totalMessage = await cr.messages().getCount();
       let client = await cr.user().fetch();
-      cr.clientName = `${client.first_name} ${client.mid_initial || ''} ${
-        client.last_name
-      }`;
+      cr.clientName = `${client.full_name}`;
       cr.save();
+    }
+  }
+
+  /**
+   * gennerate dummy change request, for dev
+   */
+  async generateChangeRequest({ auth, params }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer']);
+    let users = await User.all();
+    users = users.rows;
+    let randUser = null;
+    for (let i = 0; i < params.num; i++) {
+      randUser = users[Math.round(Math.random() * (users.length - 1))];
+
+      const changeRequest = new ChangeRequest();
+      //fill in data then save to its creator
+      changeRequest.fill({
+        totalMessage: 0,
+        totalHistory: 0,
+        clientName: `${randUser.full_name}`,
+        title: 'This is random generated change request #' + i,
+        details: 'g.'
+      });
+
+      await randUser.change_requests().save(changeRequest);
+      //create change request history
+      this._createCRHistory(
+        changeRequest,
+        'Create',
+        `Change Request ID ${changeRequest.id} has been posted by ${
+          user.full_name
+        } in ${changeRequest.created_at}`
+      );
     }
   }
 }

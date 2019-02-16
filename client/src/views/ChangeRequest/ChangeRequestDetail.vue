@@ -33,7 +33,7 @@
             </span>
             <span>
               <label>Client Name:</label>
-              {{requestData.client.first_name}} {{requestData.client.mid_initial}} {{requestData.client.last_name}}
+              {{requestData.client.full_name}}
             </span>
           </div>
           <div>

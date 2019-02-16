@@ -114,7 +114,7 @@ export default {
             : this.buttons.findIndex(button => button.default);
 
         if (buttonIndex !== -1) {
-          this.click(buttonIndex, event, 'keypress');
+          this.click(this.spinner, buttonIndex, event, 'keypress');
         }
       }
     },

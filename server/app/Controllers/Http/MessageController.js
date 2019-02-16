@@ -19,7 +19,7 @@ class MessageController {
     const user = await auth.getUser();
     const data = request.only(['title', 'content', 'receiverEmail']);
     data.senderEmail = user.email;
-    data.senderName = `${user.first_name} ${user.last_name}`;
+    data.senderName = user.full_name;
     return MessageService.createMessage(data);
   }
 

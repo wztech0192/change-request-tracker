@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import Main from "@/components/Main.vue";
-import Auth from "@/components/Auth.vue";
-import MyDialog from "@/components/Modal/MyDialog.vue";
+import { mapGetters, mapActions } from 'vuex';
+import Main from '@/components/Main.vue';
+import Auth from '@/components/Auth.vue';
+import MyDialog from '@/components/Modal/MyDialog.vue';
 
 export default {
   components: {
@@ -32,22 +32,22 @@ export default {
     MyDialog
   },
   computed: {
-    ...mapGetters("authentication", ["isLoggedIn"]),
-    ...mapGetters("errorStore", ["getGlobalError"])
+    ...mapGetters('authentication', ['isLoggedIn']),
+    ...mapGetters('errorStore', ['getGlobalError'])
   },
   watch: {
     //refresh page when login or logout
     isLoggedIn() {
-      document.body.style.background = "#d2d6de";
-      $("#app-content").hide();
-      $("#loading-screen").show();
+      document.body.style.background = '#d2d6de';
+      $('#app-content').hide();
+      $('#loading-screen').show();
       location.reload();
     }
   },
 
   created() {
     /* Resolve conflict in jQuery UI tooltip with Bootstrap tooltip */
-    $.widget.bridge("uibutton", $.ui.button);
+    $.widget.bridge('uibutton', $.ui.button);
 
     // set user profile into authentication.user state if user is logged in
     if (this.isLoggedIn) {
@@ -64,25 +64,30 @@ export default {
         objEvent.preventDefault(); // stops its action
       }
     });*/
-    $("body").tooltip({
+    $('body').tooltip({
       selector: '[data-toggle="tooltip"]',
-      trigger: "hover"
+      trigger: 'hover'
     });
     //disable tooltip stays when toggle
     $('[data-toggle="tooltip"]').tooltip({
-      trigger: "hover"
+      trigger: 'hover'
     });
   },
 
   methods: {
-    ...mapActions("authentication", ["fetchUser", "fetchTaskList"]),
-    ...mapActions("errorStore", ["clearGlobalError"])
+    ...mapActions('authentication', ['fetchUser', 'fetchTaskList']),
+    ...mapActions('errorStore', ['clearGlobalError'])
   }
 };
 </script>
 
 
 <style>
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  background-color: #3c8dbc !important;
+}
 .overlay > h2 {
   font-size: 10vw;
   padding: 10vw;
@@ -191,6 +196,10 @@ h1 {
 @media (max-width: 480px) {
   .mobile-hide {
     display: none;
+  }
+  body {
+    /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+    font-size: 13px;
   }
 }
 

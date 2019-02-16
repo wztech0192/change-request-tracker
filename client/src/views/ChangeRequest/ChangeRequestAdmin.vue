@@ -54,10 +54,13 @@
         <div class="tab-content">
           <div class="tab-pane active">
             <div class="box">
+              <div v-if="loading" class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+              </div>
               <div class="box-body">
                 <table
                   id="change-request-table"
-                  class="table table-bordered table-hover display"
+                  class="table table-hover display"
                   style="width:100%;"
                 >
                   <thead>
@@ -124,24 +127,25 @@ import router from '@/router';
 export default {
   data() {
     return {
-      ChangeRequestList: null
+      ChangeRequestList: null,
+      loading: false,
+      table: null
     };
   },
 
   watch: {
     //fetch data when listTab changed
     listTab() {
-      this.fetchChangeRequestList();
+      this.fetchChangeRequestList(this.updateTable);
     }
   },
 
   computed: {
-    ...mapState('authentication', ['user']),
     ...mapState('changeRequest', ['listTab', 'tab'])
   },
 
   created() {
-    this.fetchChangeRequestList();
+    this.fetchChangeRequestList(this.initiateTable);
   },
 
   methods: {
@@ -161,26 +165,38 @@ export default {
     },
 
     // fetch change request list, filter by tab
-    fetchChangeRequestList() {
+    fetchChangeRequestList(tableCallback) {
+      //display spinner when request start, hide spinner when table finish initializing
+      this.loading = true;
       return HTTP()
         .post('/change-request/list', { method: 'tab', tab: this.listTab })
         .then(({ data }) => {
           this.ChangeRequestList = data;
-          this.initiateTable(data);
-        })
-        .catch(e => {
-          this.setGlobalError(e);
-          router.push('/');
+          tableCallback(data);
         });
+    },
+
+    //update table
+    updateTable(data) {
+      var self = this;
+      this.table
+        .clear()
+        .rows.add(data)
+        .draw();
+      this.loading = false;
+      this.table.columns([0, 1, 2, 3, 4, 5, 6]).every(function() {
+        self.setTableFilter(this);
+      });
+      $('.select2').select2({ width: '80%' });
+      self.loading = false;
     },
 
     //initialize data table
     initiateTable(data) {
       var self = this;
-
       //set timeout give a pause for data to setup
       setTimeout(() => {
-        var table = $('#change-request-table').DataTable({
+        this.table = $('#change-request-table').DataTable({
           destroy: true,
           data: data,
           columns: [
@@ -196,7 +212,6 @@ export default {
           createdRow: function(row, data, dataIndex) {
             $(row).find('td:eq(2)').html(`
             <label
-               
                 style="padding: 5px 10px;"
                 class="label ${self.getStatusLabel(data.status)}"
             >${data.status}</label>`);
@@ -204,7 +219,7 @@ export default {
           //resize based on widht
           responsive: true,
           //order by third col in ascending order
-          order: [[3, 'desc']],
+          order: [[4, 'desc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
 
@@ -213,59 +228,47 @@ export default {
             this.api()
               .columns([0, 1, 2, 3, 4, 5, 6])
               .every(function() {
-                var column = this;
-                var select = $(
-                  '<select class="select2"><option value="">ALL</option></select>'
-                ).on('change', function() {
-                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                  column.search(val ? '^' + val + '$' : '', true, false).draw();
-                });
-                if (column.index() === 2) {
-                  select.append(
-                    '<option value="Cancelled">Cancelled</option>',
-                    '<option value="To Do">To Do</option>',
-                    '<option value="In Progress">In Progress</option>',
-                    '<option value="Complete">Complete</option>'
-                  );
-                } else {
-                  column
-                    .data()
-                    .unique()
-                    .sort()
-                    .each(function(d, j) {
-                      select.append(
-                        '<option value="' + d + '">' + d + '</option>'
-                      );
-                    });
-                }
-
-                $(
-                  `#change-request-table thead tr:eq(1) th:eq(${column.index()})`
-                ).html(select);
+                self.setTableFilter(this);
               });
             $('.select2').select2({ width: '80%' });
+            self.loading = false;
           }
         });
+
         //click select event
         $('#change-request-table tbody').on('click', 'tr', function() {
-          if (!$(this).hasClass('child')) {
-            if ($(this).hasClass('selected')) {
-              $(this).removeClass('selected');
-            } else {
-              table.$('tr.selected').removeClass('selected');
-              $(this).addClass('selected');
-            }
-          }
+          self.addTableSelect(this);
         });
 
         //double click event
         $('#change-request-table tbody').on('dblclick', 'tr', function() {
           if (!$(this).hasClass('child')) {
-            var requestID = $(this)
-              .find('td:eq(0)')
-              .text();
-            self.showRequestDetail(requestID);
+            self.showRequestDetail(
+              $(this)
+                .find('td:eq(0)')
+                .text()
+            );
           }
+        });
+
+        var touched = null;
+        //touch down event, Open detal page if touch over 0.5 second
+        $('#change-request-table tbody').on('touchstart', 'tr', function(e) {
+          if (!$(this).hasClass('child')) {
+            self.addTableSelect(this);
+            touched = setTimeout(() => {
+              self.showRequestDetail(
+                $(this)
+                  .find('td:eq(0)')
+                  .text()
+              );
+            }, 500);
+            e.preventDefault();
+          }
+        });
+        //top touch count down
+        $('#change-request-table tbody').on('touchend', 'tr', function() {
+          clearTimeout(touched);
         });
       }, 10);
     },
@@ -292,6 +295,44 @@ export default {
             }
           ]
         });
+      }
+    },
+
+    setTableFilter(column) {
+      var select = $(
+        '<select class="select2"><option value="">ALL</option></select>'
+      ).on('change', function() {
+        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+        column.search(val ? '^' + val + '$' : '', true, false).draw();
+      });
+      if (column.index() === 2) {
+        select.append(
+          '<option value="Cancelled">Cancelled</option>',
+          '<option value="To Do">To Do</option>',
+          '<option value="In Progress">In Progress</option>',
+          '<option value="Complete">Complete</option>'
+        );
+      } else {
+        column
+          .data()
+          .unique()
+          .sort()
+          .each(function(d, j) {
+            select.append('<option value="' + d + '">' + d + '</option>');
+          });
+      }
+
+      $(`#change-request-table thead tr:eq(1) th:eq(${column.index()})`).html(
+        select
+      );
+    },
+
+    addTableSelect(tr) {
+      if (!$(tr).hasClass('child')) {
+        if (!$(tr).hasClass('selected')) {
+          $('#change-request-table tbody .selected').removeClass('selected');
+          $(tr).addClass('selected');
+        }
       }
     },
 

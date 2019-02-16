@@ -14,11 +14,7 @@
     <section class="content">
       <div class="box">
         <div class="box-body">
-          <table
-            id="change-request-table"
-            class="table table-bordered table-hover display"
-            style="width:100%;"
-          >
+          <table id="change-request-table" class="table table-hover display" style="width:100%;">
             <thead>
               <tr>
                 <th class="all">ID</th>
@@ -107,7 +103,7 @@ export default {
 
     //initialize data table
     initiateTable() {
-      var _showRequestDetail = this.showRequestDetail;
+      var self = this;
       setTimeout(() => {
         var table = $('#change-request-table').DataTable({
           //resize based on widht
@@ -123,20 +119,35 @@ export default {
               .columns([0, 1, 2, 3, 4, 5])
               .every(function() {
                 var column = this;
-                var select = $(
-                  '<select class="select2"><option value="">ALL</option></select>'
-                ).on('change', function() {
-                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                  column.search(val ? '^' + val + '$' : '', true, false).draw();
-                });
+                var select;
                 if (column.index() === 1) {
-                  select.append(
-                    '<option value="Cancelled">Cancelled</option>',
-                    '<option value="To Do">To Do</option>',
-                    '<option value="In Progress">In Progress</option>',
-                    '<option value="Complete">Complete</option>'
-                  );
+                  select = $(
+                    '<select class="select2">' +
+                      '<option value="To Do|In Progress">Active</option>' +
+                      '<option value="">ALL</option>' +
+                      '<option value="Cancelled">Cancelled</option>' +
+                      '<option value="To Do">To Do</option>' +
+                      '<option value="In Progress">In Progress</option>' +
+                      '<option value="Complete">Complete</option>' +
+                      '</select>'
+                  ).on('change', function() {
+                    var val = $(this).val();
+                    column
+                      .search(val ? '^' + val + '$' : '', true, false)
+                      .draw();
+                  });
+                  //initialize filter
+                  column.search('To Do|In Progress', true, false).draw();
                 } else {
+                  select = $(
+                    '<select class="select2"><option value="">ALL</option></select>'
+                  ).on('change', function() {
+                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                    console.log(val);
+                    column
+                      .search(val ? '^' + val + '$' : '', true, false)
+                      .draw();
+                  });
                   column
                     .data()
                     .unique()
@@ -158,26 +169,49 @@ export default {
 
         //click select event
         $('#change-request-table tbody').on('click', 'tr', function() {
-          if (!$(this).hasClass('child')) {
-            if ($(this).hasClass('selected')) {
-              $(this).removeClass('selected');
-            } else {
-              table.$('tr.selected').removeClass('selected');
-              $(this).addClass('selected');
-            }
-          }
+          self.addTableSelect(this);
         });
 
         //double click event
         $('#change-request-table tbody').on('dblclick', 'tr', function() {
           if (!$(this).hasClass('child')) {
-            var requestID = $(this)
-              .find('th')
-              .text();
-            _showRequestDetail(requestID);
+            self.showRequestDetail(
+              $(this)
+                .find('th')
+                .text()
+            );
           }
         });
+
+        var touched = null;
+        //touch down event, Open detal page if touch over 0.5 second
+        $('#change-request-table tbody').on('touchstart', 'tr', function(e) {
+          if (!$(this).hasClass('child')) {
+            self.addTableSelect(this);
+            touched = setTimeout(() => {
+              self.showRequestDetail(
+                $(this)
+                  .find('th')
+                  .text()
+              );
+            }, 500);
+            e.preventDefault();
+          }
+        });
+        //top touch count down
+        $('#change-request-table tbody').on('touchend', 'tr', function() {
+          clearTimeout(touched);
+        });
       }, 10);
+    },
+
+    addTableSelect(tr) {
+      if (!$(tr).hasClass('child')) {
+        if (!$(tr).hasClass('selected')) {
+          $('#change-request-table tbody .selected').removeClass('selected');
+          $(tr).addClass('selected');
+        }
+      }
     },
 
     //get selected row index and show dialog, alert when fail

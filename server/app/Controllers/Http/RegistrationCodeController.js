@@ -35,7 +35,7 @@ class RegistrationCodeController {
         AuthorizationService.verifyRole(user, ['Developer', 'Admin']),
       work: async (registrationCode, user) => {
         data.creator_email = user.email;
-        data.creator_name = `${user.first_name} ${user.last_name}`;
+        data.creator_name = user.full_name;
         registrationCode.fill(data);
         await registrationCode.save();
       }

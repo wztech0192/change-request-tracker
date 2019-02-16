@@ -5,7 +5,7 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
-      <a  class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <a class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
 
@@ -16,9 +16,9 @@
           <Nav-Menu :num="msgList.length" type="messages">
             <li v-for="msg in msgList">
               <!-- start message -->
-              <a >
+              <a>
                 <div class="pull-left">
-                  <img src='@/assets/img/default.jpg' class="img-circle" alt="User Image">
+                  <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
                 </div>
                 <h4>
                   {{msg.sender}}
@@ -34,7 +34,7 @@
 
           <Nav-Menu :num="noteList.length" type="notifications">
             <li v-for="note in noteList">
-              <a >
+              <a>
                 <i class="fa" :class="convertSignClass(note.sign)"></i>
                 {{note.body}}
               </a>
@@ -44,7 +44,7 @@
           <Nav-Menu :num="taskList.length" type="tasks">
             <li v-for="task in taskList">
               <!-- Task item -->
-              <a >
+              <a>
                 <h3>
                   {{computeTaskContent(task.content)}}
                   <small class="pull-right">{{task.percentage}}%</small>
@@ -56,7 +56,7 @@
                     :style="{width: task.percentage + '%' }"
                     role="progressbar"
                   >
-                  <span class="sr-only">{{task.percentage}}% Complete</span>
+                    <span class="sr-only">{{task.percentage}}% Complete</span>
                   </div>
                 </div>
               </a>
@@ -64,9 +64,9 @@
           </Nav-Menu>
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
-            <a  class="dropdown-toggle" data-toggle="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
               <img src="@/assets/img/default.jpg" class="user-image" alt="User Image">
-              <span class="capitalize hidden-xs">{{user.first_name}} {{user.last_name}}</span>
+              <span class="capitalize hidden-xs">{{user.full_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -74,7 +74,7 @@
                 <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
 
                 <p class="capitalize">
-                  {{user.first_name}} {{user.last_name}} - {{user.role}}
+                  {{user.full_name}} - {{user.role}}
                   <small>Member since {{getDate(user.created_at)}}</small>
                 </p>
               </li>
@@ -82,13 +82,13 @@
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
-                    <a >Button</a>
+                    <a>Button</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a >Button</a>
+                    <a>Button</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a >Button</a>
+                    <a>Button</a>
                   </div>
                 </div>
                 <!-- /.row -->
@@ -96,7 +96,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a  class="btn btn-default btn-flat">Profile</a>
+                  <a class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <router-link to="/login" class="btn btn-default btn-flat">Sign out</router-link>
@@ -106,7 +106,7 @@
           </li>
           <!-- Control Sidebar Toggle Button -->
           <li>
-            <a  data-toggle="control-sidebar">
+            <a data-toggle="control-sidebar">
               <i class="fa fa-gears"></i>
             </a>
           </li>
@@ -117,11 +117,11 @@
 </template>
 
 <script>
-import Logo from "@/components/_Main/_Header/Logo.vue";
-import NavMenu from "@/components/_Main/_Header/NavMenu.vue";
+import Logo from '@/components/_Main/_Header/Logo.vue';
+import NavMenu from '@/components/_Main/_Header/NavMenu.vue';
 
 export default {
-  name: "Header",
+  name: 'Header',
   components: {
     Logo,
     NavMenu
@@ -131,93 +131,93 @@ export default {
       //array of message for header menu
       msgList: [
         {
-          avatar: "adminLTE/dist/img/default.jpg",
-          sender: "Somebody",
+          avatar: 'adminLTE/dist/img/default.jpg',
+          sender: 'Somebody',
           sendTime: 5,
-          body: "Hey this is a testing67"
+          body: 'Hey this is a testing67'
         },
         {
-          avatar: "adminLTE/dist/img/avatar2.jpg",
-          sender: "Somebody2",
+          avatar: 'adminLTE/dist/img/avatar2.jpg',
+          sender: 'Somebody2',
           sendTime: 2,
-          body: "Hey this is a testing3"
+          body: 'Hey this is a testing3'
         },
         {
-          avatar: "adminLTE/dist/img/avatar04.jpg",
-          sender: "Somebody3",
+          avatar: 'adminLTE/dist/img/avatar04.jpg',
+          sender: 'Somebody3',
           sendTime: 1,
-          body: "Hey this is a testing2"
+          body: 'Hey this is a testing2'
         }
       ],
       //array of alert for header menu
       noteList: [
         {
-          body: "Hey this is a testing",
-          sign: "alert"
+          body: 'Hey this is a testing',
+          sign: 'alert'
         },
         {
-          body: "Hey this is a testing3",
-          sign: "info"
+          body: 'Hey this is a testing3',
+          sign: 'info'
         },
         {
-          body: "Hey this is a testing2",
-          sign: "complete"
+          body: 'Hey this is a testing2',
+          sign: 'complete'
         },
         {
-          body: "Hey this is a testing4",
-          sign: "delete"
+          body: 'Hey this is a testing4',
+          sign: 'delete'
         }
-      ],
+      ]
     };
   },
   //data from parent
   props: {
-    user: { type: Object, required: false, default: "Anonymous" },
-    taskList:Array
+    user: { type: Object, required: false, default: 'Anonymous' },
+    taskList: Array
   },
   methods: {
     //if has date and time, split date out and return it
     getDate: DateAndTime => {
       if (DateAndTime) {
-        return DateAndTime.split(" ")[0];
+        return DateAndTime.split(' ')[0];
       }
     },
 
     //calculate total time from send to now
     calculateTimePast: sendTime => {
-      return sendTime + " mins";
+      return sendTime + ' mins';
     },
 
     //convert sign to fa fa class
     convertSignClass: sign => {
       switch (sign) {
-        case "complete":
-          return "fa-check-square text-green";
-        case "alert":
-          return "fa-warning text-yellow";
-        case "info":
-          return "fa-info-circle text-blue";
-        case "delete":
-          return "fa-check-square text-red";
+        case 'complete':
+          return 'fa-check-square text-green';
+        case 'alert':
+          return 'fa-warning text-yellow';
+        case 'info':
+          return 'fa-info-circle text-blue';
+        case 'delete':
+          return 'fa-check-square text-red';
       }
     },
 
     //define progress bar color based on its percentage
-    getProgressBarColor: percent =>{
-      if(percent<100){
-        return "progress-bar-primary";
+    getProgressBarColor: percent => {
+      if (percent < 100) {
+        return 'progress-bar-primary';
       }
-      return "progress-bar-success";
+      return 'progress-bar-success';
     },
 
     // display maximum of 35 characters
-    computeTaskContent(content){
-      if(content.length>35){
+    computeTaskContent(content) {
+      if (content.length > 35) {
         //split from the last empty space
-        var i = content.indexOf(" ", 30);
-        if (i<0) i=35;
-        return content.substring(0,content.indexOf(" ", i)) +"..."
-      }else{
+        var i = content.indexOf(' ', 30);
+        if (i < 0) i = 35;
+        return content.substring(0, content.indexOf(' ', i)) + '...';
+      } else {
         return content;
       }
     }
@@ -226,8 +226,7 @@ export default {
 </script>
 
 <style>
-
-.navbar a{
-  transition:0.3s ease;
+.navbar a {
+  transition: 0.3s ease;
 }
 </style>

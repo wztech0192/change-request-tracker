@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import DevTodo from "./views/Dev/Todo.vue";
-import DevTool from "./views/Dev/Tool.vue";
+import DevTodo from './views/Dev/Todo.vue';
+import DevTool from './views/Dev/Tool.vue';
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
@@ -14,8 +14,8 @@ import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
 import CRContent from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestContent.vue';
 import CRMessage from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestMessage.vue';
 import CRHistory from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestHistory.vue';
+import CRSearch from './views/ChangeRequest/ChangeRequestSearch.vue';
 import store from './store/index';
-
 
 Vue.use(Router);
 
@@ -25,19 +25,25 @@ function Authenication(to, from, next) {
     next('/login');
   } else {
     // check the parent path is dev or admin
-    switch (to.fullPath.split("/")[1]) {
-      case "dev":
+    switch (to.fullPath.split('/')[1]) {
+      case 'dev':
         if (store.getters['authentication/isDev']) {
           next();
         } else {
-          store.commit('errorStore/setGlobalError', "Only Developer are allow to enter this page");
+          store.commit(
+            'errorStore/setGlobalError',
+            'Only Developer are allow to enter this page'
+          );
         }
         break;
-      case "admin":
+      case 'admin':
         if (store.getters['authentication/isAdmin']) {
           next();
         } else {
-          store.commit('errorStore/setGlobalError', "Only Admin are allow to enter this page");
+          store.commit(
+            'errorStore/setGlobalError',
+            'Only Admin are allow to enter this page'
+          );
         }
         break;
       default:
@@ -56,7 +62,6 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-
     {
       path: '/login',
       component: Login,
@@ -118,24 +123,31 @@ export default new Router({
     },
 
     {
+      path: '/admin/change-request/search',
+      component: CRSearch,
+      beforeEnter: Authenication
+    },
+
+    {
       path: '/change-request/:id',
       component: CRDetail,
       beforeEnter: Authenication,
-      children: [{
-        // render CRContent when /user/:id/content is matched
-        path: 'content',
-        component: CRContent
-      },
-      {
-        // render CRMessage when /user/:id/message is matched
-        path: 'message',
-        component: CRMessage
-      },
-      {
-        // rendered CRHistory when /user/:id/history is matched
-        path: 'history',
-        component: CRHistory
-      }
+      children: [
+        {
+          // render CRContent when /user/:id/content is matched
+          path: 'content',
+          component: CRContent
+        },
+        {
+          // render CRMessage when /user/:id/message is matched
+          path: 'message',
+          component: CRMessage
+        },
+        {
+          // rendered CRHistory when /user/:id/history is matched
+          path: 'history',
+          component: CRHistory
+        }
       ]
     }
   ]

@@ -8,7 +8,7 @@
           <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info capitalize">
-          <p>{{user.first_name}} {{user.last_name}}</p>
+          <p>{{user.full_name}}</p>
 
           <i class="fa fa-address-card capitalize"></i>
           &nbsp;&nbsp; {{user.role}}
@@ -52,90 +52,90 @@
 
 <script>
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   computed: {
     navItem: () => {
       return [
         {
-          split: "Developer"
+          split: 'Developer'
         },
         {
-          link: "/dev/todo",
-          icon: "fa fa-th",
-          name: "Todo List"
+          link: '/dev/todo',
+          icon: 'fa fa-th',
+          name: 'Todo List'
         },
         {
-          link: "/dev/tool",
-          icon: "fa fa-wrench",
-          name: "Dev Tool"
+          link: '/dev/tool',
+          icon: 'fa fa-wrench',
+          name: 'Dev Tool'
         },
         {
-          split: "Admin"
+          split: 'Admin'
         },
         {
-          link: "/admin/change-request/",
-          icon: "fa fa-list",
-          name: "Manage Request"
+          link: '/admin/change-request/',
+          icon: 'fa fa-list',
+          name: 'Manage Request'
         },
         {
-          link: "/1",
-          icon: "fa fa-search",
-          name: "Find Request"
+          link: '/admin/change-request/search',
+          icon: 'fa fa-search',
+          name: 'Find Request'
         },
         {
-          link: "/2",
-          icon: "fa fa-pie-chart",
-          name: "Request Chart"
+          link: '/2',
+          icon: 'fa fa-pie-chart',
+          name: 'Request Chart'
         },
         {
-          link: "/admin/user-list",
-          icon: "fa fa-users",
-          name: "Manage User"
+          link: '/admin/user-list',
+          icon: 'fa fa-users',
+          name: 'Manage User'
         },
         {
-          link: "/admin/generate-code",
-          icon: "fa fa-user-plus",
-          name: "Register Code"
+          link: '/admin/generate-code',
+          icon: 'fa fa-user-plus',
+          name: 'Register Code'
         },
         {
-          split: "NAVIGATION"
+          split: 'NAVIGATION'
         },
         {
-          link: "/",
-          icon: "fa fa-dashboard",
-          name: "Dashboard"
+          link: '/',
+          icon: 'fa fa-dashboard',
+          name: 'Dashboard'
         },
         {
-          link: "/change-request/entry",
-          icon: "fa fa-edit",
-          name: "Enter Change Request"
+          link: '/change-request/entry',
+          icon: 'fa fa-edit',
+          name: 'Enter Change Request'
         },
         {
-          link: "/change-request",
-          icon: "fa fa-tasks",
-          name: "Track Request Status"
+          link: '/change-request',
+          icon: 'fa fa-tasks',
+          name: 'Track Request Status'
         },
         {
-          link: "/5",
-          icon: "fa fa-calendar",
-          name: "Calendar"
+          link: '/5',
+          icon: 'fa fa-calendar',
+          name: 'Calendar'
         },
         {
-          link: "/6",
-          icon: "fa fa-envelope",
-          name: "Mailbox"
+          link: '/6',
+          icon: 'fa fa-envelope',
+          name: 'Mailbox'
         }
       ];
     }
   },
   //data from parent
   props: {
-    user: { type: Object, required: false, default: "Anonymous" }
+    user: { type: Object, required: false, default: 'Anonymous' }
   },
   created() {
-    $(".sidebar-menu li>a").click(() => {
-      $(".selected").removeClass("selected");
-      $(this).addClass("selected");
+    $('.sidebar-menu li>a').click(() => {
+      $('.selected').removeClass('selected');
+      $(this).addClass('selected');
     });
   }
 };

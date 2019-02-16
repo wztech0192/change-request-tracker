@@ -29,26 +29,20 @@
     <section class="content">
       <div class="box">
         <div class="box-body">
-          <table
-            id="user-table"
-            class="table table-bordered table-hover display nowrap"
-            style="width:100%"
-          >
+          <table id="user-table" class="table table-hover display nowrap" style="width:100%">
             <thead>
               <tr>
-                <th class="all" width="20px">#</th>
+                <th class="all">ID</th>
                 <th class="all">User Name</th>
                 <th class="all">Role</th>
-                <th>Email</th>
-                <th>Join Date</th>
+                <th class="desktop">Email</th>
+                <th class="desktop">Join Date</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(user, i) in userList" :id="i">
-                <th>{{i+1}}</th>
-                <td
-                  class="capitalize"
-                >{{user.first_name}} {{user.mid_initial || ""}} {{user.last_name}}</td>
+                <th>{{user.id}}</th>
+                <td class="capitalize">{{user.full_name}}</td>
                 <td>{{user.role}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.created_at}}</td>
@@ -109,7 +103,7 @@ export default {
           //resize based on widht
           responsive: true,
           //order by first col in ascending order
-          order: [[0, 'asc']],
+          order: [[0, 'desc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100]
         });
@@ -264,9 +258,7 @@ export default {
     //get user information template
     getUserInfo(user) {
       var template = ` <label>User Name</label>
-        <p class='capitalize'>${user.first_name} ${user.mid_initial || ''} ${
-        user.last_name
-      }</p>
+        <p class='capitalize'>${user.full_name}</p>
         <label>User Email</label>
         <p>${user.email}</p>`;
       return template;

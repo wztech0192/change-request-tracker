@@ -1,24 +1,25 @@
-
 /* Bootstrap 3.3.7 */
-import "./assets/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css";
+import './assets/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css';
 /* Font Awesome */
-import "./assets/adminlte/bower_components/font-awesome/css/font-awesome.min.css";
+import './assets/adminlte/bower_components/font-awesome/css/font-awesome.min.css';
 /* Ionicons */
-import "./assets/adminlte/bower_components/Ionicons/css/ionicons.min.css";
+import './assets/adminlte/bower_components/Ionicons/css/ionicons.min.css';
 /* Theme style */
-import "./assets/adminlte/dist/css/AdminLTE.min.css";
+import './assets/adminlte/dist/css/AdminLTE.min.css';
 /* Select2 */
-import "./assets/adminlte/bower_components/select2/dist/css/select2.min.css";
+import './assets/adminlte/bower_components/select2/dist/css/select2.min.css';
+/* daterange picker */
+import './assets/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css';
 /* AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. */
-import "./assets/adminlte/dist/css/skins/_all-skins.min.css";
+import './assets/adminlte/dist/css/skins/_all-skins.min.css';
 /* DataTables */
-import "./assets/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css";
-import "./assets/adminlte/bower_components/datatables.net/css/rowReorder.dataTables.min.css";
-import "./assets/adminlte/bower_components/datatables.net/css/responsive.dataTables.min.css";
+import './assets/adminlte/bower_components/datatables.net/css/jquery.dataTables.min.css';
+import './assets/adminlte/bower_components/datatables.net/css/rowReorder.dataTables.min.css';
+import './assets/adminlte/bower_components/datatables.net/css/responsive.dataTables.min.css';
 
 /* Pace style */
-import "./assets/adminlte/plugins/pace/pace.min.css";
+import './assets/adminlte/plugins/pace/pace.min.css';
 
 /* HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries */
 /* WARNING: Respond.js doesn't work if you view the page via file:// */
@@ -28,43 +29,44 @@ import "./assets/adminlte/plugins/pace/pace.min.css";
   <![endif] */
 
 /* Google Font */
-import "./assets/adminlte/font.css";
+import './assets/adminlte/font.css';
 /* jQuery 3 */
-import "./assets/adminlte/bower_components/jquery/dist/jquery.min";
+import './assets/adminlte/bower_components/jquery/dist/jquery.min';
 /* jQuery UI 1.11.4 */
-import "./assets/adminlte/bower_components/jquery-ui/jquery-ui.min";
+import './assets/adminlte/bower_components/jquery-ui/jquery-ui.min';
 /* Bootstrap 3.3.7 */
-import "./assets/adminlte/bower_components/bootstrap/dist/js/bootstrap.min";
+import './assets/adminlte/bower_components/bootstrap/dist/js/bootstrap.min';
 
 /* Sparkline */
-import "./assets/adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min";
+import './assets/adminlte/bower_components/jquery-sparkline/dist/jquery.sparkline.min';
 /* Select2 */
-import "./assets/adminlte/bower_components/select2/dist/js/select2.full.min";
+import './assets/adminlte/bower_components/select2/dist/js/select2.full.min';
 /* DataTables */
-import "./assets/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min";
-import "./assets/adminlte/bower_components/datatables.net/js/jquery.dataTables.min";
-import "./assets/adminlte/bower_components/datatables.net/js/dataTables.rowReorder.min";
-import "./assets/adminlte/bower_components/datatables.net/js/dataTables.responsive.min";
+import './assets/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min';
+import './assets/adminlte/bower_components/datatables.net/js/jquery.dataTables.min';
+import './assets/adminlte/bower_components/datatables.net/js/dataTables.rowReorder.min';
+import './assets/adminlte/bower_components/datatables.net/js/dataTables.responsive.min';
 /* Slimscroll */
-import "./assets/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min";
+import './assets/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min';
 /* FastClick */
-import "./assets/adminlte/bower_components/fastclick/lib/fastclick";
+import './assets/adminlte/bower_components/fastclick/lib/fastclick';
+/* date - range - picker */
+import './assets/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker';
 /* AdminLTE App */
-import "./assets/adminlte/dist/js/adminlte.min";
+import './assets/adminlte/dist/js/adminlte.min';
 /* PACE */
-import "./assets/adminlte/bower_components/PACE/pace.min";
+import './assets/adminlte/bower_components/PACE/pace.min';
 /* AdminLTE dashboard demo (This is only for demo purposes) */
 /* import "./assets/adminlte/dist/js/pages/dashboard" */
 /* AdminLTE for themeSetting */
-import "./assets/adminlte/dist/js/themeSetting";
-
+import './assets/adminlte/dist/js/themeSetting';
 
 /* CK Editor */
 import { sync } from 'vuex-router-sync';
 import VModal from 'vue-js-modal';
 
 import Vue from 'vue';
-import ClassicEditor from "./assets/adminlte/bower_components/ckeditor5-build-classic/ckeditor";
+import ClassicEditor from './assets/adminlte/bower_components/ckeditor5-build-classic/ckeditor';
 import router from './router';
 import store from './store/index';
 import App from './App.vue';
@@ -77,8 +79,9 @@ Vue.use(VModal, { dialog: true });
 sync(store, router);
 
 new Vue({
-
   router,
   store,
-  render(h) { return h(App); }
+  render(h) {
+    return h(App);
+  }
 }).$mount('#app');

@@ -54,15 +54,16 @@ class UserController {
       return validation.messages();
     }
 
-    //set username as email
-    userInfo.username = userInfo.email;
-
+    //set format user data
     if (userInfo.mid_initial) {
       userInfo.mid_initial = this._modifyString(userInfo.mid_initial) + '.';
     }
     userInfo.role = code.role;
     userInfo.last_name = this._modifyString(userInfo.last_name);
     userInfo.first_name = this._modifyString(userInfo.first_name);
+
+    userInfo.full_name = `${userInfo.first_name} ${userInfo.mid_initial ||
+      ''} ${userInfo.last_name}`;
 
     //create user
     await User.create(userInfo);
@@ -81,39 +82,72 @@ class UserController {
    * Generate number of users, for testing purpose
    */
   async generateUsers({ auth, params }) {
-    const user = await auth.getUser();
+    if (params.num > 0) {
+      const user = await auth.getUser();
 
-    AuthorizationService.verifyRole(user, ['Developer']);
-    const usersList = new Array(params.num);
-    for (let i = 0; i < params.num; i++) {
-      let email = this._getLTR(6) + '@' + this._getLTR(4) + '.com';
-      let username = email;
-      let password = this._getLTR(8);
-      let role = 'Client';
-      let first_name = this._getLTR(6);
-      let mid_initial = 'T.';
-      let last_name = this._getLTR(6);
-      usersList[i] = {
-        email,
-        username,
-        password,
-        role,
-        first_name,
-        mid_initial,
-        last_name
-      };
+      AuthorizationService.verifyRole(user, ['Developer']);
+      const usersList = new Array(params.num);
+      for (let i = 0; i < params.num; i++) {
+        let email = this._getLTR(6) + '@' + this._getLTR(4) + '.com';
+
+        let password = this._getLTR(8);
+        let role = 'Client';
+        let first_name = this._getLTR(6);
+        let mid_initial = 'T.';
+        let last_name = this._getLTR(6);
+        let full_name = `${first_name} ${mid_initial || ''} ${last_name}`;
+        usersList[i] = {
+          email,
+          full_name,
+          password,
+          role,
+          first_name,
+          mid_initial,
+          last_name
+        };
+      }
+
+      await User.createMany(usersList);
+      return 'OK';
     }
-
-    await User.createMany(usersList);
-    return 'OK';
   }
 
+  //generate random letter by length
   _getLTR(length) {
     let str = '';
     for (let i = 0; i < length; i++) {
       str += ltr.charAt(Math.round(Math.random() * (ltr.length - 1)));
     }
     return str;
+  }
+
+  /**
+   * search user
+   */
+  async search({ auth, request, params }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Admin', 'Developer']);
+
+    const data = request.all();
+    const userList = await User.query()
+      .where(function() {
+        this.where('full_name', 'like', `%${data.term || ''}%`).orWhere(
+          'email',
+          'like',
+          `%${data.term || ''}%`
+        );
+      })
+      .andWhere('role', 'like', params.role === 'all' ? '%%' : params.role)
+
+      .paginate(data.page, 10);
+
+    return {
+      results: userList.rows,
+      pagination: {
+        more: userList.pages.page < userList.pages.lastPage
+      },
+      totals: userList.rows.length
+    };
   }
 
   /**
@@ -208,7 +242,7 @@ class UserController {
         null,
         true
       );
-      data = request.except(['username', 'email', 'password']);
+      data = request.except(['full_name', 'email', 'password']);
 
       if (data.passworld || data.email) {
         //validate password or email

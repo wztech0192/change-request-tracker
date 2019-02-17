@@ -27,13 +27,18 @@
                 <i class="fa fa-user"></i> Client
                 <span v-if="error.client_error">-- Client Cannot be empty</span>
               </label>
-              
-              <select class="form-control select2" id="clientselect">
+
+              <UserSearch
+                ref="usersearch"
+                searchRole="Client"
+                :onChange="userChange"
+                :useEmailID="true"
+              >
                 <option
                   v-if="requestData.client"
                   :value="requestData.client"
-                >{{requestData.client.substring(0,requestData.client.lastIndexOf(" "))}}</option>
-              </select>
+                >{{initClientSearch(requestData.client)}}</option>
+              </UserSearch>
             </div>
           </div>
 
@@ -114,8 +119,12 @@
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import HTTP from '@/http';
 import router from '@/router';
+import UserSearch from '@/components/UserSearch';
 
 export default {
+  components: {
+    UserSearch
+  },
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('changeRequest', ['requestData', 'error']),
@@ -134,8 +143,6 @@ export default {
     var self = this;
     if (this.isAdmin) {
       this.setRequesterData(this.requestData.client);
-      //initialize client select box
-      this.initClientSelect(this);
     } else {
       this.requester = this.user;
     }
@@ -180,49 +187,22 @@ export default {
       'setClient'
     ]),
 
-    initClientSelect(self) {
-      //initialize select2 for client search
-      $('#clientselect').select2({
-        placeholder: 'Select a client',
-        width: '100%',
-        height: '40px',
-        allowClear: true,
-        ajax: {
-          delay: 250,
-          transport: function({ data }, success, failure) {
-            HTTP()
-              .post('user/search/Client', {
-                term: data.term || '',
-                page: data.page || 1
-              })
-              .then(({ data }) => {
-                success(data);
-              })
-              .catch(e => {
-                failure(e);
-              });
-          },
-          processResults: function(data, params) {
-            // use full name as text and id for the options
-            data.results.forEach(d => {
-              d.text = `${d.full_name} (${d.email})`;
-              d.id = d.text + ` ${d.id}`;
-            });
-            return data;
-          }
-        }
-      });
-      //select event
-      $('#clientselect').on('change', function(e) {
-        self.clearError('client');
-        var val = $(this).val();
-        self.setClient(val);
-        self.setRequesterData(val);
-      });
+    initClientSearch(client) {
+      try {
+        return client.substring(0, client.lastIndexOf(' '));
+      } catch (e) {
+        return '';
+      }
+    },
+
+    userChange(val) {
+      this.clearError('client');
+      this.setClient(val);
+      this.setRequesterData(val);
     },
 
     setRequesterData(val) {
-      if (val) {
+      try {
         //set requester data
         val = val.split(' ');
         this.requester = {
@@ -232,7 +212,7 @@ export default {
           email: val[3].substring(1, val[3].length - 1),
           id: val[4]
         };
-      } else {
+      } catch (e) {
         //set empty requester if selected val is empty
         this.requester = {};
       }
@@ -241,9 +221,9 @@ export default {
     clearAllData() {
       this.clearAll();
       this.editor.setData('');
-      $('#clientselect')
-        .val('')
-        .trigger('change');
+      if (this.$refs.usersearch) {
+        this.$refs.usersearch.clear();
+      }
     },
 
     //submit request

@@ -94,8 +94,11 @@ Route.group(() => {
   Route.patch('message/:id', 'MessageController.updateMessage');
 
   //Change Request Route
-  Route.get('change-request', 'ChangeRequestController.index');
-  Route.post('change-request/list', 'ChangeRequestController.getRequestList');
+  Route.post('change-request/list', 'ChangeRequestController.index');
+  Route.post(
+    'change-request/admin/list',
+    'ChangeRequestController.getRequestList'
+  );
   Route.get('change-request/:id', 'ChangeRequestController.detail');
   Route.post('change-request', 'ChangeRequestController.create');
   Route.delete('change-request/:id', 'ChangeRequestController.destroy');

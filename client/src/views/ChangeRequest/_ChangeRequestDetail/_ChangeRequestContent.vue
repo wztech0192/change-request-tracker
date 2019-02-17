@@ -93,7 +93,6 @@ export default {
     //save the edited content
     saveEdit() {
       if (this.isAdmin) {
-        console.log(this.newContent);
         HTTP()
           .patch(`/change-request/${this.$route.params.id}`, this.newContent)
           .then(({ data }) => {

@@ -193,8 +193,12 @@ h1 {
   transform: translateY(30px);
 }
 
+.none-ex {
+  display: none;
+}
+
 @media (max-width: 480px) {
-  .mobile-hide {
+  .not-mobile-ex {
     display: none;
   }
   body {
@@ -204,7 +208,7 @@ h1 {
 }
 
 @media (max-width: 1048px) {
-  .tablet-hide {
+  .desktop-ex {
     display: none;
   }
 }

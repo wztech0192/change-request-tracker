@@ -74,7 +74,7 @@ export default {
         },
         {
           link: '/admin/change-request/',
-          icon: 'fa fa-list',
+          icon: 'fa fa-tasks',
           name: 'Manage Request'
         },
         {

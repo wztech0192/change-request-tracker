@@ -41,9 +41,26 @@ class ChangeRequestController {
    * Get all change request belongs to this user
    * @returns {ChangeRequest[]}
    */
-  async index({ auth }) {
+  async index({ auth, request }) {
     const user = await auth.getUser();
-    return user.change_requests().fetch();
+    const { tab } = request.all();
+
+    switch (tab) {
+      case 'all':
+        return await user.change_requests().fetch();
+      case 'active':
+        //return all change request except the one with cancelled or complete status
+        return await user
+          .change_requests()
+          .whereNotIn('status', ['Cancelled', 'Complete'])
+          .fetch();
+
+      default:
+        return await user
+          .change_requests()
+          .where('status', tab)
+          .fetch();
+    }
   }
 
   /**
@@ -102,6 +119,7 @@ class ChangeRequestController {
    */
   async create({ auth, request }) {
     const data = request.only(['title', 'details']);
+
     //throw error if title or details is empty
     if (!data.title || !data.details) {
       throw new Exception('Something is wrong');

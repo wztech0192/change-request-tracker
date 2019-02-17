@@ -9,7 +9,6 @@ import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
 import CRList from './views/ChangeRequest/ChangeRequestList.vue';
-import CRAdminList from './views/ChangeRequest/ChangeRequestAdmin.vue';
 import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
 import CRContent from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestContent.vue';
 import CRMessage from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestMessage.vue';
@@ -118,7 +117,7 @@ export default new Router({
 
     {
       path: '/admin/change-request/',
-      component: CRAdminList,
+      component: CRList,
       beforeEnter: Authenication
     },
 

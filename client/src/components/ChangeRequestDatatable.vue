@@ -12,7 +12,6 @@
     <tbody></tbody>
   </table>
 </template>
-
 <script>
 import router from '@/router';
 import { mapState } from 'vuex';

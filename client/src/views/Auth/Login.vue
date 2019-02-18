@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: allow user to enter the website
+ -->
+
 <template>
   <div class="box login-box" style="background-color:transparent">
     <div class="login-logo">

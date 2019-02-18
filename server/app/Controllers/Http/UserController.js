@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description register, login,
+ * @description register, login, search user, get user list...y
  */
 
 const User = use('App/Models/User');
@@ -183,6 +183,34 @@ class UserController {
     return userQuery.rows;
   }
 
+  /*
+   * Datatable server side processing
+   */
+  async datatable({ auth, request }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    const table = request.all();
+
+    //table page
+    const page = table.start / table.length + 1;
+
+    // filter search
+    const searchV = `%${table.search.value}%`;
+    const userList = await User.query()
+      .where('id', 'like', searchV)
+      .orWhere('full_name', 'like', searchV)
+      .orWhere('email', 'like', searchV)
+      .orWhere('role', 'like', searchV)
+      .orWhere('created_at', 'like', searchV)
+      .orderBy(table.columns[table.order[0].column].data, table.order[0].dir)
+      .paginate(page, table.length);
+
+    return {
+      recordsTotal: userList.pages.total,
+      recordsFiltered: userList.pages.total,
+      data: userList.rows
+    };
+  }
   /**
    * Get All User
    * @return {user[]}

@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: allow user to register account
+ -->
+
 <template>
   <div class="box register-box" style="background-color:transparent;">
     <div class="register-logo">

@@ -51,6 +51,7 @@ Route.group(() => {
   Route.get('user/:id', 'UserController.get');
   Route.get('user/by-role/:role', 'UserController.getRoleList');
   Route.post('user/search/:role', 'UserController.search');
+  Route.post('user/datatable', 'UserController.datatable');
   Route.delete('user/:id', 'UserController.destroy');
   Route.patch('user/:id', 'UserController.update');
 

@@ -1,5 +1,6 @@
 /**
- * Store authenication details
+ * @author Wei Zheng
+ * @description store authentication detail. (e.g: jwt token, user information...)
  */
 
 import HTTP from '../http';

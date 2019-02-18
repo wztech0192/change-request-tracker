@@ -1,5 +1,6 @@
 /**
- * Store change_request details
+ * @author Wei Zheng
+ * @description store enter change request information, and change request filter tab
  */
 
 export default {

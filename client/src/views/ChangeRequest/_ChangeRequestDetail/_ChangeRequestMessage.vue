@@ -1,3 +1,9 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display or submit change request message. Allow real-time chatting.
+ -->
+
+
 <template>
   <div class="box box-comments" style="box-shadow:0px 0px 5px grey;">
     <div v-if="!msgList || msgList.length<=0">

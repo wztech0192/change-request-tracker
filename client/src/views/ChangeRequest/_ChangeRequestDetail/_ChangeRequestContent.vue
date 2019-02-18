@@ -1,3 +1,9 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display change request content. Allow admin to edit.
+ -->
+
+
 <template>
   <div class="box">
     <div class="box-header with-border">

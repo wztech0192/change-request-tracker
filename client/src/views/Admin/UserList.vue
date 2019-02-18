@@ -1,5 +1,10 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display all users by using datatable server process.
+ -->
+
 <template>
-  <div v-if="userList">
+  <div>
     <section class="content-header">
       <h1>
         <i class="fa fa-users"></i>&nbsp;&nbsp;User List
@@ -29,26 +34,13 @@
     <section class="content">
       <div class="box">
         <div class="box-body">
-          <table id="user-table" class="table table-hover display nowrap" style="width:100%">
-            <thead>
-              <tr>
-                <th class="all">ID</th>
-                <th class="all">User Name</th>
-                <th class="all">Role</th>
-                <th class="desktop">Email</th>
-                <th class="desktop">Join Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(user, i) in userList" :id="i">
-                <th>{{user.id}}</th>
-                <td class="capitalize">{{user.full_name}}</td>
-                <td>{{user.role}}</td>
-                <td>{{user.email}}</td>
-                <td>{{user.created_at}}</td>
-              </tr>
-            </tbody>
+          <table id="user-table" class="table table-hover display" style="width:100%;">
+            <thead></thead>
+            <tbody></tbody>
           </table>
+          <div v-if="loading" class="overlay">
+            <i class="fa fa-refresh fa-spin"></i>
+          </div>
         </div>
         <!-- /.box-body -->
       </div>
@@ -65,7 +57,8 @@ import router from '@/router';
 export default {
   data() {
     return {
-      userList: null
+      loading: false,
+      table: null
     };
   },
 
@@ -73,71 +66,121 @@ export default {
     ...mapState('authentication', ['user'])
   },
 
-  created() {
-    //fetch user list
-    this.fetchUserList();
+  mounted() {
+    this.initiateTable();
   },
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
 
-    // fetch dev todo list
-    fetchUserList() {
-      return HTTP()
-        .get('/user/all')
-        .then(({ data }) => {
-          this.userList = data;
-          this.initiateTable();
-        })
-        .catch(e => {
-          this.setGlobalError(e);
-          router.push('/');
-        });
-    },
-
     //initialize data table
     initiateTable() {
-      var _showChanegRoleDialog = this.showChanegRoleDialog;
-      setTimeout(() => {
-        var table = $('#user-table').DataTable({
+      // base url for http request
+      const baseURL =
+        process.env.NODE_ENV === 'production' ? '/crt/api' : '/api';
+      // jwt token
+      const header = {
+        Authorization: `Bearer ${this.$store.state.authentication.token}`
+      };
+      const self = this;
+
+      self.table = $('#user-table')
+        .on('processing.dt', function(e, settings, processing) {
+          // loading icon
+          self.loading = processing;
+        })
+        .DataTable({
           //resize based on widht
           responsive: true,
           //order by first col in ascending order
           order: [[0, 'desc']],
           iDisplayLength: 20,
           lengthMenu: [10, 20, 40, 60, 80, 100],
-          processing: true,
-          deferRender: true
-        });
+          deferRender: false,
+          serverSide: true,
+          data: [],
+          columns: [
+            { data: 'id', title: 'ID' },
+            { data: 'full_name', title: 'User Name' },
+            { data: 'role', title: 'Role' },
+            { data: 'email', title: 'Email' },
+            { data: 'created_at', title: 'Join Date' }
+          ],
+          searchDelay: 600,
+          ajax: {
+            type: 'POST',
+            url: baseURL + '/user/datatable',
+            headers: header,
 
-        //click select event
-        $('#user-table tbody').on('click', 'tr', function() {
-          if (!$(this).hasClass('child')) {
-            if ($(this).hasClass('selected')) {
-              $(this).removeClass('selected');
-            } else {
-              table.$('tr.selected').removeClass('selected');
-              $(this).addClass('selected');
+            dataSrc: ({ data }) => {
+              return data;
             }
-          }
-        });
+          },
+          createdRow: function(row, data, dataIndex) {
+            //bold id
+            $(row)
+              .find('td:eq(0)')
+              .css('font-weight', 'bold');
+          },
+          initComplete: function() {
+            //click select event
+            $('#user-table tbody').on('click', 'tr', function() {
+              self.addTableSelect(this);
+            });
 
-        //double click event
-        $('#user-table tbody').on('dblclick', 'tr', function() {
-          if (!$(this).hasClass('child')) {
-            var i = $(this).attr('id');
-            _showChanegRoleDialog(i);
+            //double click event
+            $('#user-table tbody').on('dblclick', 'tr', function() {
+              if (!$(this).hasClass('child')) {
+                self.showChanegRoleDialog(
+                  self.table.row($(this).index()).data()
+                );
+              }
+            });
+
+            var touched = false;
+            //double tab event
+            $('#user-table tbody').on('touchstart', 'tr', function(e) {
+              if (!$(this).hasClass('child')) {
+                self.addTableSelect(this);
+                if (!touched) {
+                  touched = true;
+                  setTimeout(() => {
+                    touched = false;
+                  }, 200);
+                } else {
+                  self.showChanegRoleDialog(
+                    self.table.row($(this).index()).data()
+                  );
+                }
+              }
+            });
+            //top touch count down
+            $('#change-request-table tbody').on('touchend', 'tr', function() {
+              clearTimeout(touched);
+            });
           }
         });
-      }, 10);
+    },
+
+    //focus and select table row
+    addTableSelect(tr) {
+      if (!$(tr).hasClass('child')) {
+        if (!$(tr).hasClass('selected')) {
+          $('#user-table tbody .selected').removeClass('selected');
+          $(tr).addClass('selected');
+        }
+      }
     },
 
     //get selected row index and show dialog, alert when fail
     openSelectedRow(callBack) {
-      var selectIndex = $('#user-table .selected').attr('id');
-      if (selectIndex) {
+      var selectedUser = this.table
+        .row($('#user-table .selected').index())
+        .data();
+
+      if (selectedUser) {
         //display target dialog
-        callBack(selectIndex);
+        callBack(selectedUser);
       } else {
         //display no selection error massage
         this.$modal.show('dialog', {
@@ -157,8 +200,7 @@ export default {
     },
 
     //display delete user dialog
-    showDeleteDialog(selectIndex) {
-      var user = this.userList[selectIndex];
+    showDeleteDialog(user) {
       this.$modal.show('dialog', {
         title: `<span class='text-red'><i class='fa fa-trash'></i> Delete User</span>`,
         maxWidth: 300,
@@ -185,11 +227,7 @@ export default {
                       $('.dialog-error').text('Something is wrong');
                     } else {
                       //remove row from table and hide dialog
-                      $('#user-table')
-                        .DataTable()
-                        .row($('#user-table .selected'))
-                        .remove()
-                        .draw();
+                      this.table.ajax.reload(null, false);
                       this.$modal.hide('dialog');
                     }
                   })
@@ -210,8 +248,7 @@ export default {
     },
 
     //display dialog
-    showChanegRoleDialog(selectIndex) {
-      var user = this.userList[selectIndex];
+    showChanegRoleDialog(user) {
       this.$modal.show('dialog', {
         title: `<i class='fa fa-user-circle'></i> Change Role`,
         maxWidth: 300,
@@ -237,7 +274,7 @@ export default {
                       $('.dialog-error').text('Something is wrong');
                     } else {
                       //change table data
-                      user.role = newRole;
+                      this.table.ajax.reload(null, false);
                       this.$modal.hide('dialog');
                     }
                   })

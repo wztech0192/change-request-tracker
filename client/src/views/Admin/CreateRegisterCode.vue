@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: generate registration code for user.
+ -->
+
 <template>
   <div class="box">
     <section class="content-header">

@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display all change request history in time line
+ -->
+
 <template>
   <div class="box">
     <div v-if="histories">

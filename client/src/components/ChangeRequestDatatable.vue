@@ -106,7 +106,7 @@ export default {
               .every(function() {
                 self.setTableFilter(this);
               });
-            $('.select2').select2({ width: '80%' });
+            $('.select2').select2({ width: '80%', allowClear: true });
             self.spinner.loading = false;
           }
         }
@@ -129,7 +129,7 @@ export default {
       });
 
       var touched = false;
-      //touch down event, Open detal page if touch over 0.5 second
+      //double tab event.
       $('#change-request-table tbody').on('touchstart', 'tr', function(e) {
         if (!$(this).hasClass('child')) {
           self.addTableSelect(this);
@@ -146,10 +146,6 @@ export default {
             );
           }
         }
-      });
-      //top touch count down
-      $('#change-request-table tbody').on('touchend', 'tr', function() {
-        clearTimeout(touched);
       });
     },
 
@@ -180,7 +176,7 @@ export default {
 
     setTableFilter(column) {
       var select = $(
-        '<select class="select2"><option value="">ALL</option></select>'
+        '<select class="select2 js-states form-control "><option value="">ALL</option></select>'
       ).on('change', function() {
         var val = $.fn.dataTable.util.escapeRegex($(this).val());
         column.search(val ? '^' + val + '$' : '', true, false).draw();

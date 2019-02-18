@@ -1,3 +1,9 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display change request list. Allow search and sort. 
+ -               Two version, one for admin and one for client
+ -->
+
 <template>
   <div v-if="ChangeRequestList">
     <section class="content">

@@ -1,5 +1,6 @@
 /**
- * Store error message
+ * @author Wei Zheng
+ * @description store error message
  */
 
 import router from '../router';

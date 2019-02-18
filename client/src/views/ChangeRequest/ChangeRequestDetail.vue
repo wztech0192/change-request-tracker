@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: display change request detail
+ -->
+
 <template>
   <div v-if="requestData">
     <section class="content-header">

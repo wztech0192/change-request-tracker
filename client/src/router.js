@@ -6,6 +6,7 @@ import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
+import DataSearch from './views/Admin/DataSearch.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
@@ -14,7 +15,6 @@ import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
 import CRContent from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestContent.vue';
 import CRMessage from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestMessage.vue';
 import CRHistory from './views/ChangeRequest/_ChangeRequestDetail/_ChangeRequestHistory.vue';
-import CRSearch from './views/ChangeRequest/ChangeRequestSearch.vue';
 import store from './store/index';
 
 Vue.use(Router);
@@ -132,7 +132,7 @@ export default new Router({
 
     {
       path: '/admin/change-request/search',
-      component: CRSearch,
+      component: DataSearch,
       beforeEnter: Authenication
     },
 

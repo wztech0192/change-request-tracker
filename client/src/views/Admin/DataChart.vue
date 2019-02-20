@@ -31,7 +31,7 @@
                   <h3>
                     <i class="fa fa-binoculars"></i>&nbsp;&nbsp;
                     <label>{{date.begin.getFullYear()}} Week {{date.week}}&nbsp;&nbsp;&nbsp;</label>
-                    
+                    <br>
                     <span>{{date.begin.toLocaleDateString()}} - {{date.end.toLocaleDateString()}}</span>
                   </h3>
                 </div>
@@ -126,6 +126,9 @@ export default {
         .get(`change-request/chart/${range}`)
         .then(({ data }) => {
           this.updateChart(data);
+        })
+        .catch(e => {
+          this.setGlobalError(e);
         });
     },
 

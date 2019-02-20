@@ -288,7 +288,7 @@ export default {
     reloadCollapseEvent() {
       setTimeout(() => {
         $('.collapsed-box').boxWidget({
-          animationSpeed: 500,
+          animationSpeed: 300,
           collapseTrigger: "[data-widget='collapse']",
           collapseIcon: 'fa-minus',
           expandIcon: 'fa-plus'

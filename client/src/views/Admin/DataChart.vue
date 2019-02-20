@@ -96,7 +96,7 @@ export default {
         defaultDate: new Date(),
         endDate: new Date()
       })
-      .on('changeDate', function(e) {
+      .on('changeDate', e => {
         var weekData = $('.datepicker-days')
           .find('td.active')
           .removeClass('active')
@@ -108,6 +108,22 @@ export default {
         weekData = weekData.addClass('active').children();
 
         self.setDateRange(weekData);
+      })
+      .on('changeMonth', e => {
+        setTimeout(() => {
+          var active = $('.datepicker-days').find('td.active');
+          if (active.length > 0) {
+            active
+              .removeClass('active')
+              .parent()
+              .addClass('active');
+          } else {
+            $('.datepicker-days')
+              .find('.today')
+              .parent()
+              .addClass('active');
+          }
+        }, 1);
       });
 
     //initialize today
@@ -187,7 +203,7 @@ export default {
               chart.options.legend.position = 'bottom';
               chart.options.legend.labels = {
                 fontSize: 14,
-                padding: 10
+                padding: 20
               };
             } else {
               chart.options.legend.position = 'left';
@@ -203,7 +219,7 @@ export default {
 
             labels: {
               fontSize: $(document).width() < 450 ? 14 : 16,
-              padding: $(document).width() < 450 ? 10 : 40
+              padding: $(document).width() < 450 ? 20 : 40
             }
           },
           title: {

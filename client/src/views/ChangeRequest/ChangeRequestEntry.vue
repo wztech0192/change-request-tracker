@@ -177,7 +177,7 @@ export default {
 
     //initialize collapse box
     $('.collapsed-box').boxWidget({
-      animationSpeed: 500,
+      animationSpeed: 300,
       collapseTrigger: "[data-widget='collapse']"
     });
   },

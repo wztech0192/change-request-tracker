@@ -100,6 +100,10 @@ Route.group(() => {
     'change-request/admin/list',
     'ChangeRequestController.getRequestList'
   );
+  Route.get(
+    'change-request/chart/:range',
+    'ChangeRequestController.getChartData'
+  );
   Route.get('change-request/:id', 'ChangeRequestController.detail');
   Route.post('change-request', 'ChangeRequestController.create');
   Route.delete('change-request/:id', 'ChangeRequestController.destroy');

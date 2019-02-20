@@ -83,9 +83,9 @@ export default {
           name: 'Find Request'
         },
         {
-          link: '/2',
+          link: '/admin/chart',
           icon: 'fa fa-pie-chart',
-          name: 'Request Chart'
+          name: 'Data Chart'
         },
         {
           link: '/admin/user-list',

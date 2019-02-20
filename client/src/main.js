@@ -17,7 +17,8 @@ import './assets/adminlte/dist/css/skins/_all-skins.min.css';
 import './assets/adminlte/bower_components/datatables.net/css/jquery.dataTables.min.css';
 import './assets/adminlte/bower_components/datatables.net/css/rowReorder.dataTables.min.css';
 import './assets/adminlte/bower_components/datatables.net/css/responsive.dataTables.min.css';
-
+/* Date Picker */
+import './assets/adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css';
 /* Pace style */
 import './assets/adminlte/plugins/pace/pace.min.css';
 
@@ -56,8 +57,9 @@ import './assets/adminlte/bower_components/bootstrap-daterangepicker/daterangepi
 import './assets/adminlte/dist/js/adminlte.min';
 /* PACE */
 import './assets/adminlte/bower_components/PACE/pace.min';
-/* AdminLTE dashboard demo (This is only for demo purposes) */
-/* import "./assets/adminlte/dist/js/pages/dashboard" */
+/* datepicker */
+import './assets/adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min';
+
 /* AdminLTE for themeSetting */
 import './assets/adminlte/dist/js/themeSetting';
 
@@ -66,12 +68,14 @@ import { sync } from 'vuex-router-sync';
 import VModal from 'vue-js-modal';
 
 import Vue from 'vue';
+import Chart from './assets/adminlte/bower_components/chart.js/Chart.min';
 import ClassicEditor from './assets/adminlte/bower_components/ckeditor5-build-classic/ckeditor';
 import router from './router';
 import store from './store/index';
 import App from './App.vue';
 
 window.ClassicEditor = ClassicEditor;
+window.Chart = Chart;
 
 Vue.config.productionTip = false;
 Vue.use(VModal, { dialog: true });

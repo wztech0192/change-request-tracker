@@ -338,6 +338,67 @@ class ChangeRequestController {
   }
 
   /**
+   * delete target change request message
+   * @returns {ChartJS JSON}
+   */
+  async getChartData({ auth, params }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    const dateRange = params.range.split('~');
+
+    //retrieve change request between required date
+    const CRList = await ChangeRequest.query()
+      .whereBetween('created_at', [
+        `${dateRange[0]} 00:00:01`,
+        `${dateRange[1]} 23:59:59`
+      ])
+      .orderBy('created_at', 'asc')
+      .fetch();
+
+    //chart data JSON format
+    const chartData = {
+      pie: [0, 0, 0, 0],
+      line: [
+        new Array(7).fill(0),
+        new Array(7).fill(0),
+        new Array(7).fill(0),
+        new Array(7).fill(0)
+      ]
+    };
+
+    let total = 0;
+    let i = 0;
+
+    //loop through each change request and fill chart data.
+    for (let data of CRList.rows) {
+      //if date is different change to filling data to next day
+
+      switch (data.status) {
+        case 'Cancelled':
+          i = 0;
+          break;
+        case 'To Do':
+          i = 1;
+          break;
+        case 'In Progress':
+          i = 2;
+          break;
+        case 'Complete':
+          i = 3;
+          break;
+      }
+      chartData.pie[i]++;
+      chartData.line[i][data.created_at.getDay()]++;
+      total++;
+    }
+
+    return {
+      chartData,
+      total
+    };
+  }
+
+  /**
    * Adjust change request data, for dev
    */
   async adjustChangeRequest({ auth }) {

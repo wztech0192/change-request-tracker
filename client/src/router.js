@@ -5,6 +5,7 @@ import DevTool from './views/Dev/Tool.vue';
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
 import UserList from './views/Admin/UserList.vue';
+import DataChart from './views/Admin/DataChart.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
@@ -18,14 +19,15 @@ import store from './store/index';
 
 Vue.use(Router);
 
-// redirect if not logged in
+// verify if user is login and if user has right to enter the route.
 function Authenication(to, from, next) {
   if (!store.getters['authentication/isLoggedIn']) {
     next('/login');
   } else {
-    // check the parent path is dev or admin
+    // check the path is admin only or developer only
     switch (to.fullPath.split('/')[1]) {
       case 'dev':
+        // verify if user is dev, redirect if not
         if (store.getters['authentication/isDev']) {
           next();
         } else {
@@ -36,6 +38,7 @@ function Authenication(to, from, next) {
         }
         break;
       case 'admin':
+        // verify if user is admin, redirect if not
         if (store.getters['authentication/isAdmin']) {
           next();
         } else {
@@ -94,6 +97,12 @@ export default new Router({
     {
       path: '/admin/user-list',
       component: UserList,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/admin/chart',
+      component: DataChart,
       beforeEnter: Authenication
     },
 

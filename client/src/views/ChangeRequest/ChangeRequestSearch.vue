@@ -179,11 +179,16 @@ export default {
     //Date range picker
     $('#daterange').daterangepicker(
       {
-        opens: 'left'
+        inline: true,
+        timePicker: true
       },
       function(start, end) {
         self.filter.date =
-          start.format('YYYY-MM-DD') + '/' + end.format('YYYY-MM-DD');
+          start.format('YYYY-MM-DD HH:mm:ss') +
+          '/' +
+          end.format('YYYY-MM-DD HH:mm:ss');
+
+        console.log(self.filter.date);
       }
     );
     // empty date by default

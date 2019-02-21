@@ -9,6 +9,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   strict: true,
+  getters:{
+    baseURL(){
+      return '/api';
+    }
+  },
   modules: {
     authentication,
     errorStore,

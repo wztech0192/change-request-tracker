@@ -54,6 +54,7 @@ import { mapState, mapActions } from 'vuex';
 import HTTP from '@/http';
 import router from '@/router';
 
+
 export default {
   data() {
     return {
@@ -76,8 +77,7 @@ export default {
     //initialize data table
     initiateTable() {
       // base url for http request
-      const baseURL =
-        process.env.NODE_ENV === 'production' ? '/crt/api' : '/api';
+      const baseURL =this.$store.getters.baseURL;
       // jwt token
       const header = {
         Authorization: `Bearer ${this.$store.state.authentication.token}`

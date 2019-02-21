@@ -14,6 +14,7 @@ class NotificationSchema extends Schema {
         .inTable('users')
         .onDelete('CASCADE')
         .onUpdate('CASCADE');
+      table.integer('change_request_id').defaultTo(-1);
       table.string('notes', 254).notNullable();
       table.boolean('isRead').defaultTo(false);
       table.boolean('isPop').defaultTo(false);

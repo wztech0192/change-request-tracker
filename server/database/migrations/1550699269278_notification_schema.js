@@ -15,9 +15,10 @@ class NotificationSchema extends Schema {
         .onDelete('CASCADE')
         .onUpdate('CASCADE');
       table.integer('change_request_id').defaultTo(-1);
-      table.string('notes', 254).notNullable();
-      table.boolean('isRead').defaultTo(false);
-      table.boolean('isPop').defaultTo(false);
+      table.string('content', 254).notNullable();
+      table.string('icon', 64);
+      table.boolean('isNew').defaultTo(true);
+      table.string('link', 254);
       table.timestamps();
     });
   }

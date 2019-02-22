@@ -78,6 +78,13 @@ class User extends Model {
   change_requests_messages() {
     return this.hasMany('App/Models/ChangeRequest/ChangeRequestMessage');
   }
+
+  /**
+   * return all notifications belongs to this user
+   */
+  notifications() {
+    return this.hasMany('App/Models/Notification');
+  }
 }
 
 module.exports = User;

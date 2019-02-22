@@ -94,7 +94,7 @@ export default {
 
     //calculate duration
     calDuration(date) {
-      var diff = new Date() - Date.parse(date);
+      var diff = new Date() - new Date(date);
       var time;
       if (diff > 86400000) {
         time = Math.round(diff / 86400000) + ' days ago';

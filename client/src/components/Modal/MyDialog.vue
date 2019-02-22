@@ -122,9 +122,12 @@ export default {
       switch (title) {
         case 'Confirm':
         case 'Ok':
+        case 'Hide':
           return 'fa fa-check';
         case 'Cancel':
           return 'fa fa-times';
+        case 'Direct Me':
+          return 'fa fa-arrow-circle-o-right';
       }
     },
 
@@ -132,9 +135,12 @@ export default {
       switch (title) {
         case 'Confirm':
         case 'Ok':
+        case 'Hide':
           return 'vue-dialog-confirm';
         case 'Cancel':
           return 'vue-dialog-cancel';
+        case 'Direct Me':
+          return 'vue-dialog-direct';
       }
     }
   }
@@ -149,6 +155,11 @@ export default {
 
 .vue-dialog-confirm:hover {
   background: rgb(143, 235, 143) !important;
+  color: rgb(255, 255, 255) !important;
+}
+
+.vue-dialog-direct:hover {
+  background: rgb(125, 195, 228) !important;
   color: rgb(255, 255, 255) !important;
 }
 

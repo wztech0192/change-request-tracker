@@ -1,6 +1,11 @@
 <template>
   <div class="wrapper">
-    <Header :user="user" :taskList="taskList"/>
+    <Header
+      :user="user"
+      :taskList="taskList"
+      :notifyList="notifyList"
+      :clearNewNotification="clearNewNotification"
+    />
     <Sidebar :user="user"/>
 
     <div class="content-wrapper">
@@ -27,10 +32,30 @@ export default {
     Sidebar,
     Controlbar
   },
+
   computed: {
-    ...mapGetters('authentication', 'isLoggedIn'),
-    ...mapState('authentication', ['user', 'taskList'])
+    ...mapGetters('authentication', ['isLoggedIn']),
+    ...mapState('authentication', ['user', 'taskList', 'notifyList'])
   },
+
+  created() {
+    // set user profile into authentication.user state if user is logged in
+    if (this.isLoggedIn) {
+      this.fetchUser();
+      this.fetchNavMenu('task');
+
+      this.fetchNavMenu('notification');
+    }
+  },
+
+  methods: {
+    ...mapActions('authentication', [
+      'fetchUser',
+      'fetchNavMenu',
+      'clearNewNotification'
+    ])
+  },
+
   mounted() {
     document.body.className = 'skin-black sidebar-mini';
     document.body.style.overflow = 'auto';

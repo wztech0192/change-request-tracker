@@ -32,11 +32,40 @@
             </li>
           </Nav-Menu>
 
-          <Nav-Menu :num="noteList.length" type="notifications">
-            <li v-for="note in noteList">
-              <a>
-                <i class="fa" :class="convertSignClass(note.sign)"></i>
-                {{note.body}}
+          <Nav-Menu
+            :num="notifyList.new.length"
+            type="notifications"
+            footer="s"
+            text="Last 30 Days"
+          >
+            <li style="box-shadow: inset 0px 10px 30px lightblue;">
+              <label>
+                <small>{{notifyList.new.length}} Unread Notification</small>
+              </label>
+              <span @click="clearNewNotification('all')" class="pull-right clickable archive">
+                <i class="fa fa-archive"></i>
+              </span>
+            </li>
+
+            <li v-for="notify in notifyList.new">
+              <a @click="notifyDetail(notify)">
+                <small class="pull-right">{{calculateTimePast(notify.created_at)}}</small>
+                <i class="fa" :class="notify.icon"></i>
+                {{notify.content}}
+              </a>
+            </li>
+
+            <li style="box-shadow: inset 0px 10px 30px lightblue;">
+              <label>
+                <small>{{notifyList.old.length}} Read Notification</small>
+              </label>
+            </li>
+
+            <li v-for="notify in notifyList.old">
+              <a @click="notifyDetail(notify)">
+                <small class="pull-right">{{calculateTimePast(notify.created_at)}}</small>
+                <i class="fa" :class="notify.icon"></i>
+                {{notify.content}}
               </a>
             </li>
           </Nav-Menu>
@@ -46,8 +75,8 @@
               <!-- Task item -->
               <a>
                 <h3>
-                  {{computeTaskContent(task.content)}}
                   <small class="pull-right">{{task.percentage}}%</small>
+                  {{limitContentLength(task.content, 35)}}
                 </h3>
                 <div class="progress xs active">
                   <div
@@ -133,47 +162,30 @@ export default {
         {
           avatar: 'adminLTE/dist/img/default.jpg',
           sender: 'Somebody',
-          sendTime: 5,
+          sendTime: '2019-01-21 05:52:23',
           body: 'Hey this is a testing67'
         },
         {
           avatar: 'adminLTE/dist/img/avatar2.jpg',
           sender: 'Somebody2',
-          sendTime: 2,
+          sendTime: '2019-01-29 05:52:23',
           body: 'Hey this is a testing3'
         },
         {
           avatar: 'adminLTE/dist/img/avatar04.jpg',
           sender: 'Somebody3',
-          sendTime: 1,
+          sendTime: '2019-02-22 03:21:12',
           body: 'Hey this is a testing2'
-        }
-      ],
-      //array of alert for header menu
-      noteList: [
-        {
-          body: 'Hey this is a testing',
-          sign: 'alert'
-        },
-        {
-          body: 'Hey this is a testing3',
-          sign: 'info'
-        },
-        {
-          body: 'Hey this is a testing2',
-          sign: 'complete'
-        },
-        {
-          body: 'Hey this is a testing4',
-          sign: 'delete'
         }
       ]
     };
   },
   //data from parent
   props: {
-    user: { type: Object, required: false, default: 'Anonymous' },
-    taskList: Array
+    user: Object,
+    taskList: Array,
+    notifyList: Object,
+    clearNewNotification: Function
   },
   methods: {
     //if has date and time, split date out and return it
@@ -184,22 +196,57 @@ export default {
     },
 
     //calculate total time from send to now
-    calculateTimePast: sendTime => {
-      return sendTime + ' mins';
+    calculateTimePast(date) {
+      //calculate duration
+      var diff = new Date() - new Date(date);
+      var time;
+      if (diff > 86400000) {
+        time = Math.round(diff / 86400000) + ' days';
+      } else if (diff > 3600000) {
+        time = Math.round(diff / 3600000) + ' hrs';
+      } else {
+        time = Math.round(diff / 60000) + ' min';
+      }
+      return time;
     },
 
-    //convert sign to fa fa class
-    convertSignClass: sign => {
-      switch (sign) {
-        case 'complete':
-          return 'fa-check-square text-green';
-        case 'alert':
-          return 'fa-warning text-yellow';
-        case 'info':
-          return 'fa-info-circle text-blue';
-        case 'delete':
-          return 'fa-check-square text-red';
+    notifyDetail(notify) {
+      if (notify.isNew) {
+        // remove new status
+        this.clearNewNotification(notify.id);
       }
+      //display notify detail modal
+      this.$modal.show('dialog', {
+        title:
+          "<span class='text-blue'><i class='fa fa-info'></i> Notification</span>",
+        template: `
+        <label>Create Date</label>
+        <p>${notify.created_at}</p>
+        <label>Content</label>
+        <p>${notify.content}</p>
+        `,
+        maxWidth: 300,
+        buttons: notify.link
+          ? [
+              {
+                title: 'Direct Me',
+                handler: () => {
+                  this.$router.push(notify.link);
+                  this.$modal.hide('dialog');
+                }
+              },
+              {
+                title: 'Hide',
+                default: true
+              }
+            ]
+          : [
+              {
+                title: 'Ok',
+                default: true
+              }
+            ]
+      });
     },
 
     //define progress bar color based on its percentage
@@ -211,11 +258,11 @@ export default {
     },
 
     // display maximum of 35 characters
-    computeTaskContent(content) {
-      if (content.length > 35) {
+    limitContentLength(content, length) {
+      if (content.length > length) {
         //split from the last empty space
-        var i = content.indexOf(' ', 30);
-        if (i < 0) i = 35;
+        var i = content.indexOf(' ', length - 5);
+        if (i < 0) i = length;
         return content.substring(0, content.indexOf(' ', i)) + '...';
       } else {
         return content;
@@ -228,5 +275,20 @@ export default {
 <style>
 .navbar a {
   transition: 0.3s ease;
+}
+.notifications-menu small {
+  font-size: 60%;
+  color: gray;
+  margin: -5px 0px 0px 10px;
+}
+
+.navbar .archive {
+  transition: 0.3s ease;
+  color: gray;
+  margin: 5px 5px 0 10px;
+}
+
+.navbar .archive:hover {
+  color: green;
 }
 </style>

@@ -46,14 +46,9 @@ export default {
   },
 
   created() {
+    //   console.log(this.isLoggedIn);
     /* Resolve conflict in jQuery UI tooltip with Bootstrap tooltip */
     $.widget.bridge('uibutton', $.ui.button);
-
-    // set user profile into authentication.user state if user is logged in
-    if (this.isLoggedIn) {
-      this.fetchUser();
-      this.fetchTaskList();
-    }
   },
 
   mounted() {
@@ -75,7 +70,6 @@ export default {
   },
 
   methods: {
-    ...mapActions('authentication', ['fetchUser', 'fetchTaskList']),
     ...mapActions('errorStore', ['clearGlobalError'])
   }
 };

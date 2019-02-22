@@ -2,17 +2,17 @@
 
 /**
  * @author Wei Zheng
- * @description register, login, search user, get user list...y
+ * @description register, login, search user, retrieve user list, and retrieve user menu
  */
 
 const User = use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationCodeService = use('App/Service/RegistrationCodeService');
 const MessageService = use('App/Service/MessageService');
+const NotificationService = use('App/Service/NotificationService');
 const Hash = use('Hash');
 const Validator = use('Validator');
 const Database = use('Database');
-const ltr = 'abcdefghijklmnoprqstuvewxz';
 
 class UserController {
   /**
@@ -76,49 +76,6 @@ class UserController {
 
     //pass arguments from this method to login
     return this.login(...arguments);
-  }
-
-  /**
-   * Generate number of users, for testing purpose
-   */
-  async generateUsers({ auth, params }) {
-    if (params.num > 0) {
-      const user = await auth.getUser();
-
-      AuthorizationService.verifyRole(user, ['Developer']);
-      const usersList = new Array(params.num);
-      for (let i = 0; i < params.num; i++) {
-        let email = this._getLTR(6) + '@' + this._getLTR(4) + '.com';
-
-        let password = this._getLTR(8);
-        let role = 'Client';
-        let first_name = this._getLTR(6);
-        let mid_initial = 'T.';
-        let last_name = this._getLTR(6);
-        let full_name = `${first_name} ${mid_initial || ''} ${last_name}`;
-        usersList[i] = {
-          email,
-          full_name,
-          password,
-          role,
-          first_name,
-          mid_initial,
-          last_name
-        };
-      }
-
-      await User.createMany(usersList);
-      return 'OK';
-    }
-  }
-
-  //generate random letter by length
-  _getLTR(length) {
-    let str = '';
-    for (let i = 0; i < length; i++) {
-      str += ltr.charAt(Math.round(Math.random() * (ltr.length - 1)));
-    }
-    return str;
   }
 
   /**
@@ -305,8 +262,26 @@ class UserController {
         TaskList.push(devTodo);
       }
     }
-    //return null if list is empty
     return TaskList;
+  }
+
+  /**
+   * return notification list
+   * @return {Object}
+   */
+  async getNotificationList({ auth }) {
+    const user = await auth.getUser();
+    return await NotificationService.getNotification(user);
+  }
+
+  /**
+   * return notification list
+   * @return {Object}
+   */
+  async updateNotification({ auth, params }) {
+    const user = await auth.getUser();
+    await NotificationService.updateNotification(user, params.target);
+    return 'OK';
   }
 
   // capitalize the first letter of the word and lowercase the rest

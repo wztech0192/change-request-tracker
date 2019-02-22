@@ -184,6 +184,7 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
+    ...mapActions('authentication', ['fetchNavMenu']),
     ...mapMutations('changeRequest', [
       'setTitle',
       'setDetail',
@@ -289,6 +290,7 @@ export default {
                     if (!data) {
                       $('.dialog-error').text('Something is wrong');
                     } else {
+                      this.fetchNavMenu('notification');
                       this.clearAllData();
                       this.$modal.hide('dialog');
                       router.push(`/change-request/${data.id}/content`);

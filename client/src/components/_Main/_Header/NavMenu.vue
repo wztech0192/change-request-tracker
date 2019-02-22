@@ -5,7 +5,10 @@
       <span class="label" :class="getLabelClass(type)">{{num}}</span>
     </a>
     <ul class="dropdown-menu">
-      <li class="header">You have {{num}} {{type}}</li>
+      <li class="header">
+        <span v-if="!text">You have {{num}} {{type}}</span>
+        <span v-else>{{text}}</span>
+      </li>
       <li>
         <!-- inner menu: contains the actual data -->
         <ul class="menu">
@@ -13,6 +16,9 @@
           <slot></slot>
           <!-- end message -->
         </ul>
+      </li>
+      <li v-if="footer" class="footer">
+        <a :href="footer">View all</a>
       </li>
     </ul>
   </li>
@@ -24,7 +30,9 @@ export default {
   props: {
     num: Number,
     type: String,
-    icon: String
+    icon: String,
+    footer: String,
+    text: String
   },
   methods: {
     //convert menu type into type-menu css class

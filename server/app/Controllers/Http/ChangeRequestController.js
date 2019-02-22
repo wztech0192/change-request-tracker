@@ -15,6 +15,7 @@ const ChangeRequestHistory = use(
 );
 const AuthorizationService = use('App/Service/AuthorizationService');
 const CrudService = use('App/Service/CrudService');
+const Notification = use('App/Service/NotificationService');
 
 class ChangeRequestController {
   /**
@@ -161,6 +162,7 @@ class ChangeRequestController {
       changeRequest.messages().save(crmsg);
       changeRequest.totalMessage++;
     }
+
     //create change request history
     this._createCRHistory(
       changeRequest,
@@ -169,6 +171,8 @@ class ChangeRequestController {
         user.full_name
       } in ${changeRequest.created_at}`
     );
+
+    Notification.newChangeRequest(changeRequest);
 
     return changeRequest;
   }
@@ -396,57 +400,6 @@ class ChangeRequestController {
       chartData,
       total
     };
-  }
-
-  /**
-   * Adjust change request data, for dev
-   */
-  async adjustChangeRequest({ auth }) {
-    const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    const CRList = await ChangeRequest.all();
-
-    for (let cr of CRList.rows) {
-      cr.totalHistory = await cr.histories().getCount();
-      cr.totalMessage = await cr.messages().getCount();
-      let client = await cr.user().fetch();
-      cr.clientName = `${client.full_name}`;
-      cr.save();
-    }
-  }
-
-  /**
-   * gennerate dummy change request, for dev
-   */
-  async generateChangeRequest({ auth, params }) {
-    const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    let users = await User.all();
-    users = users.rows;
-    let randUser = null;
-    for (let i = 0; i < params.num; i++) {
-      randUser = users[Math.round(Math.random() * (users.length - 1))];
-
-      const changeRequest = new ChangeRequest();
-      //fill in data then save to its creator
-      changeRequest.fill({
-        totalMessage: 0,
-        totalHistory: 0,
-        clientName: `${randUser.full_name}`,
-        title: 'This is random generated change request #' + i,
-        details: 'g.'
-      });
-
-      await randUser.change_requests().save(changeRequest);
-      //create change request history
-      this._createCRHistory(
-        changeRequest,
-        'Create',
-        `Change Request ID ${changeRequest.id} has been posted by ${
-          user.full_name
-        } in ${changeRequest.created_at}`
-      );
-    }
   }
 }
 

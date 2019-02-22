@@ -281,7 +281,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('authentication', ['fetchTaskList', 'setExceptionError']),
+    ...mapActions('authentication', ['fetchNavMenu', 'setExceptionError']),
     ...mapActions('errorStore', ['setGlobalError']),
 
     // reload collapse box event
@@ -338,7 +338,7 @@ export default {
         .patch(`/dev/todo/${todo.id}`, todo)
         .then(() => {
           //update header task menu
-          this.fetchTaskList();
+          this.fetchNavMenu('task');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -367,7 +367,7 @@ export default {
         .patch(`/dev/task/complete/${task.id}`, task)
         .then(() => {
           //update header task menu
-          this.fetchTaskList();
+          this.fetchNavMenu('task');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -441,7 +441,7 @@ export default {
         .delete(`/dev/todo/${item.id}`)
         .then(() => {
           //update header task menu if the selector is flagged
-          if (item.isFlagged) this.fetchTaskList();
+          if (item.isFlagged) this.fetchNavMenu('task');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -511,7 +511,7 @@ export default {
         HTTP()
           .patch(link, this.modalInfo)
           .then(() => {
-            this.fetchTaskList();
+            this.fetchNavMenu('task');
           })
           .catch(e => {
             this.setGlobalError(e);

@@ -22,18 +22,6 @@ const Helpers = use('Helpers');
  */
 
 Route.group(() => {
-  //testing route
-  Route.get('test/generate/user/:num', 'UserController.generateUsers');
-  Route.get('test/correctCR', 'ChangeRequestController.adjustChangeRequest');
-  Route.get(
-    'test/generate/cr/:num',
-    'ChangeRequestController.generateChangeRequest'
-  );
-})
-  .middleware('auth')
-  .prefix('api');
-
-Route.group(() => {
   //User Authenication
   Route.post('auth/register', 'UserController.register');
   Route.post('auth/login', 'UserController.login');
@@ -48,6 +36,11 @@ Route.group(() => {
   Route.get('user', 'UserController.self');
   Route.get('user/all', 'UserController.getAll');
   Route.get('user/task', 'UserController.getTaskList');
+  Route.get('user/notification', 'UserController.getNotificationList');
+  Route.get(
+    'user/notification/clear-new/:target',
+    'UserController.updateNotification'
+  );
   Route.get('user/:id', 'UserController.get');
   Route.get('user/by-role/:role', 'UserController.getRoleList');
   Route.post('user/search/:role', 'UserController.search');
@@ -69,6 +62,11 @@ Route.group(() => {
     'regist-code/:id',
     'RegistrationCodeController.updateRegistrationCode'
   );
+
+  //Developer Tool Route
+  Route.get('test/generate/user/:num', 'DevController.generateUsers');
+  Route.get('test/correctCR', 'DevController.adjustChangeRequest');
+  Route.get('test/generate/cr/:num', 'DevController.generateChangeRequest');
 
   //Developer Todo Route
   Route.get('dev', 'DevController.index');

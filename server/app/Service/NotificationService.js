@@ -11,25 +11,85 @@ const Database = use('Database');
 
 class NotificationService {
   /**
-   * Create new notification
+   * notify every admin when new change request was created
    * @returns {notification}
    */
-  async createNotification(msgData) {
-    var notification = new Notification();
-    notification.fill(msgData);
-    await notification.save();
-    return notification;
+  async newChangeRequest(changeRequest) {
+    //get all admins
+    const adminList = await Database.table('users')
+      .select('id')
+      .where('role', 'Admin')
+      .orWhere('role', 'Developer');
+
+    // fill change request data
+    const notifyList = new Array(adminList.length + 1).fill().map(a => ({
+      user_id: null,
+      change_request_id: changeRequest.id,
+      content: `CR #${changeRequest.id} was created by ${
+        changeRequest.clientName
+      }`,
+      icon: 'fa-upload text-blue',
+      link: `/change-request/${changeRequest.id}`
+    }));
+
+    //reserve the first notification to change request owner
+    notifyList[0].user_id = changeRequest.user_id;
+
+    //  console.log(notifyList[0]);
+    //notify every admin
+    for (let i = 0; i < adminList.length; i++) {
+      // console.log(i + 1);
+      notifyList[i + 1].user_id = adminList[i].id;
+      // console.log(notifyList);
+    }
+
+    Notification.createMany(notifyList);
   }
 
   /**
-   * delete notification
-   * @returns {notification}
+   * @return {notification list object}
    */
-  async deleteNotification(auth, params) {
-    return CrudService.destroy(auth, params, Notification, {
-      verify: (user, notification) =>
-        AuthorizationService.verifyNotificationOwnership(notification, user)
-    });
+  async getNotification(user) {
+    const notifyList_old = await user
+      .notifications()
+      .where('isNew', '0')
+      .orderBy('created_at', 'desc')
+      .fetch();
+    const notifyList_new = await user
+      .notifications()
+      .where('isNew', '1')
+      .orderBy('created_at', 'desc')
+      .fetch();
+    /*  if (notifyList_new.rows.length > 0) {
+      // set isNew to false for new notification.
+      await Database.table('notifications')
+        .where('user_id', user.id)
+        .where('isNew', true)
+        .update('isNew', false);
+    }*/
+    return {
+      new: notifyList_new,
+      old: notifyList_old
+    };
+  }
+
+  /**
+   * @return {notification list object}
+   */
+  async updateNotification(user, target) {
+    if (target === 'all') {
+      // set isNew to false for every new notification.
+      await Database.table('notifications')
+        .where('user_id', user.id)
+        .where('isNew', true)
+        .update('isNew', false);
+    } else {
+      //set isNew to false for single notification
+      await Database.table('notifications')
+        .where('user_id', user.id)
+        .where('id', target)
+        .update('isNew', false);
+    }
   }
 }
 

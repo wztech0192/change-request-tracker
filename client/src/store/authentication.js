@@ -19,6 +19,7 @@ export default {
     token: null,
     loading: false,
     taskList: [],
+    notifyList: [],
     registrationCode: null
   },
 
@@ -53,20 +54,30 @@ export default {
       );
     },
 
-    // get user task list
-    fetchTaskList({ commit }) {
-      return HTTP()
-        .get('/user/task')
+    // get navigation menu list for current user by request
+    // request type: notification, task, and message.
+    fetchNavMenu({ commit }, request) {
+      HTTP()
+        .get(`/user/${request}`)
         .then(({ data }) => {
-          if (data) {
-            commit('setTaskList', data);
-          } else {
-            commit('setTaskList', []);
-          }
+          console.log(data);
+          commit(`${request}Commit`, data);
         })
         .catch(() => {
           commit('setExceptionError', 'Cannot find the user. Try to Re-login.');
-          router.push('/login');
+          //    router.push('/login');
+        });
+    },
+
+    clearNewNotification({ dispatch }, target) {
+      HTTP()
+        .get(`/user/notification/clear-new/${target}`)
+        .then(() => {
+          // refresh notification menu
+          dispatch('fetchNavMenu', 'notification');
+        })
+        .catch((e) => {
+          this.$store.dispatch('errorStore/setGlobalError', e);
         });
     },
 
@@ -111,8 +122,14 @@ export default {
     },
 
     // set user flagged list
-    setTaskList(state, taskList) {
+    taskCommit(state, taskList) {
       state.taskList = taskList;
+    },
+
+    // set user flagged list
+    notificationCommit(state, notifyList) {
+      console.log(notifyList);
+      state.notifyList = notifyList;
     },
 
     // login user information include token

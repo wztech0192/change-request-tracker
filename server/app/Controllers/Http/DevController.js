@@ -10,6 +10,7 @@ const DevTask = use('App/Models/Dev/DevTask');
 const DevTodo = use('App/Models/Dev/DevTodo');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const CrudService = use('App/Service/CrudService');
+const DevToolService = use('App/Service/DevToolService');
 
 class DevController {
   /**
@@ -223,6 +224,35 @@ class DevController {
         AuthorizationService.verifyPermission(devRef, user, ['Developer']),
       work: devRef => devRef.merge(request.only(['description', 'link']))
     });
+  }
+
+  /**----------------------Dev Tools--------------------------
+   *
+   * Generate number of users, for testing purpose
+   */
+  async generateUsers({ auth, params }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer']);
+    DevToolService.generateUsers(params.num);
+  }
+
+  /**
+   * gennerate dummy change request, for dev
+   */
+  async generateChangeRequest({ auth, params }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer']);
+
+    DevToolService.generateChangeRequest(params.num, user);
+  }
+
+  /**
+   * Adjust change request data, for dev
+   */
+  async adjustChangeRequest({ auth }) {
+    const user = await auth.getUser();
+    AuthorizationService.verifyRole(user, ['Developer']);
+    DevToolService.adjustChangeRequest();
   }
 }
 

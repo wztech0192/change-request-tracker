@@ -14,8 +14,8 @@
           <div class="row box-solid">
             <div class="col-md-6">
               <!-- Calendar -->
-              <div class="box box-solid bg-light-blue">
-                <div class="box-header">
+              <div class="box box-solid" style="box-shadow: 4px 4px 10px grey;">
+                <div class="box-header" style="border-bottom:1px solid gray;">
                   <i class="fa fa-calendar"></i>
 
                   <h3 class="box-title">Calendar</h3>
@@ -27,7 +27,7 @@
                   <!--The calendar -->
                   <div id="calendar" style="width: 100%"></div>
                 </div>
-                <div class="box-footer bg-light-blue" style="text-align:center">
+                <div class="box-footer" style="text-align:center">
                   <h3>
                     <i class="fa fa-binoculars"></i>&nbsp;&nbsp;
                     <label>{{date.begin.getFullYear()}} Week {{date.week}}&nbsp;&nbsp;&nbsp;</label>
@@ -314,8 +314,7 @@ export default {
 }
 
 .datepicker table tr td.today {
-  background: rgba(197, 159, 159, 0.3) !important;
-  color: white !important;
+  background: rgba(163, 190, 211, 0.3) !important;
 }
 .datepicker table tbody .active {
   background-color: lightblue !important;
@@ -329,7 +328,6 @@ export default {
 }
 
 #calendar .table-condensed tbody tr:hover {
-  background-color: lavender;
-  color: black !important;
+  background-color: rgba(173, 216, 230, 0.4);
 }
 </style>

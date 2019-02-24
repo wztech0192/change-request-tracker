@@ -8,6 +8,7 @@
 const RegistrationCode = use('App/Models/RegistrationCode');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationCodeService = use('App/Service/RegistrationCodeService');
+const NotificationService = use('App/Service/NotificationService');
 const CrudService = use('App/Service/CrudService');
 const Database = use('Database');
 
@@ -38,6 +39,9 @@ class RegistrationCodeController {
         data.creator_name = user.full_name;
         registrationCode.fill(data);
         await registrationCode.save();
+      },
+      after: registrationCode => {
+        NotificationService.newRegisterCode(registrationCode);
       }
     });
     return {

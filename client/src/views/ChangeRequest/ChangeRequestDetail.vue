@@ -120,7 +120,7 @@
               <div class="tab-pane active">
                 <!-- Nested Route -->
                 <transition name="slide-right" mode="out-in">
-                  <router-view :user="user" :requestData="requestData"/>
+                  <router-view :user="user" :requestData="requestData" :refresh="refresh"/>
                 </transition>
               </div>
             </div>
@@ -149,12 +149,19 @@ export default {
   },
 
   computed: {
-    ...mapState('authentication', ['user']),
+    ...mapState('userStore', ['user', 'refresh']),
     ...mapState('changeRequest', ['tab']),
-    ...mapGetters('authentication', ['isAdmin']),
+    ...mapGetters('userStore', ['isAdmin']),
 
     baseURL() {
       return `/change-request/${this.$route.params.id}`;
+    }
+  },
+
+  watch: {
+    //update when refresh value change
+    refresh() {
+      this.fetchRequestData();
     }
   },
 

@@ -34,22 +34,29 @@ export default {
   },
 
   computed: {
-    ...mapGetters('authentication', ['isLoggedIn']),
-    ...mapState('authentication', ['user', 'taskList', 'notifyList'])
+    ...mapGetters('userStore', ['isLoggedIn']),
+    ...mapState('userStore', ['user', 'taskList', 'notifyList', 'refresh'])
+  },
+
+  watch: {
+    //update when refresh value change
+    refresh() {
+      this.fetchNavMenu('task');
+      this.fetchNavMenu('notification');
+    }
   },
 
   created() {
-    // set user profile into authentication.user state if user is logged in
+    // set user profile into userStore.user state if user is logged in
     if (this.isLoggedIn) {
       this.fetchUser();
       this.fetchNavMenu('task');
-
       this.fetchNavMenu('notification');
     }
   },
 
   methods: {
-    ...mapActions('authentication', [
+    ...mapActions('userStore', [
       'fetchUser',
       'fetchNavMenu',
       'clearNewNotification'

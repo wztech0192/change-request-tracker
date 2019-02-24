@@ -94,11 +94,11 @@ export default {
   },
 
   computed: {
-    ...mapState('authentication', ['user', 'ex_error'])
+    ...mapState('userStore', ['user', 'ex_error'])
   },
 
   methods: {
-    ...mapMutations('authentication', [
+    ...mapMutations('userStore', [
       'setExceptionError',
       'setLoading',
       'setToken',

@@ -66,13 +66,16 @@ class UserController {
       ''} ${userInfo.last_name}`;
 
     //create user
-    await User.create(userInfo);
+    const user = await User.create(userInfo);
 
     //create welcome message
     MessageService.addRegistrationCodeMessage(code, userInfo);
 
     //remove used code
     RegistrationCodeService.removeCode(code.id);
+
+    // notify new registerd user
+    NotificationService.newUser(user);
 
     //pass arguments from this method to login
     return this.login(...arguments);
@@ -282,6 +285,16 @@ class UserController {
     const user = await auth.getUser();
     await NotificationService.updateNotification(user, params.target);
     return 'OK';
+  }
+
+  /**
+   * return datatable json for notification list
+   * @return {Datatable JSON}
+   */
+  async notificationPaginate({ auth, request }) {
+    const user = await auth.getUser();
+
+    return await NotificationService.notificationPaginate(user, request.all());
   }
 
   // capitalize the first letter of the word and lowercase the rest

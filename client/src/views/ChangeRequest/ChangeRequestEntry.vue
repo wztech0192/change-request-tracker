@@ -133,9 +133,9 @@ export default {
     UserSearch
   },
   computed: {
-    ...mapState('authentication', ['user']),
+    ...mapState('userStore', ['user']),
     ...mapState('changeRequest', ['requestData', 'error']),
-    ...mapGetters('authentication', ['isAdmin'])
+    ...mapGetters('userStore', ['isAdmin'])
   },
 
   data() {
@@ -184,7 +184,7 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
-    ...mapActions('authentication', ['fetchNavMenu']),
+    ...mapActions('userStore', ['fetchNavMenu']),
     ...mapMutations('changeRequest', [
       'setTitle',
       'setDetail',

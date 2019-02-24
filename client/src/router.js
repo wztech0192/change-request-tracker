@@ -4,6 +4,7 @@ import DevTodo from './views/Dev/Todo.vue';
 import DevTool from './views/Dev/Tool.vue';
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
+import NotifyList from './views/NotificationList.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
 import DataSearch from './views/Admin/DataSearch.vue';
@@ -21,14 +22,14 @@ Vue.use(Router);
 
 // verify if user is login and if user has right to enter the route.
 function Authenication(to, from, next) {
-  if (!store.getters['authentication/isLoggedIn']) {
+  if (!store.getters['userStore/isLoggedIn']) {
     next('/login');
   } else {
     // check the path is admin only or developer only
     switch (to.fullPath.split('/')[1]) {
       case 'dev':
         // verify if user is dev, redirect if not
-        if (store.getters['authentication/isDev']) {
+        if (store.getters['userStore/isDev']) {
           next();
         } else {
           store.commit(
@@ -39,7 +40,7 @@ function Authenication(to, from, next) {
         break;
       case 'admin':
         // verify if user is admin, redirect if not
-        if (store.getters['authentication/isAdmin']) {
+        if (store.getters['userStore/isAdmin']) {
           next();
         } else {
           store.commit(
@@ -56,7 +57,7 @@ function Authenication(to, from, next) {
 
 // reset token if user enter login/register page
 function resetToken(to, from, next) {
-  store.dispatch('authentication/logoutToken');
+  store.dispatch('userStore/logoutToken');
   next();
 }
 
@@ -79,6 +80,12 @@ export default new Router({
     {
       path: '/',
       component: Dashboard,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/notifications',
+      component: NotifyList,
       beforeEnter: Authenication
     },
 

@@ -45,7 +45,9 @@ import router from '@/router';
 export default {
   props: {
     //tak request data from parent
-    requestData: Object
+    requestData: Object,
+    // refresh value
+    refresh: Number
   },
 
   computed: {
@@ -61,6 +63,10 @@ export default {
       setTimeout(() => {
         this.fetchRequestHistory();
       }, 10);
+    },
+    //update when refresh value change
+    refresh() {
+      this.fetchRequestHistory();
     }
   },
 

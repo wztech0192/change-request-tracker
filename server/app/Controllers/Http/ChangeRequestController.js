@@ -138,11 +138,11 @@ class ChangeRequestController {
       client = user;
     }
 
-    const changeRequest = new ChangeRequest();
     data.totalMessage = 0;
     data.totalHistory = 0;
     data.clientName = client.full_name;
     //fill in data then save to its creator
+    const changeRequest = new ChangeRequest();
     changeRequest.fill(data);
 
     await client.change_requests().save(changeRequest);
@@ -211,18 +211,17 @@ class ChangeRequestController {
         // history for status update
         if (requestData.status) {
           type = `New Status: ${requestData.status.toUpperCase()}`;
-          content = `The status has been updated to ${requestData.status.toUpperCase()} by ${
+          content = `The status was updated to ${requestData.status.toUpperCase()} by ${
             user.full_name
           }`;
         } else {
           //history for content modify
           type = 'Edit Content';
-          content = `Change Request Content has been modified by ${
-            user.full_name
-          }`;
+          content = `Change Request content was modified by ${user.full_name}`;
         }
         //create change request history
-        this._createCRHistory(changeRequest, type, content);
+        this._createCRHistory(changeRequest, type);
+        Notification.updateChangeRequest(changeRequest, type, content);
       }
     });
   }

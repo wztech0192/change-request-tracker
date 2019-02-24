@@ -12,7 +12,7 @@
       <Auth v-else/>
     </div>
     <h1 id="loading-screen">
-      <i class="fa fa-spinner"></i>
+      <i class="fa fa-spinner fa-spin"></i>
     </h1>
 
     <MyDialog :adaptive="true" width="80%"/>'
@@ -32,7 +32,7 @@ export default {
     MyDialog
   },
   computed: {
-    ...mapGetters('authentication', ['isLoggedIn']),
+    ...mapGetters('userStore', ['isLoggedIn']),
     ...mapGetters('errorStore', ['getGlobalError'])
   },
   watch: {

@@ -156,7 +156,7 @@ export default {
   },
 
   computed: {
-    ...mapState('authentication', ['user'])
+    ...mapState('userStore', ['user'])
   },
 
   data() {
@@ -181,6 +181,7 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
+    ...mapActions('userStore', ['fetchNavMenu']),
 
     changeRole() {
       this.codeData.role = $('#code-role option:selected').text();
@@ -204,6 +205,8 @@ export default {
              }.</i>`
             );
             this.resetCodeData();
+            //update notification
+            this.fetchNavMenu('notification');
           } else {
             this.setErrorMessage(data);
             this.showDialog(

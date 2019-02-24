@@ -56,7 +56,7 @@ export default {
     user: Object
   },
   computed: {
-    ...mapGetters('authentication', ['isAdmin'])
+    ...mapGetters('userStore', ['isAdmin'])
   },
   data() {
     return {

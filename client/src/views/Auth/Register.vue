@@ -177,7 +177,7 @@ export default {
   },
 
   computed: {
-    ...mapState('authentication', ['registrationCode']),
+    ...mapState('userStore', ['registrationCode']),
     password() {
       return this.registerData.password;
     },
@@ -187,7 +187,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations('authentication', ['setLoading', 'setToken']),
+    ...mapMutations('userStore', ['setLoading', 'setToken']),
     ...mapActions('errorStore', ['setGlobalError']),
 
     //clear register datas by set it to empty object

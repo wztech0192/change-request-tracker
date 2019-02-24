@@ -15,7 +15,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="openSelectedRow(showChanegRoleDialog)"
+            @click="openSelectedRow(showChangeRoleDialog)"
           >
             <span class="mobile-hide">Role &nbsp;</span>
             <i class="fa fa-edit"></i>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import HTTP from '@/http';
 
 export default {
@@ -59,10 +59,6 @@ export default {
       loading: false,
       table: null
     };
-  },
-
-  computed: {
-    ...mapState('authentication', ['user'])
   },
 
   mounted() {
@@ -78,7 +74,7 @@ export default {
       const baseURL = this.$store.getters.baseURL;
       // jwt token
       const header = {
-        Authorization: `Bearer ${this.$store.state.authentication.token}`
+        Authorization: `Bearer ${this.$store.state.userStore.token}`
       };
       const self = this;
 
@@ -98,20 +94,22 @@ export default {
           serverSide: true,
           data: [],
           columns: [
-            { data: 'id', title: 'ID' },
-            { data: 'full_name', title: 'User Name' },
-            { data: 'role', title: 'Role' },
-            { data: 'email', title: 'Email' },
-            { data: 'created_at', title: 'Join Date' }
+            { data: 'id', title: 'ID', class: 'all' },
+            { data: 'full_name', title: 'User Name', class: 'all' },
+            { data: 'role', title: 'Role', class: 'all' },
+            { data: 'email', title: 'Email', class: 'not-mobile' },
+            { data: 'created_at', title: 'Join Date', class: 'not-mobile' }
           ],
           searchDelay: 600,
           ajax: {
             type: 'POST',
             url: baseURL + '/user/datatable',
             headers: header,
-
             dataSrc: ({ data }) => {
               return data;
+            },
+            error: (e, e2) => {
+              self.setGlobalError(e2);
             }
           },
           createdRow: function(row, data, dataIndex) {
@@ -129,7 +127,7 @@ export default {
             //double click event
             $('#user-table tbody').on('dblclick', 'tr', function() {
               if (!$(this).hasClass('child')) {
-                self.showChanegRoleDialog(
+                self.showChangeRoleDialog(
                   self.table.row($(this).index()).data()
                 );
               }
@@ -146,7 +144,7 @@ export default {
                     touched = false;
                   }, 200);
                 } else {
-                  self.showChanegRoleDialog(
+                  self.showChangeRoleDialog(
                     self.table.row($(this).index()).data()
                   );
                 }
@@ -225,7 +223,7 @@ export default {
                       $('.dialog-error').text('Something is wrong');
                     } else {
                       //remove row from table and hide dialog
-                      this.table.ajax.reload(null, false);
+                      this.table.ajax.reload();
                       this.$modal.hide('dialog');
                     }
                   })
@@ -246,7 +244,7 @@ export default {
     },
 
     //display dialog
-    showChanegRoleDialog(user) {
+    showChangeRoleDialog(user) {
       this.$modal.show('dialog', {
         title: `<i class='fa fa-user-circle'></i> Change Role`,
         maxWidth: 300,
@@ -272,7 +270,7 @@ export default {
                       $('.dialog-error').text('Something is wrong');
                     } else {
                       //change table data
-                      this.table.ajax.reload(null, false);
+                      this.table.ajax.reload();
                       this.$modal.hide('dialog');
                     }
                   })

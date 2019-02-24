@@ -272,7 +272,7 @@ export default {
   },
 
   computed: {
-    ...mapState('authentication', ['user'])
+    ...mapState('userStore', ['user'])
   },
 
   created() {
@@ -281,7 +281,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('authentication', ['fetchNavMenu', 'setExceptionError']),
+    ...mapActions('userStore', ['fetchNavMenu', 'setExceptionError']),
     ...mapActions('errorStore', ['setGlobalError']),
 
     // reload collapse box event

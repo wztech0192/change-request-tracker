@@ -5,7 +5,10 @@
       <span class="label" :class="getLabelClass(type)">{{num}}</span>
     </a>
     <ul class="dropdown-menu">
-      <li class="header">
+      <li
+        class="header"
+        style="box-shadow: inset 0px 10px 30px lightgray; color:gray; font-size:80%; font-weight:bold;"
+      >
         <span v-if="!text">You have {{num}} {{type}}</span>
         <span v-else>{{text}}</span>
       </li>
@@ -18,7 +21,7 @@
         </ul>
       </li>
       <li v-if="footer" class="footer">
-        <a :href="footer">View all</a>
+        <router-link :to="footer">View all</router-link>
       </li>
     </ul>
   </li>

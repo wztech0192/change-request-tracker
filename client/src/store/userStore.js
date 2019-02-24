@@ -1,6 +1,6 @@
 /**
  * @author Wei Zheng
- * @description store authentication detail. (e.g: jwt token, user information...)
+ * @description store authentication data and user information
  */
 
 import HTTP from '../http';
@@ -20,7 +20,8 @@ export default {
     loading: false,
     taskList: [],
     notifyList: [],
-    registrationCode: null
+    registrationCode: null,
+    refresh: 0
   },
 
   /**
@@ -60,7 +61,6 @@ export default {
       HTTP()
         .get(`/user/${request}`)
         .then(({ data }) => {
-          console.log(data);
           commit(`${request}Commit`, data);
         })
         .catch(() => {
@@ -117,6 +117,12 @@ export default {
    * Make changes to the state
    */
   mutations: {
+    // add refresh time
+    addRefresh(state) {
+      state.refresh += 1;
+    },
+
+    // set registration code
     setRegistrationCode(state, code) {
       state.registrationCode = code;
     },
@@ -128,7 +134,6 @@ export default {
 
     // set user flagged list
     notificationCommit(state, notifyList) {
-      console.log(notifyList);
       state.notifyList = notifyList;
     },
 

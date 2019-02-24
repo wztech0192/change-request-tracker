@@ -118,7 +118,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('authentication', ['isAdmin']),
+    ...mapGetters('userStore', ['isAdmin']),
     ...mapState('changeRequest', ['listTab', 'tab'])
   },
 
@@ -197,7 +197,7 @@ export default {
       if (this.isAdmin) {
         head.splice(1, 0, {
           class: 'all',
-          text: 'clientName'
+          text: 'Client'
         });
         head[3].class = 'not-mobile';
       }

@@ -37,6 +37,10 @@ Route.group(() => {
   Route.get('user/all', 'UserController.getAll');
   Route.get('user/task', 'UserController.getTaskList');
   Route.get('user/notification', 'UserController.getNotificationList');
+  Route.post(
+    'user/notification/paginate',
+    'UserController.notificationPaginate'
+  );
   Route.get(
     'user/notification/clear-new/:target',
     'UserController.updateNotification'

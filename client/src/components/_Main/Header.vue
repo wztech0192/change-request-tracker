@@ -13,7 +13,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
-          <Nav-Menu :num="msgList.length" type="messages">
+          <Nav-Menu id="msglist" :num="msgList.length" type="messages">
             <li v-for="msg in msgList">
               <!-- start message -->
               <a>
@@ -33,14 +33,15 @@
           </Nav-Menu>
 
           <Nav-Menu
+            id="notifications"
             :num="notifyList.new.length"
             type="notifications"
-            footer="s"
-            text="Last 30 Days"
+            footer="/notifications"
+            text="Notifications"
           >
             <li style="box-shadow: inset 0px 10px 30px lightblue;">
               <label>
-                <small>{{notifyList.new.length}} Unread Notification</small>
+                <small>{{notifyList.new.length}} Unread</small>
               </label>
               <span @click="clearNewNotification('all')" class="pull-right clickable archive">
                 <i class="fa fa-archive"></i>
@@ -49,7 +50,10 @@
 
             <li v-for="notify in notifyList.new">
               <a @click="notifyDetail(notify)">
-                <small class="pull-right">{{calculateTimePast(notify.created_at)}}</small>
+                <small class="pull-right">
+                  <i class="fa fa-clock-o"></i>
+                  {{calculateTimePast(notify.created_at)}}
+                </small>
                 <i class="fa" :class="notify.icon"></i>
                 {{notify.content}}
               </a>
@@ -57,20 +61,23 @@
 
             <li style="box-shadow: inset 0px 10px 30px lightblue;">
               <label>
-                <small>{{notifyList.old.length}} Read Notification</small>
+                <small>{{notifyList.old.length}} Read &nbsp;&nbsp;(Last 7 Days)</small>
               </label>
             </li>
 
             <li v-for="notify in notifyList.old">
               <a @click="notifyDetail(notify)">
-                <small class="pull-right">{{calculateTimePast(notify.created_at)}}</small>
+                <small class="pull-right">
+                  <i class="fa fa-clock-o"></i>
+                  {{calculateTimePast(notify.created_at)}}
+                </small>
                 <i class="fa" :class="notify.icon"></i>
                 {{notify.content}}
               </a>
             </li>
           </Nav-Menu>
 
-          <Nav-Menu :num="taskList.length" type="tasks">
+          <Nav-Menu id="task" :num="taskList.length" type="tasks">
             <li v-for="task in taskList">
               <!-- Task item -->
               <a>
@@ -180,6 +187,24 @@ export default {
       ]
     };
   },
+
+  watch: {
+    taskList(oldData, newData) {
+      if (oldData.length !== newData.length) {
+        $('#task').effect('highlight', { color: '#dd4b39' }, 1000);
+      }
+    },
+    notifyList(oldData, newData) {
+      if (
+        oldData.old.length !== newData.old.length ||
+        oldData.new.length !== newData.new.length
+      ) {
+        $('#notifications').effect('highlight', { color: '#f39c12' }, 1000);
+      }
+    },
+    msgList() {}
+  },
+
   //data from parent
   props: {
     user: Object,
@@ -201,11 +226,11 @@ export default {
       var diff = new Date() - new Date(date);
       var time;
       if (diff > 86400000) {
-        time = Math.round(diff / 86400000) + ' days';
+        time = Math.round(diff / 86400000) + 'd';
       } else if (diff > 3600000) {
-        time = Math.round(diff / 3600000) + ' hrs';
+        time = Math.round(diff / 3600000) + 'h';
       } else {
-        time = Math.round(diff / 60000) + ' min';
+        time = Math.round(diff / 60000) + 'm';
       }
       return time;
     },
@@ -277,18 +302,23 @@ export default {
   transition: 0.3s ease;
 }
 .notifications-menu small {
-  font-size: 60%;
+  font-size: 70%;
   color: gray;
   margin: -5px 0px 0px 10px;
 }
-
 .navbar .archive {
   transition: 0.3s ease;
   color: gray;
-  margin: 5px 5px 0 10px;
+  margin: 3px 5px 0 10px;
 }
 
 .navbar .archive:hover {
   color: green;
+}
+
+.navbar-nav > .notifications-menu > .dropdown-menu,
+.navbar-nav > .messages-menu > .dropdown-menu,
+.navbar-nav > .tasks-menu > .dropdown-menu {
+  width: 320px !important;
 }
 </style>

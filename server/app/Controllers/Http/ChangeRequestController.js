@@ -13,6 +13,8 @@ const ChangeRequestMessage = use(
 const ChangeRequestHistory = use(
   'App/Models/ChangeRequest/ChangeRequestHistory'
 );
+
+const MyHelper = use('App/Helper/MyHelper');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const CrudService = use('App/Service/CrudService');
 const Notification = use('App/Service/NotificationService');
@@ -128,6 +130,7 @@ class ChangeRequestController {
 
     let { message, client } = request.only(['message', 'client']);
     const user = await auth.getUser();
+
     //get client if current user is a admin. Else client is current user.
     if (user.role === 'Admin' || user.role === 'Developer') {
       client = await User.find(client);
@@ -138,12 +141,12 @@ class ChangeRequestController {
       client = user;
     }
 
-    data.totalMessage = 0;
-    data.totalHistory = 0;
-    data.clientName = client.full_name;
-    //fill in data then save to its creator
-    const changeRequest = new ChangeRequest();
-    changeRequest.fill(data);
+    //map change request using helper
+    const changeRequest = MyHelper.mapChangeRequest(
+      new ChangeRequest(),
+      data,
+      client
+    );
 
     await client.change_requests().save(changeRequest);
 
@@ -164,15 +167,14 @@ class ChangeRequestController {
     }
 
     //create change request history
-    this._createCRHistory(
-      changeRequest,
-      'Create',
-      `Change Request ID ${changeRequest.id} has been posted by ${
+    await MyHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
+      type: 'Create',
+      content: `Change Request ID ${changeRequest.id} has been posted by ${
         user.full_name
       } in ${changeRequest.created_at}`
-    );
+    });
 
-    Notification.newChangeRequest(changeRequest);
+    await Notification.newChangeRequest(changeRequest);
 
     return changeRequest;
   }
@@ -207,21 +209,14 @@ class ChangeRequestController {
         ),
       work: changeRequest => changeRequest.merge(requestData),
       after: (changeRequest, user) => {
-        let type, content;
-        // history for status update
-        if (requestData.status) {
-          type = `New Status: ${requestData.status.toUpperCase()}`;
-          content = `The status was updated to ${requestData.status.toUpperCase()} by ${
-            user.full_name
-          }`;
-        } else {
-          //history for content modify
-          type = 'Edit Content';
-          content = `Change Request content was modified by ${user.full_name}`;
-        }
+        const changeData = MyHelper.mapCRHistory(requestData, user);
         //create change request history
-        this._createCRHistory(changeRequest, type);
-        Notification.updateChangeRequest(changeRequest, type, content);
+        MyHelper.createCRHistory(
+          new ChangeRequestHistory(),
+          changeRequest,
+          changeData
+        );
+        Notification.updateChangeRequest(changeRequest, changeData.type);
       }
     });
   }
@@ -310,17 +305,6 @@ class ChangeRequestController {
   }
 
   /**
-   * private method to save history of change request
-   */
-  _createCRHistory(changeRequest, type, content) {
-    var crHistory = new ChangeRequestHistory();
-    crHistory.fill({ type, content });
-    changeRequest.histories().save(crHistory);
-    changeRequest.totalHistory++;
-    changeRequest.save();
-  }
-
-  /**
    * Get all histories belongs to this change request
    * @returns {ChangeRequestMessage[]}
    */
@@ -358,47 +342,8 @@ class ChangeRequestController {
       .orderBy('created_at', 'asc')
       .fetch();
 
-    //chart data JSON format
-    const chartData = {
-      pie: [0, 0, 0, 0],
-      line: [
-        new Array(7).fill(0),
-        new Array(7).fill(0),
-        new Array(7).fill(0),
-        new Array(7).fill(0)
-      ]
-    };
-
-    let total = 0;
-    let i = 0;
-
-    //loop through each change request and fill chart data.
-    for (let data of CRList.rows) {
-      //if date is different change to filling data to next day
-
-      switch (data.status) {
-        case 'Cancelled':
-          i = 0;
-          break;
-        case 'To Do':
-          i = 1;
-          break;
-        case 'In Progress':
-          i = 2;
-          break;
-        case 'Complete':
-          i = 3;
-          break;
-      }
-      chartData.pie[i]++;
-      chartData.line[i][data.created_at.getDay()]++;
-      total++;
-    }
-
-    return {
-      chartData,
-      total
-    };
+    // return mapped chart data
+    return MyHelper.mapChartDataFrom(CRList);
   }
 }
 

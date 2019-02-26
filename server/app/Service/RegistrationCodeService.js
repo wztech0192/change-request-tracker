@@ -14,7 +14,7 @@ const RegistCodeNotExistException = use(
 
 class RegistrationCodeService {
   // Get registrationCode from data that match with input code
-  async getMatchCode({ code }) {
+  static async getMatchCode({ code }) {
     const RegistrationCodes = await Database.table('registration_codes')
       .where('code', code)
       .first();
@@ -28,7 +28,7 @@ class RegistrationCodeService {
   }
 
   //return validation messages if data fails. Else return false
-  async registrationCodeIsFail(data) {
+  static async registrationCodeIsFail(data) {
     //if allowEdit is false, validate registor information input
     if (!data.allowEdit) {
       const validation = await Validator.validateAll(
@@ -53,11 +53,11 @@ class RegistrationCodeService {
   }
 
   //remove used code
-  async removeCode(id) {
+  static async removeCode(id) {
     const code = await RegistrationCode.find(id);
     await code.delete();
     return code;
   }
 }
 
-module.exports = new RegistrationCodeService();
+module.exports = RegistrationCodeService;

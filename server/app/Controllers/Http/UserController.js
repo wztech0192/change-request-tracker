@@ -8,9 +8,10 @@
 const User = use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationCodeService = use('App/Service/RegistrationCodeService');
-const MessageService = use('App/Service/MessageService');
+const MailService = use('App/Service/MailService');
 const NotificationService = use('App/Service/NotificationService');
 const Hash = use('Hash');
+const MyHelper = use('App/Helper/MyHelper');
 const Validator = use('Validator');
 const Database = use('Database');
 
@@ -39,10 +40,7 @@ class UserController {
 
     //if not allow to edit, set registration data to code data
     if (code.allowEdit === 0) {
-      userInfo.email = code.email;
-      userInfo.first_name = code.first_name;
-      userInfo.last_name = code.last_name;
-      userInfo.mid_initial = code.mid_initial;
+      MyHelper.mapUserInfoFrom(code, userInfo);
     }
 
     //validate all request data, return message if fails
@@ -54,22 +52,13 @@ class UserController {
       return validation.messages();
     }
 
-    //set format user data
-    if (userInfo.mid_initial) {
-      userInfo.mid_initial = this._modifyString(userInfo.mid_initial) + '.';
-    }
-    userInfo.role = code.role;
-    userInfo.last_name = this._modifyString(userInfo.last_name);
-    userInfo.first_name = this._modifyString(userInfo.first_name);
-
-    userInfo.full_name = `${userInfo.first_name} ${userInfo.mid_initial ||
-      ''} ${userInfo.last_name}`;
+    MyHelper.mapUserInfo(userInfo, code.role);
 
     //create user
     const user = await User.create(userInfo);
 
     //create welcome message
-    MessageService.addRegistrationCodeMessage(code, userInfo);
+    MailService.sendWelcomeMessage(code, userInfo);
 
     //remove used code
     RegistrationCodeService.removeCode(code.id);
@@ -144,32 +133,28 @@ class UserController {
   }
 
   /*
-   * Datatable server side processing
+   * Userlist datatable server side processing
    */
   async datatable({ auth, request }) {
     const user = await auth.getUser();
     AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
-    const table = request.all();
 
-    //table page
-    const page = table.start / table.length + 1;
-
-    // filter search
-    const searchV = `%${table.search.value}%`;
-    const userList = await User.query()
-      .where('id', 'like', searchV)
-      .orWhere('full_name', 'like', searchV)
-      .orWhere('email', 'like', searchV)
-      .orWhere('role', 'like', searchV)
-      .orWhere('created_at', 'like', searchV)
-      .orderBy(table.columns[table.order[0].column].data, table.order[0].dir)
-      .paginate(page, table.length);
-
-    return {
-      recordsTotal: userList.pages.total,
-      recordsFiltered: userList.pages.total,
-      data: userList.rows
-    };
+    return await MyHelper.mapDatatableFrom(
+      request,
+      // callback function to perform custom query
+      (table, page, search) =>
+        User.query()
+          .where('id', 'like', search)
+          .orWhere('full_name', 'like', search)
+          .orWhere('email', 'like', search)
+          .orWhere('role', 'like', search)
+          .orWhere('created_at', 'like', search)
+          .orderBy(
+            table.columns[table.order[0].column].data,
+            table.order[0].dir
+          )
+          .paginate(page, table.length)
+    );
   }
   /**
    * Get All User
@@ -205,9 +190,25 @@ class UserController {
   async update({ auth, request, params }) {
     const user = await auth.getUser();
     const targetUser = await User.find(params.id);
-    let data = request.all();
+    let { role } = request.only('role');
 
-    //if request a role change, verify current user's role then update target user
+    //verify handler's role
+    AuthorizationService.verifyPermissionForUser(
+      targetUser,
+      user,
+      ['Developer', 'Admin'],
+      false
+    );
+
+    //change role and save
+    targetUser.role = role;
+    if (targetUser.role == 'Developer') {
+      targetUser.isDev = 1;
+    }
+    await targetUser.save();
+    return targetUser;
+
+    /* //if request a role change, verify current user's role then update target user
     if (data.role) {
       //role check
       AuthorizationService.verifyPermissionForUser(
@@ -244,9 +245,7 @@ class UserController {
       }
 
       targetUser.merge(data);
-    }
-    await targetUser.save();
-    return targetUser;
+    }*/
   }
 
   /**
@@ -293,13 +292,7 @@ class UserController {
    */
   async notificationPaginate({ auth, request }) {
     const user = await auth.getUser();
-
-    return await NotificationService.notificationPaginate(user, request.all());
-  }
-
-  // capitalize the first letter of the word and lowercase the rest
-  _modifyString(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    return await NotificationService.notificationPaginate(user, request);
   }
 }
 

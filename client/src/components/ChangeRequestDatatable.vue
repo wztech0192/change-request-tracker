@@ -105,7 +105,7 @@ export default {
               .every(function() {
                 self.setTableFilter(this);
               });
-            $('.select2').select2({ width: '80%', allowClear: true });
+            $('.select2').select2({ width: '80%' });
             self.spinner.loading = false;
           }
         }

@@ -154,8 +154,13 @@ export default {
 
   //verify registration code before created
   created() {
+    // use registration in url if exist, else use registration in state
+    const code = this.$route.query.code
+      ? this.$route.query.code
+      : this.registrationCode;
+
     HTTP()
-      .post('/regist-code/verify', { code: this.registrationCode })
+      .post('/regist-code/verify', { code })
       .then(({ data }) => {
         if (data) {
           //fill in register data from the registration code

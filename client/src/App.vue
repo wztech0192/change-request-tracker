@@ -77,6 +77,10 @@ export default {
 
 
 <style>
+body {
+  font-family: Arial, sans-serif !important;
+}
+
 .select2-container--default
   .select2-selection--multiple
   .select2-selection__choice {

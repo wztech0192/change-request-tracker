@@ -14,7 +14,7 @@ class AuthorizationService {
   /**
    * verify if user has permission to handle this resource
    */
-  verifyPermission(resource, user, allowRoles, allowSelf) {
+  static verifyPermission(resource, user, allowRoles, allowSelf) {
     //throw a ResourceNotExistException if resource do not exist
     this.verifyExistance(resource, 'resource');
 
@@ -34,7 +34,7 @@ class AuthorizationService {
   /**
    * verify if user is the owner of the message
    */
-  verifyMessageOwnership(message, owner) {
+  static verifyMessageOwnership(message, owner) {
     //throw a ResourceNotExistException if resource do not exist
     this.verifyExistance(message, 'message');
     if (message.receiverEmail !== owner.email) {
@@ -45,7 +45,7 @@ class AuthorizationService {
   /**
    * verify if user has permission to view the entire list
    */
-  verifyRole(user, allowRoles) {
+  static verifyRole(user, allowRoles) {
     //if role was defined, throw a InvalidAccessException if the current user's role is not contained in allowed roles list
     if (
       allowRoles &&
@@ -56,7 +56,7 @@ class AuthorizationService {
     }
   }
 
-  verifyPermissionForUser(targetUser, user, allowRoles, allowSelf) {
+  static verifyPermissionForUser(targetUser, user, allowRoles, allowSelf) {
     //throw a ResourceNotExistException if targetUser do not exist
     this.verifyExistance(targetUser, 'user');
 
@@ -76,7 +76,7 @@ class AuthorizationService {
     }
   }
 
-  verifyPermissionForDeleteUser(targetUser, user, allowRoles) {
+  static verifyPermissionForDeleteUser(targetUser, user, allowRoles) {
     //throw a ResourceNotExistException if targetUser do not exist
     this.verifyExistance(targetUser, 'user');
 
@@ -97,11 +97,11 @@ class AuthorizationService {
   }
 
   //verify if resource exists
-  verifyExistance(resource, message) {
+  static verifyExistance(resource, message) {
     if (!resource) {
       throw new ResourceNotExistException(message);
     }
   }
 }
 
-module.exports = new AuthorizationService();
+module.exports = AuthorizationService;

@@ -10,6 +10,7 @@ const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationCodeService = use('App/Service/RegistrationCodeService');
 const NotificationService = use('App/Service/NotificationService');
 const CrudService = use('App/Service/CrudService');
+const MailService = use('App/Service/MailService');
 const Database = use('Database');
 
 class RegistrationCodeController {
@@ -41,7 +42,10 @@ class RegistrationCodeController {
         await registrationCode.save();
       },
       after: registrationCode => {
+        // send notification
         NotificationService.newRegisterCode(registrationCode);
+        // send email message
+        MailService.sendRegistrationCodeMessage(registrationCode);
       }
     });
     return {

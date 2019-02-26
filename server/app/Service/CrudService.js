@@ -8,7 +8,7 @@ class CrudService {
    * get all resource from database
    * @returns {Model[]}
    */
-  async getAll(Model, callback) {
+  static async getAll(Model, callback) {
     const resourceQuery = await Model.all();
     //call back function
     if (callback) {
@@ -24,7 +24,7 @@ class CrudService {
    * Create a change request that owns by current user
    * @returns {Model}
    */
-  async create(auth, Model, callback) {
+  static async create(auth, Model, callback) {
     const user = await auth.getUser();
     const resource = new Model();
     //call back function
@@ -45,7 +45,7 @@ class CrudService {
    * delete target change request
    * @returns {Model}
    */
-  async destroy(auth, params, Model, callback) {
+  static async destroy(auth, params, Model, callback) {
     const user = await auth.getUser();
     const resource = await Model.find(params.id);
     //call back function
@@ -69,7 +69,7 @@ class CrudService {
    * delete target change request
    * @returns {Model}
    */
-  async update(auth, params, Model, callback) {
+  static async update(auth, params, Model, callback) {
     const user = await auth.getUser();
     const resource = await Model.find(params.id);
 
@@ -91,4 +91,4 @@ class CrudService {
   }
 }
 
-module.exports = new CrudService();
+module.exports = CrudService;

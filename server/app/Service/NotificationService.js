@@ -7,12 +7,13 @@
 
 const Notification = use('App/Models/Notification');
 const Database = use('Database');
+const MyHelper = use('App/Helper/MyHelper');
 
 class NotificationService {
   /**
    * notify every admin
    */
-  async _notifyAdmin(computeList) {
+  static async _notifyAdmin(computeList) {
     //get all admins
     const adminList = await Database.table('users')
       .select('id')
@@ -34,7 +35,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  async newRegisterCode({ role, creator_name }) {
+  static async newRegisterCode({ role, creator_name }) {
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
@@ -49,7 +50,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  async newUser({ id, full_name, role }) {
+  static async newUser({ id, full_name, role }) {
     //notify all admin
     this._notifyAdmin(length => {
       if (role !== 'Admin' && role !== 'Developer') {
@@ -68,7 +69,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  async newChangeRequest({ user_id, id, clientName }) {
+  static async newChangeRequest({ user_id, id, clientName }) {
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
@@ -86,11 +87,10 @@ class NotificationService {
   /**
    * notify every admin when new change request was created
    */
-  async updateChangeRequest({ user_id, id }, type) {
+  static async updateChangeRequest({ user_id, id }, type) {
     let icon = '';
     let detail = 'content was modified';
     let link = 'history';
-
     // notify detail by update type
     switch (type) {
       case 'New Status: TO DO':
@@ -130,34 +130,32 @@ class NotificationService {
    * return datatable json for notification list
    * @return {Datatable JSON}
    */
-  async notificationPaginate(user, table) {
-    //table page
-    const page = table.start / table.length + 1;
-    // filter search
-    const searchV = `%${table.search.value}%`;
-    const notifyList = await Notification.query()
-      .where('user_id', user.id)
-      .andWhere(function() {
-        this.where('created_at', 'like', searchV).orWhere(
-          'content',
-          'like',
-          searchV
-        );
-      })
-      .orderBy(table.columns[table.order[0].column].data, table.order[0].dir)
-      .paginate(page, table.length);
-
-    return {
-      recordsTotal: notifyList.pages.total,
-      recordsFiltered: notifyList.pages.total,
-      data: notifyList.rows
-    };
+  static async notificationPaginate(user, request) {
+    return await MyHelper.mapDatatableFrom(
+      request,
+      // callback function to perform custom query
+      (table, page, search) =>
+        Notification.query()
+          .where('user_id', user.id)
+          .andWhere(function() {
+            this.where('created_at', 'like', search).orWhere(
+              'content',
+              'like',
+              search
+            );
+          })
+          .orderBy(
+            table.columns[table.order[0].column].data,
+            table.order[0].dir
+          )
+          .paginate(page, table.length)
+    );
   }
 
   /**
    * @return {notification list object}
    */
-  async getNotification(user) {
+  static async getNotification(user) {
     const notifyList_old = await user
       .notifications()
       .where('isNew', '0')
@@ -178,7 +176,7 @@ class NotificationService {
   /**
    * @return {notification list object}
    */
-  async updateNotification(user, target) {
+  static async updateNotification(user, target) {
     if (target === 'all') {
       // set isNew to false for every new notification.
       await Database.table('notifications')
@@ -195,4 +193,4 @@ class NotificationService {
   }
 }
 
-module.exports = new NotificationService();
+module.exports = NotificationService;

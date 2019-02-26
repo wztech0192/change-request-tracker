@@ -7,7 +7,7 @@
 
 const Message = use('App/Models/Message');
 const AuthorizationService = use('App/Service/AuthorizationService');
-const MessageService = use('App/Service/MessageService');
+const MailService = use('App/Service/MailService');
 const CrudService = use('App/Service/CrudService');
 const Database = use('Database');
 
@@ -20,7 +20,7 @@ class MessageController {
     const data = request.only(['title', 'content', 'receiverEmail']);
     data.senderEmail = user.email;
     data.senderName = user.full_name;
-    return MessageService.createMessage(data);
+    return MailService.createMessage(data);
   }
 
   /**
@@ -39,7 +39,7 @@ class MessageController {
    * @returns {message}
    */
   async deleteMessage({ auth, params }) {
-    return MessageService.deleteMessage(auth, params);
+    return MailService.deleteMessage(auth, params);
   }
 
   /**
@@ -52,6 +52,25 @@ class MessageController {
         AuthorizationService.verifyMessageOwnership(message, user),
       work: message => message.merge(request.only(['isRead', 'isArchived']))
     });
+  }
+
+  /**
+   * retrieve change request submission from mailgun store
+   */
+  async _retrieveMailRequest({ request }) {
+    const content = request.only(['title', 'detail']);
+    const { sender } = request.only('from');
+    // validate title and detial is not empty
+    if (!content.title || !content.detail) {
+      throw new Exception('Title and Detail must no be empty');
+    }
+
+    //get user and verify
+    sender = await User.findBy('email', sender);
+    AuthorizationService.verifyExistance(sender, ' user.');
+
+    //create change request
+    MailService.createRequestFromMail(content, sender);
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <aside class="main-sidebar">
+  <aside class="main-sidebar" style="font-size: 13px;">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
@@ -148,5 +148,9 @@ export default {
 .sidebar-menu li .router-link-exact-active {
   background: #ecf0f5 !important;
   color: black !important;
+}
+
+.sidebar-menu > li:hover > a > i {
+  color: #00a2ff !important;
 }
 </style>

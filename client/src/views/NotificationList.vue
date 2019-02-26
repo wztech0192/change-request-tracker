@@ -107,11 +107,11 @@ export default {
 
             dataSrc: ({ data }) => {
               return data;
-            }
+            },
 
-            //  error: (e, e2) => {
-            //    self.setGlobalError(e2);
-            // }
+            error: (prop, type, error) => {
+              self.setGlobalError(error);
+            }
           },
           createdRow: function(row, data, dataIndex) {
             //bold id

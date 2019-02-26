@@ -117,6 +117,7 @@ export default {
         buttons: [
           {
             title: 'Confirm',
+            default: true,
             handler: spinner => {
               spinner.loading = true;
               HTTP()

@@ -6,6 +6,7 @@
  */
 
 const User = use('App/Models/User');
+const MyHelper = use('App/Helper/MyHelper');
 const ltr = 'abcdefghijklmnopqrstuvwxyz';
 const ChangeRequestHistory = use(
   'App/Models/ChangeRequest/ChangeRequestHistory'
@@ -26,7 +27,7 @@ class DevToolService {
   /**
    * Generate number of users, for testing purpose
    */
-  async generateUsers(num) {
+  static async generateUsers(num) {
     if (num > 0) {
       const usersList = new Array(num);
       for (let i = 0; i < num; i++) {
@@ -56,7 +57,7 @@ class DevToolService {
   /**
    * Adjust change request data, for dev
    */
-  async adjustChangeRequest() {
+  static async adjustChangeRequest() {
     const CRList = await ChangeRequest.all();
 
     for (let cr of CRList.rows) {
@@ -71,7 +72,7 @@ class DevToolService {
   /**
    * gennerate dummy change request, for dev
    */
-  async generateChangeRequest(num, user) {
+  static async generateChangeRequest(num, user) {
     let users = await User.all();
     users = users.rows;
     let randUser = null;
@@ -91,17 +92,14 @@ class DevToolService {
       await randUser.change_requests().save(changeRequest);
 
       //create change request history
-      const crHistory = await ChangeRequestHistory.create({
+      await MyHelper.createCRHistory(ChangeRequestHistory, changeRequest, {
         type: 'Create',
         content: `Change Request ID ${changeRequest.id} has been posted by ${
           user.full_name
         } in ${changeRequest.created_at}`
       });
-      changeRequest.histories().save(crHistory);
-      changeRequest.totalHistory++;
-      changeRequest.save();
     }
   }
 }
 
-module.exports = new DevToolService();
+module.exports = DevToolService;

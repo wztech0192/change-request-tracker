@@ -25,10 +25,10 @@
             <i class="fa fa-calendar-plus-o"></i> New Todo
           </a>
           <li class="pull-left header">
-            <h2 style="padding:0; margin:0;">
-              <i class="fa fa-th"></i>&nbsp;&nbsp;Developer Todo List
-              <small>on progress</small>
-            </h2>
+            <h1 style="padding:0; margin:0;">
+              <i class="fa fa-th"></i>
+              &nbsp;&nbsp;Developer Todo List
+            </h1>
           </li>
         </ul>
         <div class="tab-content">
@@ -338,7 +338,7 @@ export default {
         .patch(`/dev/todo/${todo.id}`, todo)
         .then(() => {
           //update header task menu
-          this.fetchNavMenu('task');
+          this.fetchNavMenu('flag');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -367,7 +367,7 @@ export default {
         .patch(`/dev/task/complete/${task.id}`, task)
         .then(() => {
           //update header task menu
-          this.fetchNavMenu('task');
+          this.fetchNavMenu('flag');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -441,7 +441,7 @@ export default {
         .delete(`/dev/todo/${item.id}`)
         .then(() => {
           //update header task menu if the selector is flagged
-          if (item.isFlagged) this.fetchNavMenu('task');
+          if (item.isFlagged) this.fetchNavMenu('flag');
         })
         .catch(e => {
           this.setGlobalError(e);
@@ -511,7 +511,7 @@ export default {
         HTTP()
           .patch(link, this.modalInfo)
           .then(() => {
-            this.fetchNavMenu('task');
+            this.fetchNavMenu('flag');
           })
           .catch(e => {
             this.setGlobalError(e);

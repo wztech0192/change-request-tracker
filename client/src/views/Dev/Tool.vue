@@ -5,24 +5,54 @@
         <i class="fa fa-wrench"></i>&nbsp;&nbsp;Dev Tool
       </h1>
     </section>
-    <section class="content">
-      <label>Generate Dummy User</label>
-      <br>
-      <input v-model="num">
-      <br>
-      <br>
-      <button class="btn btn-primary" @click="generateUser">Process</button>
-      <hr>
-      <label>Correct Change Request Data</label>
-      <br>
-      <button class="btn btn-primary" @click="correctChangeRequest">Process</button>
-      <hr>
-      <label>Generate Dummy Change Request For Random User</label>
-      <br>
-      <input v-model="crnum">
-      <br>
-      <br>
-      <button class="btn btn-primary" @click="generateCR">Process</button>
+    <section class="content" id="devtool">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="box box-warning">
+            <div class="box-header text-yellow">
+              <h4>Generate Dummy User</h4>
+            </div>
+            <div class="box-body">
+              <input type="number" v-model="num">
+            </div>
+            <div class="box-footer">
+              <button class="btn btn-warning" @click="generateUser">
+                <i class="fa fa-warning"></i>&nbsp;&nbsp;Process
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="box box-primary">
+            <div class="box-header text-blue">
+              <h4>Correct Change Request Data</h4>
+            </div>
+            <div class="box-body">
+              <button
+                class="btn btn-primary"
+                style="padding:10%;border-radius:25px;"
+                @click="correctChangeRequest"
+              >Process</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-warning">
+            <div class="box-header text-yellow">
+              <h4>Generate Dummy Change Request For Random User</h4>
+            </div>
+            <div class="box-body">
+              <input type="number" v-model="crnum">
+            </div>
+            <div class="box-footer">
+              <button class="btn btn-warning" @click="generateCR">Process</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6"></div>
+      </div>
     </section>
   </div>
 </template>
@@ -88,4 +118,14 @@ export default {
 </script>
 
 <style>
+#devtool .box h4 {
+  font-weight: bold;
+  text-align: center;
+}
+
+#devtool .box input,
+#devtool .box button {
+  text-align: center;
+  width: 100%;
+}
 </style>

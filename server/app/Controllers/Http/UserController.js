@@ -11,6 +11,7 @@ const RegistrationCodeService = use('App/Service/RegistrationCodeService');
 const MailService = use('App/Service/MailService');
 const NotificationService = use('App/Service/NotificationService');
 const Hash = use('Hash');
+const FlagService = use('App/Service/FlagService');
 const MyHelper = use('App/Helper/MyHelper');
 const Validator = use('Validator');
 const Database = use('Database');
@@ -252,19 +253,10 @@ class UserController {
    * return flagged list
    * @return {array}
    */
-  async getTaskList({ auth }) {
+  async getFlaggedList({ auth }) {
     const user = await auth.getUser();
-    const TaskList = [];
-    if (user.role === 'Developer') {
-      const flaggedDevTodo = await Database.table('dev_todos')
-        .where('isFlagged', '1')
-        .orderBy('created_at', 'desc');
-      for (let devTodo of flaggedDevTodo) {
-        //  devTodo.link="/todo";
-        TaskList.push(devTodo);
-      }
-    }
-    return TaskList;
+
+    return await FlagService.getFlaggedList(user);
   }
 
   /**

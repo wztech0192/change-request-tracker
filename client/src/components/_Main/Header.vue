@@ -39,7 +39,7 @@
             footer="/notifications"
             text="Notifications"
           >
-            <li style="box-shadow: inset 0px 10px 30px lightblue;">
+            <li class="nav-menu-break">
               <label>
                 <small>{{notifyList.new.length}} Unread</small>
               </label>
@@ -59,7 +59,7 @@
               </a>
             </li>
 
-            <li style="box-shadow: inset 0px 10px 30px lightblue;">
+            <li class="nav-menu-break">
               <label>
                 <small>{{notifyList.old.length}} Read &nbsp;&nbsp;(Last 7 Days)</small>
               </label>
@@ -77,25 +77,52 @@
             </li>
           </Nav-Menu>
 
-          <Nav-Menu id="task" :num="taskList.length" type="tasks">
-            <li v-for="task in taskList">
-              <!-- Task item -->
-              <a>
+          <Nav-Menu
+            id="task"
+            :num="flagList.length"
+            type="tasks"
+            :text="`You have ${flagList.length} flagged items`"
+          >
+            <li v-if="flagList.flagTask.length>0" class="nav-menu-break">
+              <label>
+                <small>Change Request: {{flagList.flagTask.length}}</small>
+              </label>
+            </li>
+            <!-- Flagged Dev Task-->
+            <li v-for="item in flagList.flagTask">
+              <router-link to="/dev/todo">
                 <h3>
-                  <small class="pull-right">{{task.percentage}}%</small>
-                  {{limitContentLength(task.content, 35)}}
+                  <small class="pull-right">{{item.percentage}}%</small>
+                  {{limitContentLength(item.content, 40)}}
                 </h3>
                 <div class="progress xs active">
                   <div
                     class="progress-bar progress-bar-striped"
-                    :class="getProgressBarColor(task.percentage)"
-                    :style="{width: task.percentage + '%' }"
+                    :class="getProgressBarColor(item.percentage)"
+                    :style="{width: item.percentage + '%' }"
                     role="progressbar"
                   >
-                    <span class="sr-only">{{task.percentage}}% Complete</span>
+                    <span class="sr-only">{{item.percentage}}% Complete</span>
                   </div>
                 </div>
-              </a>
+              </router-link>
+            </li>
+
+            <!-- Flagged Change Request-->
+            <li v-if="flagList.flagCR.length>0" class="nav-menu-break">
+              <label>
+                <small>Change Request: {{flagList.flagCR.length}}</small>
+              </label>
+            </li>
+
+            <li v-for="item in flagList.flagCR">
+              <!-- item is a change reuqest if request id is greater than 0-->
+              <router-link :to="`/change-request/${item.id}/content`">
+                <small class="pull-right">
+                  <label class="label" :class="getStatusLabel(item.status)">{{item.status}}</label>
+                </small>
+                <h3>{{limitContentLength(item.title, 35)}}</h3>
+              </router-link>
             </li>
           </Nav-Menu>
           <!-- User Account: style can be found in dropdown.less -->
@@ -189,9 +216,9 @@ export default {
   },
 
   watch: {
-    taskList(oldData, newData) {
+    flagList(oldData, newData) {
       if (oldData.length !== newData.length) {
-        $('#task').effect('highlight', { color: '#dd4b39' }, 1000);
+        $('#task').effect('highlight', { color: '#3c8dbc' }, 1000);
       }
     },
     notifyList(oldData, newData) {
@@ -208,7 +235,7 @@ export default {
   //data from parent
   props: {
     user: Object,
-    taskList: Array,
+    flagList: Object,
     notifyList: Object,
     clearNewNotification: Function
   },
@@ -286,11 +313,28 @@ export default {
     limitContentLength(content, length) {
       if (content.length > length) {
         //split from the last empty space
-        var i = content.indexOf(' ', length - 5);
+        var i = content.indexOf(' ', length - 8);
         if (i < 0) i = length;
         return content.substring(0, content.indexOf(' ', i)) + '...';
       } else {
+        console.log(content);
         return content;
+      }
+    },
+
+    //get statu colors class
+    getStatusLabel(status) {
+      {
+        switch (status) {
+          case 'To Do':
+            return 'label-warning';
+          case 'In Progress':
+            return 'label-primary';
+          case 'Complete':
+            return 'label-success';
+          default:
+            return 'label-danger';
+        }
       }
     }
   }
@@ -301,7 +345,8 @@ export default {
 .navbar a {
   transition: 0.3s ease;
 }
-.notifications-menu small {
+.notifications-menu small,
+.nav-menu-break small {
   font-size: 70%;
   color: gray;
   margin: -5px 0px 0px 10px;
@@ -314,6 +359,9 @@ export default {
 
 .navbar .archive:hover {
   color: green;
+}
+.navbar .nav-menu-break {
+  box-shadow: inset 0px 10px 30px lightblue;
 }
 
 .navbar-nav > .notifications-menu > .dropdown-menu,

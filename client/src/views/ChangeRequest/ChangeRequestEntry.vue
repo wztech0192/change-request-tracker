@@ -13,111 +13,153 @@
       </h1>
     </section>
     <section class="content">
-      <form class="box" @submit.prevent="submitRequest">
-        <div class="box-body form-background">
-          <span class="pull-right">
-            <a
-              class="register-resetbtn btn btn-social-icon"
-              @click.prevent="clearAllData"
-              data-toggle="tooltip"
-              title="Reset All Input"
-            >
-              <i class="fa fa-repeat"></i>
-            </a>
-          </span>
-          <br>
+      <div class="row">
+        <div class="col-md-8">
+          <form class="box" @submit.prevent="submitRequest">
+            <div class="box-body form-background">
+              <span class="pull-right">
+                <a
+                  class="register-resetbtn btn btn-social-icon"
+                  @click.prevent="clearAllData"
+                  data-toggle="tooltip"
+                  title="Reset All Input"
+                >
+                  <i class="fa fa-repeat"></i>
+                </a>
+              </span>
+              <br>
 
-          <!-- Select a client for the request if user is admin -->
-          <div v-if="isAdmin">
-            <div class="form-group">
-              <label :class="{'text-red':error.client_error}">
-                <i class="fa fa-user"></i> Client
-                <span v-if="error.client_error">-- Client Cannot be empty</span>
+              <!-- Select a client for the request if user is admin -->
+              <div v-if="isAdmin">
+                <div class="form-group">
+                  <label :class="{'text-red':error.client_error}">
+                    <i class="fa fa-user"></i> Client
+                    <span v-if="error.client_error">-- Client Cannot be empty</span>
+                  </label>
+
+                  <UserSearch
+                    ref="usersearch"
+                    searchRole="Client"
+                    :onChange="userChange"
+                    :useEmailID="true"
+                  >
+                    <option
+                      v-if="requestData.client"
+                      :value="requestData.client"
+                    >{{initClientSearch(requestData.client)}}</option>
+                  </UserSearch>
+                </div>
+              </div>
+
+              <!-- Title input  -->
+              <label :class="{'text-red':error.title_error}">
+                Request Title
+                <span v-if="error.title_error">-- Title Cannot be empty</span>
               </label>
-
-              <UserSearch
-                ref="usersearch"
-                searchRole="Client"
-                :onChange="userChange"
-                :useEmailID="true"
-              >
-                <option
-                  v-if="requestData.client"
-                  :value="requestData.client"
-                >{{initClientSearch(requestData.client)}}</option>
-              </UserSearch>
-            </div>
-          </div>
-
-          <!-- Title input  -->
-          <label :class="{'text-red':error.title_error}">
-            Request Title
-            <span v-if="error.title_error">-- Title Cannot be empty</span>
-          </label>
-          <div class="input-group" :class="{'has-error':error.title_error}">
-            <span class="input-group-addon">
-              <i class="fa fa-info-circle"></i>
-            </span>
-            <input
-              class="form-control"
-              @blur="clearError('title')"
-              :value="requestData.title"
-              @input="setTitle"
-            >
-          </div>
-
-          <br>
-
-          <!-- Detail input  -->
-          <label :class="{'text-red':error.detail_error}">
-            Request Detail
-            <span v-if="error.detail_error">-- Detail Cannot be empty</span>
-          </label>
-          <div class="box" :class="{'box-danger': error.detail_error}">
-            <div class="box-body">
-              <textarea id="editor" name="editor" style="width: 100%"></textarea>
-            </div>
-          </div>
-
-          <br>
-
-          <!-- Requester information -->
-          <div class="box box-primary collapsed-box">
-            <div class="box-header with-border">
-              <a class="box-title pointer" data-widget="collapse">
-                <i class="fa fa-user"></i>&nbsp;&nbsp;Requester Information
-              </a>
-              <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body" style="display:none;">
-              <div class="form-group">
-                <label>First Name</label>
-                <input readonly class="form-control capitalize" :value="requester.first_name">
+              <div class="input-group" :class="{'has-error':error.title_error}">
+                <span class="input-group-addon">
+                  <i class="fa fa-info-circle"></i>
+                </span>
+                <input
+                  class="form-control"
+                  @blur="clearError('title')"
+                  :value="requestData.title"
+                  @input="setTitle"
+                >
               </div>
-              <div class="form-group">
-                <label>Middle Initial</label>
-                <input readonly class="form-control capitalize" :value="requester.mid_initial">
-              </div>
-              <div class="form-group">
-                <label>Last Name</label>
-                <input readonly class="form-control capitalize" :value="requester.last_name">
-              </div>
-              <div class="form-group">
-                <label>Email</label>
-                <input readonly class="form-control" :value="requester.email">
-              </div>
-              <!-- /input-group -->
-            </div>
-            <!-- /.box-body -->
-          </div>
 
-          <!-- Submit button -->
-          <button class="btn btn-primary btn-lg">
-            <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Submit
-          </button>
+              <br>
+
+              <!-- Detail input  -->
+              <label :class="{'text-red':error.detail_error}">
+                Request Detail
+                <span v-if="error.detail_error">-- Detail Cannot be empty</span>
+              </label>
+              <div class="box" :class="{'box-danger': error.detail_error}">
+                <div class="box-body">
+                  <textarea id="editor" name="editor" style="width: 100%"></textarea>
+                </div>
+              </div>
+
+              <br>
+
+              <!-- Client information -->
+              <div class="box box-primary collapsed-box">
+                <div class="box-header with-border">
+                  <a class="box-title pointer" data-widget="collapse">
+                    <i class="fa fa-user"></i>&nbsp;&nbsp;Client Information
+                  </a>
+                  <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display:none;">
+                  <div class="form-group">
+                    <label>First Name</label>
+                    <input readonly class="form-control capitalize" :value="requester.first_name">
+                  </div>
+                  <div class="form-group">
+                    <label>Middle Initial</label>
+                    <input readonly class="form-control capitalize" :value="requester.mid_initial">
+                  </div>
+                  <div class="form-group">
+                    <label>Last Name</label>
+                    <input readonly class="form-control capitalize" :value="requester.last_name">
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input readonly class="form-control" :value="requester.email">
+                  </div>
+                  <!-- /input-group -->
+                </div>
+                <!-- /.box-body -->
+              </div>
+
+              <!-- Submit button -->
+              <button class="btn btn-primary btn-lg">
+                <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+        <div class="col-md-4">
+          <div class="box-header" style="color:gray">
+            <label>
+              <i class="fa fa-info"></i>&nbsp;&nbsp;Tips
+            </label>
+          </div>
+          <div class="box-body" style="color:gray">
+            <ul>
+              <li>Request title and request detail are required.</li>
+              <li>Request client and admins will recieve a notification after the request is created.</li>
+              <li>
+                Change request can also submit through Email:
+                <i>
+                  <b>change.request@foo.com.</b>
+                </i>
+                <br>
+              </li>
+              <li>
+                The subject of email will be used as change request
+                <i>title</i>, and the body will be used as change request
+                <i>detail</i>.
+              </li>
+              <li>
+                <i>Admin</i> are able to file a change request on behalf of client.
+              </li>
+              <li>Client information can be view by click "Client Information" tab.</li>
+              <li>After click submit, filer need to confirm the action by check "Action Acknowledged" checkbox then click confirm button.</li>
+            </ul>
+            <div style="padding-top:100px; overflow:hidden;">
+              <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </template>

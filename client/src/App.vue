@@ -80,7 +80,9 @@ export default {
 body {
   font-family: Arial, sans-serif !important;
 }
-
+.dataTables_wrapper {
+  min-height: 400px;
+}
 .select2-container--default
   .select2-selection--multiple
   .select2-selection__choice {
@@ -199,22 +201,19 @@ h1 {
   .not-mobile-ex {
     display: none;
   }
+  h1 {
+    margin: 0;
+    font-size: 20px !important;
+  }
   body {
     /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-    font-size: 13px;
+    font-size: 13px !important;
   }
 }
 
 @media (max-width: 1048px) {
   .desktop-ex {
     display: none;
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-    font-size: 150%;
   }
 }
 </style>

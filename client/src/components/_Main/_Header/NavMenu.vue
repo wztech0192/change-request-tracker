@@ -50,7 +50,7 @@ export default {
         case 'notifications':
           return 'label-warning';
         case 'tasks':
-          return 'label-danger';
+          return 'label-primary';
       }
     },
     getIcon: type => {

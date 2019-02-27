@@ -2,7 +2,7 @@
   <div class="wrapper">
     <Header
       :user="user"
-      :taskList="taskList"
+      :flagList="flagList"
       :notifyList="notifyList"
       :clearNewNotification="clearNewNotification"
     />
@@ -35,13 +35,13 @@ export default {
 
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
-    ...mapState('userStore', ['user', 'taskList', 'notifyList', 'refresh'])
+    ...mapState('userStore', ['user', 'flagList', 'notifyList', 'refresh'])
   },
 
   watch: {
     //update when refresh value change
     refresh() {
-      this.fetchNavMenu('task');
+      this.fetchNavMenu('flag');
       this.fetchNavMenu('notification');
     }
   },
@@ -50,7 +50,7 @@ export default {
     // set user profile into userStore.user state if user is logged in
     if (this.isLoggedIn) {
       this.fetchUser();
-      this.fetchNavMenu('task');
+      this.fetchNavMenu('flag');
       this.fetchNavMenu('notification');
     }
   },

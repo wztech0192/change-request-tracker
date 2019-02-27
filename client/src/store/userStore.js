@@ -18,7 +18,7 @@ export default {
     ex_error: null,
     token: null,
     loading: false,
-    taskList: [],
+    flagList: [],
     notifyList: [],
     registrationCode: null,
     refresh: 0
@@ -56,7 +56,7 @@ export default {
     },
 
     // get navigation menu list for current user by request
-    // request type: notification, task, and message.
+    // request type: notification, flag, and message.
     fetchNavMenu({ commit }, request) {
       HTTP()
         .get(`/user/${request}`)
@@ -128,8 +128,8 @@ export default {
     },
 
     // set user flagged list
-    taskCommit(state, taskList) {
-      state.taskList = taskList;
+    flagCommit(state, flagList) {
+      state.flagList = flagList;
     },
 
     // set user flagged list

@@ -35,7 +35,7 @@ Route.group(() => {
   //User Route
   Route.get('user', 'UserController.self');
   Route.get('user/all', 'UserController.getAll');
-  Route.get('user/task', 'UserController.getTaskList');
+  Route.get('user/flag', 'UserController.getFlaggedList');
   Route.get('user/notification', 'UserController.getNotificationList');
   Route.post(
     'user/notification/paginate',
@@ -110,6 +110,16 @@ Route.group(() => {
   Route.post('change-request', 'ChangeRequestController.create');
   Route.delete('change-request/:id', 'ChangeRequestController.destroy');
   Route.patch('change-request/:id', 'ChangeRequestController.update');
+
+  //Flag and UnFlag Change Request
+  Route.delete(
+    'change-request/:id/unflag',
+    'ChangeRequestController.unflagChangeRequest'
+  );
+  Route.post(
+    'change-request/:id/flag',
+    'ChangeRequestController.flagChangeRequest'
+  );
 
   //Change Request Message Route
   Route.get(

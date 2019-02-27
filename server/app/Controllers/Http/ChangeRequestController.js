@@ -16,6 +16,7 @@ const ChangeRequestHistory = use(
 
 const MyHelper = use('App/Helper/MyHelper');
 const AuthorizationService = use('App/Service/AuthorizationService');
+const FlagService = use('App/Service/FlagService');
 const CrudService = use('App/Service/CrudService');
 const Notification = use('App/Service/NotificationService');
 
@@ -35,8 +36,8 @@ class ChangeRequestController {
       ['Developer', 'Admin'],
       true
     );
+    changeRequest.isFlag = await FlagService.isFlag(changeRequest, user.id);
 
-    changeRequest.client = await changeRequest.user().fetch();
     return changeRequest;
   }
 
@@ -344,6 +345,24 @@ class ChangeRequestController {
 
     // return mapped chart data
     return MyHelper.mapChartDataFrom(CRList);
+  }
+
+  /**
+   * add change request into flag list
+   */
+  async flagChangeRequest({ auth, request }) {
+    const user = await auth.getUser();
+    const changeRequest = request.all();
+    AuthorizationService.verifyPermission(changeRequest, user, false, true);
+    return await FlagService.flagChangeRequest(changeRequest, user);
+  }
+
+  /**
+   * delete change request from flag list
+   */
+  async unflagChangeRequest({ auth, params }) {
+    const user = await auth.getUser();
+    return await FlagService.unflagChangeRequest(params.id, user);
   }
 }
 

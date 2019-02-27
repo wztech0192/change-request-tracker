@@ -22,6 +22,12 @@ import './assets/adminlte/bower_components/bootstrap-datepicker/dist/css/bootstr
 /* Pace style */
 import './assets/adminlte/plugins/pace/pace.min.css';
 
+/* Float square animation */
+import './assets/css/float-square.css';
+
+/* rotate cricle animation */
+import './assets/css/rotate-circle.css';
+
 /* HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries */
 /* WARNING: Respond.js doesn't work if you view the page via file:// */
 /* [if lt IE 9]>

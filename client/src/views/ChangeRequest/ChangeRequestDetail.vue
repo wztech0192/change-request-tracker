@@ -38,7 +38,7 @@
             </span>
             <span>
               <label>Client Name:</label>
-              {{requestData.client.full_name}}
+              {{requestData.clientName}}
             </span>
           </div>
           <div>
@@ -126,6 +126,21 @@
             </div>
           </div>
         </div>
+        <div class="box-body">
+          <transition name="slide-left" mode="out-in">
+            <a
+              v-if="!requestData.isFlag"
+              @click="flagChangeRequest(true)"
+              class="btn btn-app bg-blue"
+              key="flag"
+            >
+              <i class="fa fa-flag"></i> Flag
+            </a>
+            <a v-else @click="flagChangeRequest(false)" class="btn btn-app bg-red" key="unflag">
+              <i class="fa fa-flag-o"></i>Un-Flag
+            </a>
+          </transition>
+        </div>
       </div>
     </section>
   </div>
@@ -175,6 +190,7 @@ export default {
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
     ...mapMutations('changeRequest', ['setTab']),
+    ...mapActions('userStore', ['fetchNavMenu']),
 
     //fetch request detail
     fetchRequestData() {
@@ -187,6 +203,37 @@ export default {
           this.setGlobalError(e);
           router.push('/');
         });
+    },
+
+    //flag change request
+    flagChangeRequest(isFlag) {
+      if (isFlag) {
+        return HTTP()
+          .post(`/change-request/${this.requestData.id}/flag`, this.requestData)
+          .then(({ data }) => {
+            if (data === 'ok') {
+              this.requestData.isFlag = isFlag;
+              //refresh flag menu
+              this.fetchNavMenu('flag');
+            }
+          })
+          .catch(e => {
+            this.setGlobalError(e);
+          });
+      } else {
+        return HTTP()
+          .delete(`/change-request/${this.requestData.id}/unflag`)
+          .then(({ data }) => {
+            if (data === 'ok') {
+              this.requestData.isFlag = isFlag;
+              //refresh flag menu
+              this.fetchNavMenu('flag');
+            }
+          })
+          .catch(e => {
+            this.setGlobalError(e);
+          });
+      }
     },
 
     //change status, admin only

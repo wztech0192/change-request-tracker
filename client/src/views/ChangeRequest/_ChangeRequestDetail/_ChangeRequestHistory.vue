@@ -32,7 +32,7 @@
       </transition-group>
     </div>
     <div v-else class="overlay" style="height:200px; width:100%; position:relative;">
-      <i class="fa fa-refresh fa-spin"></i>
+      <i class="fa fa-spinner fa-spin"></i>
     </div>
   </div>
 </template>

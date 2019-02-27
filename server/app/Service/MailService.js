@@ -9,41 +9,8 @@ const Message = use('App/Models/Message');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const CrudService = use('App/Service/CrudService');
 const Mail = use('Mail');
-const ChangeRequestHistory = use(
-  'App/Models/ChangeRequest/ChangeRequestHistory'
-);
-const ChangeRequest = use('App/Models/ChangeRequest/ChangeRequest');
-const Notification = use('App/Service/NotificationService');
-const MyHelper = use('App/Helper/MyHelper');
-const Database = use('Database');
 
 class MessageService {
-  /**
-   * create change request from incoming email
-   */
-  static async createRequestFromMail(content, sender) {
-    //map change request using helper
-    const changeRequest = MyHelper.mapChangeRequest(
-      new ChangeRequest(),
-      content,
-      sender
-    );
-
-    await sender.change_requests().save(changeRequest);
-
-    //create change request history
-    await MyHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
-      type: 'Create',
-      content: `Change Request ID ${changeRequest.id} has been posted by ${
-        sender.full_name
-      } in ${changeRequest.created_at}`
-    });
-
-    await Notification.newChangeRequest(changeRequest);
-
-    return changeRequest;
-  }
-
   /**
    * Create new message
    * @returns {message}
@@ -69,14 +36,27 @@ class MessageService {
   //create a welcome message when user register
   static async sendWelcomeMessage() {}
 
+  //send mail
+  static async returnMail(receiver, subject, content) {
+    //send returning email
+    await Mail.raw(content, message => {
+      message.subject(subject);
+      message.from('CRTracker <no-reply@rsicrt.com>');
+      message.to(receiver);
+    });
+  }
+
   //create a message for Registration code
   static async sendRegistrationCodeMessage(code) {
-    const senderMessage = code.content
-      ? `
-      <label>Message From ${code.creator_name}: </label>
+    const senderMessage =
+      code.content && code.content != '<p>&nbsp;</p>'
+        ? `
+      <label>Message From ${code.creator_name} &#60;${
+            code.creator_email
+          }&#62;: </label>
       ${code.content}
     `
-      : '';
+        : '';
 
     const url =
       process.env.NODE_ENV === 'production'

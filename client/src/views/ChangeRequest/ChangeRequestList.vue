@@ -64,7 +64,7 @@
           <div class="tab-pane active">
             <div class="box">
               <div v-if="spinner.loading" class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
+                <i class="fa fa-spinner fa-spin"></i>
               </div>
               <div class="box-body">
                 <Datatable

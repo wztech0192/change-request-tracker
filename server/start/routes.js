@@ -29,6 +29,10 @@ Route.group(() => {
     'regist-code/verify',
     'RegistrationCodeController.verifyRegistrationCode'
   );
+  Route.post(
+    'change-request/mail-submit',
+    'ChangeRequestController.createFromMail'
+  );
 }).prefix('api');
 
 Route.group(() => {
@@ -93,6 +97,7 @@ Route.group(() => {
   //Message Route
   Route.get('message', 'MessageController.getMessage');
   Route.post('message', 'MessageController.createMessage');
+
   Route.delete('message/:id', 'MessageController.deleteMessage');
   Route.patch('message/:id', 'MessageController.updateMessage');
 

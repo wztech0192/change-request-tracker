@@ -15,10 +15,12 @@ const ChangeRequestHistory = use(
 );
 
 const MyHelper = use('App/Helper/MyHelper');
+
 const AuthorizationService = use('App/Service/AuthorizationService');
 const FlagService = use('App/Service/FlagService');
 const CrudService = use('App/Service/CrudService');
 const Notification = use('App/Service/NotificationService');
+const MailService = use('App/Service/MailService');
 
 class ChangeRequestController {
   /**
@@ -155,7 +157,7 @@ class ChangeRequestController {
     if (message) {
       // replace < and > to html code &#60; and &#62 for security
       message = message.replace(/([\<])/g, '&#60;');
-      message = message.replace(/([\>])/g, '&#62');
+      message = message.replace(/([\>])/g, '&#62;');
       var crmsg = new ChangeRequestMessage();
       crmsg.fill({
         content: `<p>${message}</p>`,
@@ -363,6 +365,62 @@ class ChangeRequestController {
   async unflagChangeRequest({ auth, params }) {
     const user = await auth.getUser();
     return await FlagService.unflagChangeRequest(params.id, user);
+  }
+
+  /**
+   * Create new change request from incoming email
+   */
+  async createFromMail({ request }) {
+    const mailJSON = request.only(['sender', 'subject', 'body-plain']);
+
+    // console.log(sender);
+    // console.log(signature['body-plain']);
+    // console.log(subject);
+    //get user by email address
+
+    let client;
+
+    client = await User.findBy('email', mailJSON['sender'].toLowerCase());
+    // return denied message if client does not exit
+    if (!client) {
+      MailService.returnMail(
+        mailJSON['sender'],
+        'Submission Denied',
+        'You are not register in our system. Please register a account by visiting <a href="www.google.com">www.google.com</a>.'
+      );
+      return 'Denied';
+    }
+
+    //map change request using helper
+    const changeRequest = MyHelper.mapChangeRequest(
+      new ChangeRequest(),
+      {
+        title: mailJSON['subject'],
+        details: mailJSON['body-plain']
+      },
+      client
+    );
+
+    await client.change_requests().save(changeRequest);
+
+    //create change request history
+    await MyHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
+      type: 'Create',
+      content: `Change Request ID ${changeRequest.id} has been posted by ${
+        client.full_name
+      } in ${changeRequest.created_at}`
+    });
+
+    await Notification.newChangeRequest(changeRequest);
+
+    //send a success message
+    MailService.returnMail(
+      mailJSON['sender'],
+      'Submission Success!',
+      'Your change request has been received!'
+    );
+
+    return changeRequest;
   }
 }
 

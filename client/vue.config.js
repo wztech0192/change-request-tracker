@@ -15,6 +15,9 @@ module.exports = {
   },
   devServer: {
     host: 'localhost',
+    compress: true,
+
+    disableHostCheck: true,
 
     proxy: {
       '/api': {

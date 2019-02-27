@@ -111,7 +111,7 @@
 
       <div class="col-md-6 box box-primary">
         <div v-if="spinner.loading" class="overlay">
-          <i class="fa fa-refresh fa-spin"></i>
+          <i class="fa fa-spinner fa-spin"></i>
         </div>
         <div class="box-body">
           <Datatable

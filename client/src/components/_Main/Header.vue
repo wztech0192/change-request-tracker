@@ -317,7 +317,6 @@ export default {
         if (i < 0) i = length;
         return content.substring(0, content.indexOf(' ', i)) + '...';
       } else {
-        console.log(content);
         return content;
       }
     },

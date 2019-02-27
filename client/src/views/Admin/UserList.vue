@@ -39,7 +39,7 @@
             <tbody></tbody>
           </table>
           <div v-if="loading" class="overlay">
-            <i class="fa fa-refresh fa-spin"></i>
+            <i class="fa fa-spinner fa-spin"></i>
           </div>
         </div>
         <!-- /.box-body -->

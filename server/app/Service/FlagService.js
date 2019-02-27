@@ -94,7 +94,7 @@ class FlagService {
     const flagTask = await this.getFlaggedTask(user);
     //get change request
     const flagCR = await this.getFlaggedCR(user);
-    console.log(flagCR);
+
     return {
       flagTask,
       flagCR,

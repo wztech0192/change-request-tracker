@@ -80,6 +80,13 @@ export default {
 body {
   font-family: Arial, sans-serif !important;
 }
+
+.skin-black .left-side,
+.skin-black .main-sidebar,
+.skin-black .wrapper {
+  background-color: #2c3539;
+}
+
 .dataTables_wrapper {
   min-height: 400px;
 }

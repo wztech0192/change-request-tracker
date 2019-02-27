@@ -14,7 +14,7 @@
     @closed="$emit('closed', $event)"
   >
     <div v-if="spinner.loading" class="overlay">
-      <i class="fa fa-refresh fa-spin"></i>
+      <i class="fa fa-spinner fa-spin"></i>
     </div>
     <div class="dialog-content">
       <h4 v-if="params.title" v-html="params.title || ''"></h4>

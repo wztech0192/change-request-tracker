@@ -19,9 +19,23 @@
         &nbsp;&nbsp;Change Request
         <span class="pull-right">
           <label
-            class="label cr-status-trans"
+            class="label cr-status-trans clickable"
             :class="getStatusCSS('label',requestData.status)"
-          >{{requestData.status}}</label>
+            data-toggle="tooltip"
+            data-placement="left"
+            :data-original-title="requestData.isFlag?'Un-Flag It':'Flag It'"
+          >
+            <transition name="slide-left" mode="out-in">
+              <span v-if="!requestData.isFlag" @click="flagChangeRequest(true)" key="flag">
+                {{requestData.status}}
+                <i class="fa fa-flag-o"></i>
+              </span>
+              <span v-else @click="flagChangeRequest(false)" key="unflag">
+                {{requestData.status}}
+                <i class="fa fa-flag"></i>
+              </span>
+            </transition>
+          </label>
         </span>
       </h1>
     </section>
@@ -51,6 +65,7 @@
               {{requestData.id}}
             </span>
           </div>
+          <br>
           <div>
             <label
               class="cr-status label clickable"
@@ -131,21 +146,6 @@
             </div>
           </div>
         </div>
-        <div class="box-body">
-          <transition name="slide-left" mode="out-in">
-            <a
-              v-if="!requestData.isFlag"
-              @click="flagChangeRequest(true)"
-              class="btn btn-app bg-blue"
-              key="flag"
-            >
-              <i class="fa fa-flag"></i> Flag
-            </a>
-            <a v-else @click="flagChangeRequest(false)" class="btn btn-app bg-red" key="unflag">
-              <i class="fa fa-flag-o"></i>Un-Flag
-            </a>
-          </transition>
-        </div>
       </div>
     </section>
   </div>
@@ -172,7 +172,7 @@ export default {
 
   computed: {
     ...mapState('userStore', ['user', 'refresh']),
-    ...mapState('changeRequest', ['tab']),
+    ...mapState('crStore', ['tab']),
     ...mapGetters('userStore', ['isAdmin']),
 
     baseURL() {
@@ -196,7 +196,7 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
-    ...mapMutations('changeRequest', ['setTab']),
+    ...mapMutations('crStore', ['setTab']),
     ...mapActions('userStore', ['fetchNavMenu']),
 
     //fetch request detail
@@ -214,12 +214,12 @@ export default {
 
     //flag change request
     flagChangeRequest(isFlag) {
+      this.requestData.isFlag = isFlag;
       if (isFlag) {
         return HTTP()
           .post(`/change-request/${this.requestData.id}/flag`, this.requestData)
           .then(({ data }) => {
             if (data === 'ok') {
-              this.requestData.isFlag = isFlag;
               //refresh flag menu
               this.fetchNavMenu('flag');
             }
@@ -232,7 +232,6 @@ export default {
           .delete(`/change-request/${this.requestData.id}/unflag`)
           .then(({ data }) => {
             if (data === 'ok') {
-              this.requestData.isFlag = isFlag;
               //refresh flag menu
               this.fetchNavMenu('flag');
             }

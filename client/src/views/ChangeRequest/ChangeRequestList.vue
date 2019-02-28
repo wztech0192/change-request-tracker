@@ -5,7 +5,7 @@
  -->
 
 <template>
-  <div v-if="ChangeRequestList">
+  <div>
     <section class="content">
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
@@ -105,30 +105,34 @@ export default {
     return {
       spinner: {
         loading: false
-      },
-      ChangeRequestList: null
+      }
     };
   },
 
   watch: {
     //fetch data when listTab changed
     listTab() {
-      this.fetchChangeRequestList();
+      //display spinner when request start, hide spinner when table finish initializing
+      this.spinner.loading = true;
+      this.fetchChangeRequestList({ method: 'tab', tab: this.listTab });
     }
   },
 
   computed: {
     ...mapGetters('userStore', ['isAdmin']),
-    ...mapState('changeRequest', ['listTab', 'tab'])
+    ...mapState('crStore', ['listTab', 'tab', 'ChangeRequestList'])
   },
 
   created() {
-    this.fetchChangeRequestList();
+    //display spinner when request start, hide spinner when table finish initializing
+    this.spinner.loading = true;
+    this.fetchChangeRequestList({ method: 'tab', tab: this.listTab });
   },
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
-    ...mapMutations('changeRequest', ['setListTab']),
+    ...mapMutations('crStore', ['setListTab']),
+    ...mapActions('crStore', ['fetchChangeRequestList']),
 
     isTab(tab) {
       if (tab === this.listTab) {
@@ -142,7 +146,7 @@ export default {
       }
     },
 
-    // fetch change request list, filter by tab
+    /* // fetch change request list, filter by tab
     fetchChangeRequestList() {
       //display spinner when request start, hide spinner when table finish initializing
       this.spinner.loading = true;
@@ -158,7 +162,7 @@ export default {
         .catch(e => {
           this.setGlobalError(e);
         });
-    },
+    },*/
 
     //get table header
     getTableHeader() {

@@ -125,7 +125,7 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
-    ...mapMutations('changeRequest', ['setTab']),
+    ...mapMutations('crStore', ['setTab']),
 
     //fetch request message
     fetchRequestMsg(num, scroll) {

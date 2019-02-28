@@ -44,7 +44,7 @@ export default {
   },
 
   computed: {
-    ...mapState('changeRequest', ['tab'])
+    ...mapState('crStore', ['tab'])
   },
 
   mounted() {
@@ -71,7 +71,7 @@ export default {
     },
 
     //initialize data table
-    initiateTable(data) {
+    initiateTable() {
       var self = this;
       //set timeout give a pause for data to setup
       self.table = $('#change-request-table').DataTable({

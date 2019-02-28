@@ -3,6 +3,8 @@
  * @description store enter change request information, and change request filter tab
  */
 
+import HTTP from '../http';
+
 export default {
   namespaced: true,
   /**
@@ -21,13 +23,37 @@ export default {
     },
     listTab: 'active',
     // detail tab
-    tab: 'content'
+    tab: 'content',
+
+    ChangeRequestList: null
+  },
+
+  actions: {
+    fetchChangeRequestList({ commit }, filter) {
+      // select url based on user's role
+      const url = this.getters['userStore/isAdmin']
+        ? '/change-request/admin/list'
+        : '/change-request/list';
+      HTTP()
+        .post(url, filter)
+        .then(({ data }) => {
+          commit('setCRList', data);
+        })
+        .catch((e) => {
+          this.dispatch('errorStore/setGlobalError', e);
+        });
+    }
   },
 
   /**
    * Make changes to the state
    */
   mutations: {
+    setCRList(state, list) {
+      state.ChangeRequestList = list;
+    },
+
+    // set list tab to filter change request by status
     setListTab(state, tab) {
       state.listTab = tab;
     },

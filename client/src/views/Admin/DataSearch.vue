@@ -116,7 +116,6 @@
         <div class="box-body">
           <Datatable
             ref="table"
-            :data="ChangeRequestList"
             :columns="columns"
             :header="header"
             :spinner="spinner"
@@ -144,7 +143,6 @@ export default {
   data() {
     return {
       filter: {},
-      ChangeRequestList: [],
       spinner: {
         loading: false
       },
@@ -171,7 +169,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('changeRequest', ['listTab', 'tab'])
+    ...mapState('crStore', ['listTab', 'tab', 'ChangeRequestList'])
   },
 
   mounted() {

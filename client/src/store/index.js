@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import userStore from './userStore';
 import errorStore from './errorStore';
-import changeRequest from './changeRequest';
+import crStore from './crStore';
 
 Vue.use(Vuex);
 
@@ -17,7 +17,7 @@ export default new Vuex.Store({
   modules: {
     userStore,
     errorStore,
-    changeRequest
+    crStore
   },
   plugins: [createPersistedState()]
 });

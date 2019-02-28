@@ -6,23 +6,29 @@
 
 <template>
   <div class="box">
-    <div class="box-header with-border">
+    <div
+      class="box-header with-border mailbox-read-info"
+      style="box-shadow: 0 2px 1px rgba(0,0,0,0.1);"
+    >
+      <label>Title:</label>
       <h4
         v-if="!isAdmin || !editMode"
         class="capitalize"
-        style="min-height:57px;"
+        style="min-height:30px; margin-left:10px;"
       >{{requestData.title}}</h4>
+
       <textarea
         v-if="isAdmin && editMode"
         calss="form-control"
-        style="width:100%; font-size:18px;"
+        style="width:100%; line-height:1; font-size:18px; margin-left:10px;"
         :value="requestData.title"
         @input="setTitle"
       ></textarea>
     </div>
     <div class="box-body" style="min-height:285px;">
-      <div v-if="!isAdmin || !editMode" v-html="requestData.details"></div>
-      <div :class="{'hide' : !editMode}">
+      <label>Detail:</label>
+      <div style="margin-left:10px;" v-if="!isAdmin || !editMode" v-html="requestData.details"></div>
+      <div style=" margin-left:10px;" :class="{'hide' : !editMode}">
         <textarea id="editor" name="editor" style="width: 100%" v-html="requestData.details"></textarea>
       </div>
     </div>
@@ -85,7 +91,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations('changeRequest', ['setTab']),
+    ...mapMutations('crStore', ['setTab']),
     ...mapActions('errorStore', ['setGlobalError']),
 
     //toggle edit mode

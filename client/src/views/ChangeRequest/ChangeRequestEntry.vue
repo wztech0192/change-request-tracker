@@ -176,7 +176,7 @@ export default {
   },
   computed: {
     ...mapState('userStore', ['user']),
-    ...mapState('changeRequest', ['requestData', 'error']),
+    ...mapState('crStore', ['requestData', 'error']),
     ...mapGetters('userStore', ['isAdmin'])
   },
 
@@ -227,7 +227,7 @@ export default {
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
     ...mapActions('userStore', ['fetchNavMenu']),
-    ...mapMutations('changeRequest', [
+    ...mapMutations('crStore', [
       'setTitle',
       'setDetail',
       'setError',

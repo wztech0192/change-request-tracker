@@ -85,7 +85,7 @@
           >
             <li v-if="flagList.flagTask.length>0" class="nav-menu-break">
               <label>
-                <small>Change Request: {{flagList.flagTask.length}}</small>
+                <small>Tasks: {{flagList.flagTask.length}}</small>
               </label>
             </li>
             <!-- Flagged Dev Task-->

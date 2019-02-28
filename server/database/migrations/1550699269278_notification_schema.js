@@ -18,7 +18,7 @@ class NotificationSchema extends Schema {
       table.string('content', 254).notNullable();
       table.string('icon', 64);
       table.boolean('isNew').defaultTo(true);
-      table.string('link', 254);
+      table.string('link', 254).defaultTo(null);
       table.timestamps();
     });
   }

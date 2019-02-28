@@ -61,21 +61,22 @@ export default {
     };
   },
 
-  beforeRouteLeave(to, from, next) {
-    //stop interval loop when leaving
-    clearInterval(this.refresher);
-    next();
+  props: {
+    // refresh value
+    refresh: Number
+  },
+
+  watch: {
+    //update when refresh value change
+    refresh() {
+      this.fetchRequestMsg();
+    }
   },
 
   created() {
     this.setTab('message');
     var self = this;
     this.fetchRequestMsg(this.msgNum);
-
-    //update message each second to newest message
-    this.refresher = setInterval(() => {
-      this.fetchRequestMsg(this.msgNum);
-    }, 1000);
   },
 
   mounted() {

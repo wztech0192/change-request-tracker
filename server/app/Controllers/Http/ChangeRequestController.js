@@ -373,16 +373,10 @@ class ChangeRequestController {
   async createFromMail({ request }) {
     const mailJSON = request.only(['sender', 'subject', 'body-plain']);
 
-    // console.log(sender);
-    // console.log(signature['body-plain']);
-    // console.log(subject);
-    //get user by email address
-
-    let client;
-
-    client = await User.findBy('email', mailJSON['sender'].toLowerCase());
+    const client = await User.findBy('email', mailJSON['sender'].toLowerCase());
+    
     // return denied message if client does not exit
-    if (!client) {
+    if (!client || !mailJSON['subject'] || !mailJSON['body-plain']) {
       MailService.returnMail(
         mailJSON['sender'],
         'Submission Denied',

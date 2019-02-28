@@ -12,9 +12,9 @@
 
       <div class="pull-right" style="margin-top:-30px">
         <div class="btn-group">
-          <button type="button" class="btn btn-primary" @click="openSelectedRow">
+          <button type="button" class="btn btn-primary" @click="beforeOpenSelectedRow">
             <span class="mobile-hide">View &nbsp;</span>
-            <i class="fa fa-edit"></i>
+            <i class="fa fa-eye"></i>
           </button>
         </div>
       </div>
@@ -40,14 +40,10 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import HTTP from '@/http';
+import rowEvent from '@/mixin/rowEvent.js';
 
 export default {
-  data() {
-    return {
-      loading: false,
-      table: null
-    };
-  },
+  mixins: [rowEvent],
 
   mounted() {
     this.initiateTable();
@@ -130,73 +126,18 @@ export default {
 
           initComplete: function() {
             //click select event
-            $('#notify-table tbody').on('click', 'tr', function() {
-              self.addTableSelect(this);
-            });
-
-            //double click event
-            $('#notify-table tbody').on('dblclick', 'tr', function() {
-              if (!$(this).hasClass('child')) {
-                self.notifyDetail(self.table.row($(this).index()).data());
-              }
-            });
-
-            var touched = false;
-            //double tab event
-            $('#notify-table tbody').on('touchstart', 'tr', function(e) {
-              if (!$(this).hasClass('child')) {
-                self.addTableSelect(this);
-                if (!touched) {
-                  touched = true;
-                  setTimeout(() => {
-                    touched = false;
-                  }, 200);
-                } else {
-                  self.notifyDetail(self.table.row($(this).index()).data());
-                }
-              }
-            });
-            //top touch count down
-            $('#change-request-table tbody').on('touchend', 'tr', function() {
-              clearTimeout(touched);
+            self.addRowSelectEvent('#notify-table', target => {
+              self.notifyDetail(self.table.row($(target).index()).data());
             });
           }
         });
     },
 
-    //focus and select table row
-    addTableSelect(tr) {
-      if (!$(tr).hasClass('child')) {
-        if (!$(tr).hasClass('selected')) {
-          $('#notify-table tbody .selected').removeClass('selected');
-          $(tr).addClass('selected');
-        }
-      }
-    },
-
     //get selected row index and show dialog, alert when fail
-    openSelectedRow() {
-      var notifiy = this.table.row($('#notify-table .selected').index()).data();
-
-      if (notifiy) {
-        //display target dialog
-        this.showDialog(notifiy);
-      } else {
-        //display no selection error massage
-        this.$modal.show('dialog', {
-          title:
-            "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
-          template:
-            "<h4 style='text-align:center;'>You need to select a item</h4>",
-          maxWidth: 300,
-          buttons: [
-            {
-              title: 'Ok',
-              default: true
-            }
-          ]
-        });
-      }
+    beforeOpenSelectedRow() {
+      var notify = this.table.row($('#notify-table .selected').index()).data();
+      //use open select row from selectRow event mixin
+      this.openSelectedRow(this.notifyDetail, notify);
     },
 
     notifyDetail(notify) {

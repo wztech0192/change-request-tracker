@@ -15,7 +15,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="openSelectedRow(showChangeRoleDialog)"
+            @click="beforeOpenSelectedRow(showChangeRoleDialog)"
           >
             <span class="mobile-hide">Role &nbsp;</span>
             <i class="fa fa-edit"></i>
@@ -23,7 +23,7 @@
           <button
             type="button"
             class="btn btn-secondary"
-            @click="openSelectedRow(showDeleteDialog)"
+            @click="beforeOpenSelectedRow(showDeleteDialog)"
           >
             <span class="mobile-hide">Delete &nbsp;</span>
             <i class="fa fa-trash"></i>
@@ -52,14 +52,10 @@
 <script>
 import { mapActions } from 'vuex';
 import HTTP from '@/http';
+import rowEvent from '@/mixin/rowEvent.js';
 
 export default {
-  data() {
-    return {
-      loading: false,
-      table: null
-    };
-  },
+  mixins: [rowEvent],
 
   mounted() {
     this.initiateTable();
@@ -120,79 +116,22 @@ export default {
           },
           initComplete: function() {
             //click select event
-            $('#user-table tbody').on('click', 'tr', function() {
-              self.addTableSelect(this);
-            });
-
-            //double click event
-            $('#user-table tbody').on('dblclick', 'tr', function() {
-              if (!$(this).hasClass('child')) {
-                self.showChangeRoleDialog(
-                  self.table.row($(this).index()).data()
-                );
-              }
-            });
-
-            var touched = false;
-            //double tab event
-            $('#user-table tbody').on('touchstart', 'tr', function(e) {
-              if (!$(this).hasClass('child')) {
-                self.addTableSelect(this);
-                if (!touched) {
-                  touched = true;
-                  setTimeout(() => {
-                    touched = false;
-                  }, 200);
-                } else {
-                  self.showChangeRoleDialog(
-                    self.table.row($(this).index()).data()
-                  );
-                }
-              }
-            });
-            //top touch count down
-            $('#change-request-table tbody').on('touchend', 'tr', function() {
-              clearTimeout(touched);
+            self.addRowSelectEvent('#user-table', target => {
+              self.showChangeRoleDialog(
+                self.table.row($(target).index()).data()
+              );
             });
           }
         });
     },
 
-    //focus and select table row
-    addTableSelect(tr) {
-      if (!$(tr).hasClass('child')) {
-        if (!$(tr).hasClass('selected')) {
-          $('#user-table tbody .selected').removeClass('selected');
-          $(tr).addClass('selected');
-        }
-      }
-    },
-
     //get selected row index and show dialog, alert when fail
-    openSelectedRow(callBack) {
+    beforeOpenSelectedRow(callBack) {
       var selectedUser = this.table
         .row($('#user-table .selected').index())
         .data();
-
-      if (selectedUser) {
-        //display target dialog
-        callBack(selectedUser);
-      } else {
-        //display no selection error massage
-        this.$modal.show('dialog', {
-          title:
-            "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
-          template:
-            "<h4 style='text-align:center;'>You need to select a user</h4>",
-          maxWidth: 300,
-          buttons: [
-            {
-              title: 'Ok',
-              default: true
-            }
-          ]
-        });
-      }
+      //use open select row from selectRow event mixin
+      this.openSelectedRow(callBack, selectedUser);
     },
 
     //display delete user dialog

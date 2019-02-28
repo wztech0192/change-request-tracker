@@ -20,7 +20,7 @@
         <span class="pull-right">
           <label
             class="label cr-status-trans"
-            :class="'label'+getStatusLabel(requestData.status)"
+            :class="getStatusCSS('label',requestData.status)"
           >{{requestData.status}}</label>
         </span>
       </h1>
@@ -28,7 +28,7 @@
     <section class="content">
       <div
         class="box form-background cr-status-trans"
-        :class="'box'+getStatusLabel(requestData.status)"
+        :class="getStatusCSS('box',requestData.status)"
       >
         <div class="box-body">
           <div>
@@ -120,7 +120,12 @@
               <div class="tab-pane active">
                 <!-- Nested Route -->
                 <transition name="slide-right" mode="out-in">
-                  <router-view :user="user" :requestData="requestData" :refresh="refresh"/>
+                  <router-view
+                    :user="user"
+                    :requestData="requestData"
+                    :refresh="refresh"
+                    :calculateTimeElapsed="calculateTimeElapsed"
+                  />
                 </transition>
               </div>
             </div>
@@ -150,8 +155,10 @@
 import { mapState, mapActions, mapMutations, mapGetters } from 'vuex';
 import HTTP from '@/http';
 import router from '@/router';
+import helper from '@/mixin/helper.js';
 
 export default {
+  mixins: [helper],
   created() {
     this.fetchRequestData();
   },
@@ -243,11 +250,13 @@ export default {
         this.$modal.show('dialog', {
           title: `<i class='fa fa-user-spinner'></i> Update Status`,
           maxWidth: 250,
-          template: `<div style='text-align:center'><label>Current Status</label> : <label class="label label${this.getStatusLabel(
+          template: `<div style='text-align:center'><label>Current Status</label> : <label class="label ${this.getStatusCSS(
+            'label',
             this.requestData.status
           )}">${
             this.requestData.status
-          }</label><br><label>New Status</label> : <label  class="label label${this.getStatusLabel(
+          }</label><br><label>New Status</label> : <label  class="label ${this.getStatusCSS(
+            'label',
             status
           )}">${status}</label></div>`,
           buttons: [
@@ -277,22 +286,6 @@ export default {
             }
           ]
         });
-      }
-    },
-
-    //get statu colors class
-    getStatusLabel(status) {
-      {
-        switch (status) {
-          case 'To Do':
-            return '-warning';
-          case 'In Progress':
-            return '-primary';
-          case 'Complete':
-            return '-success';
-          default:
-            return '-danger';
-        }
       }
     }
   }

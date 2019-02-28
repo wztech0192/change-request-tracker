@@ -49,7 +49,7 @@
 
           <a
             class="pull-right btn btn-app addTodoBtn bg-blue"
-            @click="$refs.table.openSelectedRow()"
+            @click="$refs.table.beforeOpenSelectedRow()"
           >
             <i class="fa fa-eye"></i>Review
           </a>

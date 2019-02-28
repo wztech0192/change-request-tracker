@@ -63,7 +63,9 @@ export default {
 
   props: {
     // refresh value
-    refresh: Number
+    refresh: Number,
+    //calculate time elapsed
+    calculateTimeElapsed: Function
   },
 
   watch: {
@@ -172,14 +174,11 @@ export default {
       var time;
       // if msg date is today, display hour AM/PM, else display days.
       if (parseInt(date[8] + date[9]) !== now.getDate()) {
-        var msgDate = Date.parse(date);
-        var diff = now - msgDate;
-        var day = Math.round(diff / 86400000);
-        if (day <= 0) {
-          time = Math.round(diff / 3600000) + ' hours ago';
-        } else {
-          time = `${day} days ago`;
-        }
+        time = this.calculateTimeElapsed(date, [
+          ' minutes ago',
+          ' hours ago',
+          ' days ago'
+        ]);
       } else {
         //convert 24 hour to 12 hour + AM/PN
         var hour = date.split(' ')[1];

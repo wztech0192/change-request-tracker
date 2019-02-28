@@ -10,6 +10,7 @@ import DataChart from './views/Admin/DataChart.vue';
 import DataSearch from './views/Admin/DataSearch.vue';
 import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
 import Dashboard from './views/Dashboard.vue';
+import MailBox from './views/MailBox.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
 import CRList from './views/ChangeRequest/ChangeRequestList.vue';
 import CRDetail from './views/ChangeRequest/ChangeRequestDetail.vue';
@@ -80,6 +81,12 @@ export default new Router({
     {
       path: '/',
       component: Dashboard,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/mailbox',
+      component: MailBox,
       beforeEnter: Authenication
     },
 

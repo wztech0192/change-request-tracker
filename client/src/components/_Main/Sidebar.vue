@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: navigation bar
+ -->
+
 <template>
   <aside class="main-sidebar" style="font-size: 13px;">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -116,14 +121,14 @@ export default {
           name: 'Track Request Status'
         },
         {
+          link: '/mailbox',
+          icon: 'fa fa-envelope',
+          name: 'Mailbox'
+        },
+        {
           link: '/5',
           icon: 'fa fa-calendar',
           name: 'Calendar'
-        },
-        {
-          link: '/6',
-          icon: 'fa fa-envelope',
-          name: 'Mailbox'
         }
       ];
     }

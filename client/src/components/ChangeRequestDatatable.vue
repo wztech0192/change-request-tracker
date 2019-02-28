@@ -1,3 +1,8 @@
+<!--
+ - @author: Wei Zheng
+ - @description: change request detatable used in ChangeRequestList and ChangeRequestSearch
+ -->
+
 <template>
   <table id="change-request-table" class="table table-hover display" style="width:100%;">
     <thead>
@@ -15,7 +20,12 @@
 <script>
 import router from '@/router';
 import { mapState } from 'vuex';
+import rowEvent from '@/mixin/rowEvent.js';
+import helper from '@/mixin/helper.js';
+
 export default {
+  mixins: [rowEvent, helper],
+
   props: {
     header: Array,
     columns: Array,
@@ -25,12 +35,6 @@ export default {
     order: Array,
     dlength: Number,
     statusPos: Number
-  },
-
-  data() {
-    return {
-      table: null
-    };
   },
 
   watch: {
@@ -91,7 +95,7 @@ export default {
             .eq(self.statusPos || 2).html(`
             <label
                 style="padding: 5px 10px;"
-                class="label ${self.getStatusLabel(data.status)}"
+                class="label ${self.getStatusCSS('label', data.status)}"
             >${data.status}</label>`);
           $(row)
             .find('td:eq(0)')
@@ -106,71 +110,28 @@ export default {
                 self.setTableFilter(this);
               });
             $('.select2').select2({ width: '80%' });
+
+            //add row event
+            self.addRowSelectEvent('#change-request-table', target => {
+              //show request detail after click
+              self.showRequestDetail(
+                $(target)
+                  .find('td:eq(0)')
+                  .text()
+              );
+            });
+
             self.spinner.loading = false;
-          }
-        }
-      });
-
-      //click select event
-      $('#change-request-table tbody').on('click', 'tr', function() {
-        self.addTableSelect(this);
-      });
-
-      //double click event
-      $('#change-request-table tbody').on('dblclick', 'tr', function() {
-        if (!$(this).hasClass('child')) {
-          self.showRequestDetail(
-            $(this)
-              .find('td:eq(0)')
-              .text()
-          );
-        }
-      });
-
-      var touched = false;
-      //double tab event.
-      $('#change-request-table tbody').on('touchstart', 'tr', function(e) {
-        if (!$(this).hasClass('child')) {
-          self.addTableSelect(this);
-          if (!touched) {
-            touched = true;
-            setTimeout(() => {
-              touched = false;
-            }, 200);
-          } else {
-            self.showRequestDetail(
-              $(this)
-                .find('td:eq(0)')
-                .text()
-            );
           }
         }
       });
     },
 
     //get selected row index and show dialog, alert when fail
-    openSelectedRow() {
+    beforeOpenSelectedRow() {
       var requestID = $('#change-request-table .selected td:eq(0)').text();
-
-      if (requestID) {
-        //display target dialog
-        this.showRequestDetail(requestID);
-      } else {
-        //display no selection error massage
-        this.$modal.show('dialog', {
-          title:
-            "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
-          template:
-            "<h4 style='text-align:center;'>You need to select a request</h4>",
-          maxWidth: 300,
-          buttons: [
-            {
-              title: 'Ok',
-              default: true
-            }
-          ]
-        });
-      }
+      //use open select row from selectRow event mixin
+      this.openSelectedRow(this.showRequestDetail, requestID);
     },
 
     setTableFilter(column) {
@@ -206,22 +167,6 @@ export default {
     //direct to change request detail view
     showRequestDetail(id) {
       router.push(`/change-request/${id}/${this.tab}`);
-    },
-
-    //get status label class
-    getStatusLabel(status) {
-      {
-        switch (status) {
-          case 'To Do':
-            return 'label-warning';
-          case 'In Progress':
-            return 'label-primary';
-          case 'Complete':
-            return 'label-success';
-          default:
-            return 'label-danger';
-        }
-      }
     }
   }
 };

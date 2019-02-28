@@ -23,7 +23,11 @@
           <div class="timeline-item">
             <span class="time">
               <i class="fa fa-clock-o"></i>
-              {{calDuration(hist.created_at)}}
+              {{calculateTimeElapsed(hist.created_at, [
+              ' minutes ago',
+              ' hours ago',
+              ' days ago'
+              ])}}
             </span>
             <h3 class="timeline-header text-blue">{{hist.type}}</h3>
             <div class="timeline-body">{{hist.content}}</div>
@@ -47,7 +51,9 @@ export default {
     //tak request data from parent
     requestData: Object,
     // refresh value
-    refresh: Number
+    refresh: Number,
+    //calculate time elapsed
+    calculateTimeElapsed: Function
   },
 
   computed: {
@@ -96,20 +102,6 @@ export default {
           this.setGlobalError(e);
           router.push('/');
         });
-    },
-
-    //calculate duration
-    calDuration(date) {
-      var diff = new Date() - new Date(date);
-      var time;
-      if (diff > 86400000) {
-        time = Math.round(diff / 86400000) + ' days ago';
-      } else if (diff > 3600000) {
-        time = Math.round(diff / 3600000) + ' hours ago';
-      } else {
-        time = Math.round(diff / 60000) + ' mins ago';
-      }
-      return time;
     },
 
     //return type icon

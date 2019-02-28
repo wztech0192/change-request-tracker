@@ -24,7 +24,7 @@
                   {{msg.sender}}
                   <small>
                     <i class="fa fa-clock-o"></i>
-                    {{calculateTimePast(msg.sendTime)}}
+                    {{calculateTimeElapsed(msg.sendTime,['m','h','d'])}}
                   </small>
                 </h4>
                 <p>{{msg.body}}</p>
@@ -52,7 +52,7 @@
               <a @click="notifyDetail(notify)">
                 <small class="pull-right">
                   <i class="fa fa-clock-o"></i>
-                  {{calculateTimePast(notify.created_at)}}
+                  {{calculateTimeElapsed(notify.created_at, ['m','h','d'])}}
                 </small>
                 <i class="fa" :class="notify.icon"></i>
                 {{notify.content}}
@@ -69,7 +69,7 @@
               <a @click="notifyDetail(notify)">
                 <small class="pull-right">
                   <i class="fa fa-clock-o"></i>
-                  {{calculateTimePast(notify.created_at)}}
+                  {{calculateTimeElapsed(notify.created_at,['m','h','d'])}}
                 </small>
                 <i class="fa" :class="notify.icon"></i>
                 {{notify.content}}
@@ -119,7 +119,7 @@
               <!-- item is a change reuqest if request id is greater than 0-->
               <router-link :to="`/change-request/${item.id}/content`">
                 <small class="pull-right">
-                  <label class="label" :class="getStatusLabel(item.status)">{{item.status}}</label>
+                  <label class="label" :class="getStatusCSS('label',item.status)">{{item.status}}</label>
                 </small>
                 <h3>{{limitContentLength(item.title, 35)}}</h3>
               </router-link>
@@ -182,8 +182,10 @@
 <script>
 import Logo from '@/components/_Main/_Header/Logo.vue';
 import NavMenu from '@/components/_Main/_Header/NavMenu.vue';
+import helper from '@/mixin/helper.js';
 
 export default {
+  mixins: [helper],
   name: 'Header',
   components: {
     Logo,
@@ -247,21 +249,6 @@ export default {
       }
     },
 
-    //calculate total time from send to now
-    calculateTimePast(date) {
-      //calculate duration
-      var diff = new Date() - new Date(date);
-      var time;
-      if (diff > 86400000) {
-        time = Math.round(diff / 86400000) + 'd';
-      } else if (diff > 3600000) {
-        time = Math.round(diff / 3600000) + 'h';
-      } else {
-        time = Math.round(diff / 60000) + 'm';
-      }
-      return time;
-    },
-
     notifyDetail(notify) {
       if (notify.isNew) {
         // remove new status
@@ -318,22 +305,6 @@ export default {
         return content.substring(0, content.indexOf(' ', i)) + '...';
       } else {
         return content;
-      }
-    },
-
-    //get statu colors class
-    getStatusLabel(status) {
-      {
-        switch (status) {
-          case 'To Do':
-            return 'label-warning';
-          case 'In Progress':
-            return 'label-primary';
-          case 'Complete':
-            return 'label-success';
-          default:
-            return 'label-danger';
-        }
       }
     }
   }

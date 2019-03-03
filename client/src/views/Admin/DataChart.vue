@@ -319,6 +319,7 @@ export default {
 .datepicker table tbody .active {
   background-color: lightblue !important;
   color: black !important;
+  font-weight: bold;
 }
 .datepicker table tbody .active .day {
   color: black !important;

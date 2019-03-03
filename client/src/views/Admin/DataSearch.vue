@@ -120,6 +120,7 @@
             :header="header"
             :spinner="spinner"
             :dlength="10"
+            :data="ChangeRequestList"
           />
         </div>
       </div>
@@ -142,6 +143,7 @@ export default {
 
   data() {
     return {
+      ChangeRequestList: [],
       filter: {},
       spinner: {
         loading: false
@@ -169,7 +171,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('crStore', ['listTab', 'tab', 'ChangeRequestList'])
+    ...mapState('crStore', ['listTab', 'tab'])
   },
 
   mounted() {
@@ -185,8 +187,6 @@ export default {
           start.format('YYYY-MM-DD HH:mm:ss') +
           '/' +
           end.format('YYYY-MM-DD HH:mm:ss');
-
-        console.log(self.filter.date);
       }
     );
     // empty date by default

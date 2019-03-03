@@ -13,8 +13,50 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
-          <Nav-Menu id="messages" :num="msgList.length" type="messages" footer="/mailbox">
-            <li v-for="msg in msgList">
+          <Nav-Menu
+            id="messages"
+            :num="msgList.bookmark.length+msgList.unread.length"
+            type="messages"
+            footer="/mailbox"
+          >
+            <li class="nav-menu-break">
+              <label>
+                <small>{{msgList.unread.length}} New</small>
+              </label>
+              <label class="pull-right">
+                <small @click="clearNewMsg" class="clickable dismiss">
+                  <i class="fa fa-trash"></i> dismiss
+                </small>
+              </label>
+            </li>
+
+            <li v-for="msg in msgList.unread" class="new">
+              <!-- start message -->
+              <a @click="$modal.show('read-msg', msg);">
+                <div class="pull-left">
+                  <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
+                </div>
+                <h4>
+                  {{msg.senderName}}
+                  <small>
+                    <i class="fa fa-clock-o"></i>
+                    {{calculateTimeElapsed(msg.created_at,['m','h','d'])}}
+                  </small>
+                </h4>
+                <p>{{msg.title}}</p>
+              </a>
+            </li>
+
+            <li class="nav-menu-break">
+              <label>
+                <small>
+                  <i class="fa fa-star text-yellow"></i>
+                  Bookmark: {{msgList.bookmark.length}}
+                </small>
+              </label>
+            </li>
+
+            <li v-for="msg in msgList.bookmark">
               <!-- start message -->
               <a @click="$modal.show('read-msg', msg);">
                 <div class="pull-left">
@@ -41,14 +83,16 @@
           >
             <li class="nav-menu-break">
               <label>
-                <small>{{notifyList.new.length}} Unread</small>
+                <small>Unread: {{notifyList.new.length}}</small>
               </label>
-              <span @click="clearNewNotification('all')" class="pull-right clickable archive">
-                <i class="fa fa-archive"></i>
-              </span>
+              <label class="pull-right">
+                <small @click="clearNewNotification('all')" class="clickable dismiss">
+                  <i class="fa fa-trash"></i> dismiss
+                </small>
+              </label>
             </li>
 
-            <li v-for="notify in notifyList.new">
+            <li v-for="notify in notifyList.new" class="new">
               <a @click="notifyDetail(notify)">
                 <small class="pull-right">
                   <i class="fa fa-clock-o"></i>
@@ -61,7 +105,7 @@
 
             <li class="nav-menu-break">
               <label>
-                <small>{{notifyList.old.length}} Read &nbsp;&nbsp;(Last 7 Days)</small>
+                <small>Read (Last 3 Days) :{{notifyList.old.length}}</small>
               </label>
             </li>
 
@@ -193,12 +237,15 @@ export default {
   },
 
   watch: {
-    flagList(oldData, newData) {
-      if (oldData.length !== newData.length) {
+    flagList(newData, oldData) {
+      if (
+        oldData.flagCR.length !== newData.flagCR.length ||
+        oldData.flagTask.length !== newData.flagTask.length
+      ) {
         $('#task').effect('highlight', { color: '#00a65a' }, 1000);
       }
     },
-    notifyList(oldData, newData) {
+    notifyList(newData, oldData) {
       if (
         oldData.old.length !== newData.old.length ||
         oldData.new.length !== newData.new.length
@@ -206,8 +253,11 @@ export default {
         $('#notifications').effect('highlight', { color: '#f39c12' }, 1000);
       }
     },
-    msgList(oldData, newData) {
-      if (oldData.length !== newData.length) {
+    msgList(newData, oldData) {
+      if (
+        oldData.unread.length !== newData.unread.length ||
+        oldData.bookmark.length !== newData.bookmark.length
+      ) {
         $('#messages').effect('highlight', { color: '#3c8dbc' }, 1000);
       }
     }
@@ -218,8 +268,9 @@ export default {
     user: Object,
     flagList: Object,
     notifyList: Object,
-    msgList: Array,
-    clearNewNotification: Function
+    msgList: Object,
+    clearNewNotification: Function,
+    clearNewMsg: Function
   },
   methods: {
     //if has date and time, split date out and return it
@@ -301,17 +352,20 @@ export default {
   color: gray;
   margin: -5px 0px 0px 10px;
 }
-.navbar .archive {
+.navbar .dismiss {
   transition: 0.3s ease;
   color: gray;
-  margin: 3px 5px 0 10px;
+  margin: 5px 5px 0 10px;
 }
 
-.navbar .archive:hover {
+.navbar .dismiss:hover {
   color: green;
 }
 .navbar .nav-menu-break {
   box-shadow: inset 0px 10px 30px lightblue;
+}
+.navbar .new {
+  box-shadow: inset -3px -3px 15px -2px lightblue;
 }
 
 .navbar-nav > .notifications-menu > .dropdown-menu,

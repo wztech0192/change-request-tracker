@@ -83,23 +83,20 @@ export default {
 }
 
 body {
-  font-family: Arial, sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px;
 }
 
 .skin-black .left-side,
 .skin-black .main-sidebar,
 .skin-black .wrapper {
-  background-color: #2c3539;
+  background-color: #1e282c;
 }
 
 .dataTables_wrapper {
   min-height: 400px;
 }
-.select2-container--default
-  .select2-selection--multiple
-  .select2-selection__choice {
-  background-color: #3c8dbc !important;
-}
+
 .overlay > h2 {
   font-size: 10vw;
   padding: 10vw;
@@ -122,7 +119,7 @@ body {
   transition: 0.3s ease;
 }
 .main-header {
-  z-index: 1000 !important;
+  z-index: 1011 !important;
 }
 .z-index-out {
   z-index: -100 !important;
@@ -154,7 +151,7 @@ a {
   font-size: 1000%;
 }
 .v--modal-overlay {
-  z-index: 1005 !important;
+  z-index: 1012 !important;
 }
 .fade-enter-active,
 .fade-leave-active {

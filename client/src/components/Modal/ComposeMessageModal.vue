@@ -100,6 +100,7 @@ export default {
           .then(() => {
             //update message menu
             this.$store.dispatch('userStore/fetchNavMenu', 'msg');
+            this.$store.commit('userStore/refreshMailbox', { refresh: true });
             this.discardMessage();
           })
           .catch(e => {

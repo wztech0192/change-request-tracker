@@ -64,7 +64,6 @@ export default {
         self.table.columns(self.filter).every(function() {
           self.setTableFilter(this);
         });
-        $('.select2').select2({ width: '80%' });
       }
       //hide spinner
       self.spinner.loading = false;
@@ -109,20 +108,18 @@ export default {
               .every(function() {
                 self.setTableFilter(this);
               });
-            $('.select2').select2({ width: '80%' });
-
-            //add row event
-            self.addRowSelectEvent('#change-request-table', target => {
-              //show request detail after click
-              self.showRequestDetail(
-                $(target)
-                  .find('td:eq(0)')
-                  .text()
-              );
-            });
-
-            self.spinner.loading = false;
           }
+          //add row event
+          self.addRowSelectEvent('#change-request-table', target => {
+            //show request detail after click
+            self.showRequestDetail(
+              $(target)
+                .find('td:eq(0)')
+                .text()
+            );
+          });
+
+          self.spinner.loading = false;
         }
       });
     },
@@ -135,12 +132,13 @@ export default {
     },
 
     setTableFilter(column) {
-      var select = $(
-        '<select class="select2 js-states form-control "><option value="">ALL</option></select>'
-      ).on('change', function() {
-        var val = $.fn.dataTable.util.escapeRegex($(this).val());
-        column.search(val ? '^' + val + '$' : '', true, false).draw();
-      });
+      var select = $(`<select><option value="">ALL</option></select>`).on(
+        'change',
+        function() {
+          var val = $.fn.dataTable.util.escapeRegex($(this).val());
+          column.search(val ? '^' + val + '$' : '', true, false).draw();
+        }
+      );
 
       column
         .data()
@@ -176,10 +174,13 @@ export default {
 #change-request-table .selected {
   background-color: lightgrey !important;
 }
-#change-request-table .select2-selection__rendered {
-  padding: 0 !important;
+#change-request-table select {
+  width: 100%;
 }
-#change-request-table .select2-selection__arrow {
-  display: none;
+@media (max-width: 480px) {
+  #change-request-table select {
+    font-size: 80%;
+    padding: 0;
+  }
 }
 </style>

@@ -13,7 +13,7 @@ class MessageSchema extends Schema {
       table.string('title', 254).notNullable();
       table.text('content', 'longtext').notNullable();
       table.boolean('isRead').defaultTo(false);
-      table.boolean('isStar').defaultTo(false);
+      table.boolean('isBookmark').defaultTo(false);
 
       table.boolean('isArchived').defaultTo(false);
       table.timestamps();

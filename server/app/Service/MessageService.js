@@ -10,16 +10,37 @@ const Mail = use('Mail');
 
 class MessageService {
   /**
-   * get unread messages
+   * return notification list
+   * @return {String}
+   */
+  static async clearNewMessages(user) {
+    await Message.query()
+      .where('receiverEmail', user.email)
+      .andWhere('isRead', false)
+      .update({ isRead: true });
+
+    return 'ok';
+  }
+
+  /**
+   * get unread and bookmarked messages
    * @returns {array}
    */
-  static async getUnreadMsgList(user) {
-    const unreadList = await Message.query()
+  static async getMenuMsgList(user) {
+    const unread = await Message.query()
       .where('receiverEmail', user.email)
       .andWhere('isRead', false)
       .orderBy('created_at', 'desc')
       .fetch();
-    return unreadList;
+    const bookmark = await Message.query()
+      .where('receiverEmail', user.email)
+      .andWhere('isBookmark', true)
+      .orderBy('created_at', 'desc')
+      .fetch();
+    return {
+      unread,
+      bookmark
+    };
   }
 
   /**

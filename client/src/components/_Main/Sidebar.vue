@@ -4,7 +4,7 @@
  -->
 
 <template>
-  <aside class="main-sidebar" style="font-size: 13px;">
+  <aside class="main-sidebar" style="font-size : 13px;">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
@@ -16,7 +16,7 @@
           <p>{{user.full_name}}</p>
 
           <i class="fa fa-address-card capitalize"></i>
-          &nbsp;&nbsp; {{user.role}}
+          &nbsp; {{user.role}}
         </div>
       </div>
       <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -25,14 +25,14 @@
           <span v-if="item.split">{{item.split}}</span>
           <router-link v-else :to="item.link">
             <i :class="item.icon"></i>
-            <span>&nbsp; {{item.name}}</span>
+            <span>{{item.name}}</span>
           </router-link>
         </li>
 
         <li class="treeview">
           <a href="#">
             <i class="fa fa-book"></i>
-            <span>&nbsp; Document</span>
+            <span>Document</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>

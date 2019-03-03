@@ -18,6 +18,9 @@
         </h3>
 
         <div class="box-tools pull-right">
+          <a @click="toggleBookmark" class="btn btn-box-tool">
+            <i class="fa text-yellow" :class="isBookmark?'fa-star':'fa-star-o'"></i>
+          </a>
           <a @click="$modal.hide('read-msg')" class="btn btn-box-tool">
             <i class="fa fa-close"></i>
           </a>
@@ -35,10 +38,10 @@
         <!-- /.mailbox-read-info -->
         <div class="mailbox-controls with-border text-center">
           <div class="btn-group">
-            <button type="button" class="btn btn-default" @click="replyMSG(params)">
+            <button type="button" class="btn btn-default btn-sm" @click="replyMSG(params)">
               <i class="fa fa-reply"></i> Reply
             </button>
-            <button type="button" class="btn btn-default" @click="forwardMSG(params)">
+            <button type="button" class="btn btn-default btn-sm" @click="forwardMSG(params)">
               <i class="fa fa-share"></i> Forward
             </button>
           </div>
@@ -61,7 +64,8 @@ export default {
   mixins: [helper],
   data() {
     return {
-      params: {}
+      params: {},
+      isBookmark: 0
     };
   },
 
@@ -79,20 +83,44 @@ export default {
     getParams(event) {
       if (event) {
         this.params = event.params;
+        this.isBookmark = this.params.isBookmark;
+        //mark read if msg is not read
+        if (!this.params.isRead) {
+          HTTP()
+            .patch(`message/${this.params.id}`, { isRead: true })
+            .then(() => {
+              // update user message menu
+              this.$store.dispatch('userStore/fetchNavMenu', 'msg');
+              // update mailbox
+              this.$store.commit('userStore/refreshMailbox', {
+                id: this.params.id,
+                isRead: 1
+              });
+            })
+            .catch(e => {
+              this.$store.dispatch('errorStore/setGlobalError', e);
+            });
+        }
       }
+    },
 
-      //mark read if msg is not read
-      if (!this.params.isRead) {
-        HTTP()
-          .patch(`message/${this.params.id}`, { isRead: true })
-          .then(() => {
-            // update user message menu
-            this.$store.dispatch('userStore/fetchNavMenu', 'msg');
-          })
-          .catch(e => {
-            this.$store.dispatch('errorStore/setGlobalError', e);
+    // toggle message bookmark
+    toggleBookmark() {
+      this.isBookmark = this.isBookmark === 0 ? 1 : 0;
+      // update the server
+      HTTP()
+        .patch(`message/${this.params.id}`, { isBookmark: this.isBookmark })
+        .then(() => {
+          this.$store.dispatch('userStore/fetchNavMenu', 'msg');
+          //update mailbox
+          this.$store.commit('userStore/refreshMailbox', {
+            id: this.params.id,
+            isBookmark: this.isBookmark
           });
-      }
+        })
+        .catch(e => {
+          this.$store.dispatch('errorStore/setGlobalError', e);
+        });
     }
   }
 };

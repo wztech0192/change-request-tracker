@@ -8,6 +8,7 @@ import './assets/adminlte/bower_components/Ionicons/css/ionicons.min.css';
 import './assets/adminlte/dist/css/AdminLTE.min.css';
 /* Select2 */
 import './assets/adminlte/bower_components/select2/dist/css/select2.min.css';
+import './assets/adminlte/bower_components/select2/dist/css/select2-bootstrap.min.css';
 /* ICheck */
 import './assets/adminlte/plugins/iCheck/flat/blue.css';
 /* daterange picker */

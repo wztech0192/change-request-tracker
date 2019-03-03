@@ -97,7 +97,7 @@ class MessageController {
           .orWhere('title', 'like', `%${search || ''}%`)
           .orWhere('created_at', 'like', `%${search || ''}%`)
           .orWhere(
-            'isStar',
+            'isBookmark',
             'like',
             `%${
               search ? (search.toLowerCase().includes('star') ? 1 : -1) : ''
@@ -113,6 +113,15 @@ class MessageController {
     messages.pages.start = pageMax + 1 - limit;
     // console.log(messages);
     return messages;
+  }
+
+  /**
+   * clear new messages
+   * @returns {String}
+   */
+  async clearNewMessages({ auth }) {
+    const user = await auth.getUser();
+    return await MessageService.clearNewMessages(user);
   }
 
   /**
@@ -135,7 +144,7 @@ class MessageController {
       verify: (user, message) =>
         AuthorizationService.verifyMessageOwnership(message, user),
       work: message =>
-        message.merge(request.only(['isRead', 'isArchived', 'isStar']))
+        message.merge(request.only(['isRead', 'isArchived', 'isBookmark']))
     });
   }
 

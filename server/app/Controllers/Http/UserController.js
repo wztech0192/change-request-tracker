@@ -263,9 +263,9 @@ class UserController {
    * get unread message
    * @return {array}
    */
-  async getUnreadMsgList({ auth }) {
+  async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
-    return await MessageService.getUnreadMsgList(user);
+    return await MessageService.getMenuMsgList(user);
   }
 
   /**

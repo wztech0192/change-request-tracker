@@ -19,16 +19,18 @@ export default {
     }
   },
   mounted() {
+    $.fn.select2.defaults.set('theme', 'bootstrap');
     const self = this;
     //initialize select2 for user search
     $('#' + self.id).select2({
       width: '100%',
-      allowClear: true,
+
       multiple: self.multiple,
       placeholder: self.placeholder,
 
       ajax: {
         delay: 500,
+
         transport: function({ data }, success, failure) {
           HTTP()
             .post(`user/search/${self.searchRole}`, {
@@ -39,8 +41,7 @@ export default {
               success(data);
             })
             .catch(e => {
-              self.$store.dispatch('errorStore/setGlobalError');
-              failure(e);
+              self.$store.dispatch('errorStore/setGlobalError', e);
             });
         },
         processResults: function(data, params) {
@@ -75,4 +76,18 @@ export default {
 </script>
 
 <style>
+.select2-container--loading {
+  font-size: 1000%;
+}
+
+.sda {
+  position: absolute;
+  /* float: right; */
+  margin-left: -25px;
+  margin-top: 5px;
+  font-size: 20px;
+}
+span #select2-select2-container {
+  padding-top: 5px;
+}
 </style>

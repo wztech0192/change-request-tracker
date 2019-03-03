@@ -6,6 +6,7 @@
       :notifyList="notifyList"
       :msgList="msgList"
       :clearNewNotification="clearNewNotification"
+      :clearNewMsg="clearNewMsg"
     />
     <Sidebar :user="user"/>
 
@@ -77,7 +78,8 @@ export default {
     ...mapActions('userStore', [
       'fetchUser',
       'fetchNavMenu',
-      'clearNewNotification'
+      'clearNewNotification',
+      'clearNewMsg'
     ])
   },
 

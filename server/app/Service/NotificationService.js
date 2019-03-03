@@ -156,9 +156,12 @@ class NotificationService {
    * @return {notification list object}
    */
   static async getNotification(user) {
+    const threeDaysBefore = new Date(new Date() - 250560000);
+
     const notifyList_old = await user
       .notifications()
       .where('isNew', '0')
+      .andWhere('created_at', '>', threeDaysBefore)
       .orderBy('created_at', 'desc')
       .fetch();
     const notifyList_new = await user

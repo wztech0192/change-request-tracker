@@ -5,7 +5,7 @@
     <section class="content-header">
       <h1>
         <i class="fa fa-envelope"></i>&nbsp;Mailbox
-        <small>13 new messages</small>
+        <small>{{msgList.unread.length+msgList.bookmark.length}} new messages</small>
       </h1>
     </section>
 
@@ -19,12 +19,14 @@
             <div class="box-header with-border">
               <h3 class="box-title">Folders</h3>
             </div>
-            <div class="box-body no-padding">
+            <div class="box-body no-padding" id="mail-nav">
               <ul class="nav nav-pills nav-stacked">
                 <li :class="{'active':filter.type === 'inbox'}">
                   <a @click="changeFilterType('inbox')">
                     <i class="fa fa-inbox"></i> Inbox
-                    <span class="label label-primary pull-right">{{msgList.length}}</span>
+                    <span
+                      class="label label-primary pull-right"
+                    >{{msgList.unread.length+msgList.bookmark.length}}</span>
                   </a>
                 </li>
                 <li :class="{'active':filter.type === 'sent'}">
@@ -44,6 +46,7 @@
             <!-- /.box-body -->
           </div>
         </div>
+
         <!-- /.col -->
         <div class="col-md-9">
           <div class="box box-primary">
@@ -65,7 +68,7 @@
               <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
-            <div v-if="hasMessage()" class="box-body no-padding" style="min-height:400px;">
+            <div v-if="hasMessage()" class="box-body no-padding" style="min-height:623px;">
               <div v-if="loading" class="overlay">
                 <i class="fa fa-spinner fa-spin"></i>
               </div>
@@ -129,8 +132,11 @@
                         <input type="checkbox" :value="i">
                       </td>
                       <td v-if="filter.type!=='sent'" class="mailbox-star">
-                        <a @click="toggleStar(msg)">
-                          <i class="fa text-yellow" :class="msg.isStar===0 ?'fa-star-o ':'fa-star'"></i>
+                        <a @click="toggleBookmark(msg)">
+                          <i
+                            class="fa text-yellow"
+                            :class="msg.isBookmark===0 ?'fa-star-o ':'fa-star'"
+                          ></i>
                         </a>
                       </td>
                       <td class="mailbox-name">
@@ -233,7 +239,7 @@ export default {
       filter: {
         type: 'inbox',
         page: 1,
-        limit: 20,
+        limit: 15,
         search: ''
       },
       pageData: {},
@@ -247,13 +253,30 @@ export default {
   },
 
   computed: {
-    ...mapState('userStore', ['msgList'])
+    ...mapState('userStore', ['msgList', 'msgRefreshData'])
   },
 
   watch: {
-    // refresh data if header message menu data changed
-    msgList() {
-      this.fetchMessageList();
+    // refresh data if userstore refresh data changed
+    msgRefreshData(newData) {
+      if (newData.refresh) {
+        //refresh list
+        this.fetchMessageList();
+      } else {
+        //loop through the list to find the changed msg
+        for (let i in this.pageData.data) {
+          const msg = this.pageData.data[i];
+          if (msg.id === newData.id) {
+            if (newData.isBookmark) {
+              this.pageData.data[i].isBookmark = newData.isBookmark;
+            }
+            if (newData.isRead) {
+              this.pageData.data[i].isRead = newData.isRead;
+            }
+            break;
+          }
+        }
+      }
     }
   },
 
@@ -324,12 +347,16 @@ export default {
         .forEach(cb => (cb.checked = this.checkAll));
     },
 
-    //toggle message star
-    toggleStar(msg) {
-      msg.isStar = msg.isStar === 0 ? 1 : 0;
+    //toggle message bookmark
+    toggleBookmark(msg) {
+      console.log(msg);
+      msg.isBookmark = msg.isBookmark === 0 ? 1 : 0;
       //update the server
       HTTP()
-        .patch(`message/${msg.id}`, { isStar: msg.isStar })
+        .patch(`message/${msg.id}`, { isBookmark: msg.isBookmark })
+        .then(() => {
+          this.$store.dispatch('userStore/fetchNavMenu', 'msg');
+        })
         .catch(e => {
           this.setGlobalError(e);
         });
@@ -429,5 +456,11 @@ export default {
 
 #msg-table .selected {
   background-color: lightgrey !important;
+}
+
+@media (min-width: 997px) {
+  #mail-nav {
+    height: 615px;
+  }
 }
 </style>

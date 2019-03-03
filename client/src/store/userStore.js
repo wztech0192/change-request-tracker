@@ -22,7 +22,8 @@ export default {
     notifyList: [],
     msgList: [],
     registrationCode: null,
-    refresh: 0
+    refresh: 0,
+    msgRefreshData: null
   },
 
   /**
@@ -64,21 +65,36 @@ export default {
         .then(({ data }) => {
           commit(`${request}Commit`, data);
         })
-        .catch(() => {
-          commit('setExceptionError', 'Cannot find the user. Try to Re-login.');
-          router.push('/login');
+        .catch((e) => {
+          this.dispatch('errorStore/setGlobalError', e);
+          // router.push('/login');
         });
     },
 
     clearNewNotification({ dispatch }, target) {
       HTTP()
-        .get(`/user/notification/clear-new/${target}`)
+        .patch(`/user/notification/clear-new/${target}`)
         .then(() => {
           // refresh notification menu
           dispatch('fetchNavMenu', 'notification');
         })
         .catch((e) => {
-          this.$store.dispatch('errorStore/setGlobalError', e);
+          this.dispatch('errorStore/setGlobalError', e);
+        });
+    },
+
+    // clear all new messages
+    clearNewMsg({ dispatch, commit }) {
+      HTTP()
+        .patch('message/clear-new')
+        .then(() => {
+          // refresh msg menu
+          dispatch('fetchNavMenu', 'msg');
+          // refresh mailbox
+          commit('refreshMailbox', { refresh: true });
+        })
+        .catch((e) => {
+          this.dispatch('errorStore/setGlobalError', e);
         });
     },
 
@@ -118,6 +134,10 @@ export default {
    * Make changes to the state
    */
   mutations: {
+    refreshMailbox(state, msgRefreshData) {
+      state.msgRefreshData = msgRefreshData;
+    },
+
     // add refresh time
     addRefresh(state) {
       state.refresh += 1;
@@ -141,6 +161,7 @@ export default {
     // set user msg list
     msgCommit(state, msgList) {
       state.msgList = msgList;
+      state.freshMailboxID = !state.freshMailboxID;
     },
 
     // login user information include token

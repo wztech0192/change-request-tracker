@@ -102,6 +102,15 @@ class AuthorizationService {
       throw new ResourceNotExistException(message);
     }
   }
+
+  //validate if all message field are filled.
+  static validateMessage(msg) {
+    if (!msg.receiverEmail || !msg.title || !msg.content) {
+      throw new InvalidAccessException(
+        'Action. Make sure every field has filled!'
+      );
+    }
+  }
 }
 
 module.exports = AuthorizationService;

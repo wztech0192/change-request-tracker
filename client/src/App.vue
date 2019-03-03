@@ -14,8 +14,6 @@
     <h1 id="loading-screen">
       <i class="fa fa-spinner fa-spin"></i>
     </h1>
-
-    <MyDialog :adaptive="true" width="80%"/>'
   </div>
 </template>
 
@@ -23,13 +21,11 @@
 import { mapGetters, mapActions } from 'vuex';
 import Main from '@/components/Main.vue';
 import Auth from '@/components/Auth.vue';
-import MyDialog from '@/components/Modal/MyDialog.vue';
 
 export default {
   components: {
     Main,
-    Auth,
-    MyDialog
+    Auth
   },
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
@@ -77,6 +73,15 @@ export default {
 
 
 <style>
+.ck-editor__editable {
+  height: 250px;
+}
+@media (max-width: 480px) {
+  .ck-editor__editable {
+    height: 150px;
+  }
+}
+
 body {
   font-family: Arial, sans-serif !important;
 }
@@ -116,6 +121,9 @@ body {
   text-align: center;
   transition: 0.3s ease;
 }
+.main-header {
+  z-index: 1000 !important;
+}
 .z-index-out {
   z-index: -100 !important;
 }
@@ -123,6 +131,9 @@ body {
   text-transform: capitalize;
 }
 
+.bold {
+  font-weight: bold;
+}
 a {
   cursor: pointer;
 }
@@ -143,7 +154,7 @@ a {
   font-size: 1000%;
 }
 .v--modal-overlay {
-  z-index: 999999999 !important;
+  z-index: 1005 !important;
 }
 .fade-enter-active,
 .fade-leave-active {

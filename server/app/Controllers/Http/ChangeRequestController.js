@@ -20,7 +20,7 @@ const AuthorizationService = use('App/Service/AuthorizationService');
 const FlagService = use('App/Service/FlagService');
 const CrudService = use('App/Service/CrudService');
 const Notification = use('App/Service/NotificationService');
-const MailService = use('App/Service/MailService');
+const MessageService = use('App/Service/MessageService');
 
 class ChangeRequestController {
   /**
@@ -136,7 +136,7 @@ class ChangeRequestController {
 
     //get client if current user is a admin. Else client is current user.
     if (user.role === 'Admin' || user.role === 'Developer') {
-      client = await User.find(client);
+      client = await User.findBy('email', client);
       if (!client) {
         throw new Exception('Something is wrong');
       }
@@ -374,10 +374,10 @@ class ChangeRequestController {
     const mailJSON = request.only(['sender', 'subject', 'body-plain']);
 
     const client = await User.findBy('email', mailJSON['sender'].toLowerCase());
-    
+
     // return denied message if client does not exit
     if (!client || !mailJSON['subject'] || !mailJSON['body-plain']) {
-      MailService.returnMail(
+      MessageService.returnMail(
         mailJSON['sender'],
         'Submission Denied',
         'You are not register in our system. Please register a account by visiting <a href="www.google.com">www.google.com</a>.'
@@ -408,7 +408,7 @@ class ChangeRequestController {
     await Notification.newChangeRequest(changeRequest);
 
     //send a success message
-    MailService.returnMail(
+    MessageService.returnMail(
       mailJSON['sender'],
       'Submission Success!',
       'Your change request has been received!'

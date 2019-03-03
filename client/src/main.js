@@ -8,6 +8,8 @@ import './assets/adminlte/bower_components/Ionicons/css/ionicons.min.css';
 import './assets/adminlte/dist/css/AdminLTE.min.css';
 /* Select2 */
 import './assets/adminlte/bower_components/select2/dist/css/select2.min.css';
+/* ICheck */
+import './assets/adminlte/plugins/iCheck/flat/blue.css';
 /* daterange picker */
 import './assets/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css';
 /* AdminLTE Skins. Choose a skin from the css/skins
@@ -57,6 +59,8 @@ import './assets/adminlte/bower_components/datatables.net/js/dataTables.responsi
 import './assets/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min';
 /* FastClick */
 import './assets/adminlte/bower_components/fastclick/lib/fastclick';
+/* ICheck */
+import './assets/adminlte/plugins/iCheck/icheck.min';
 /* date - range - picker */
 import './assets/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker';
 /* AdminLTE App */

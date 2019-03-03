@@ -46,7 +46,7 @@
                     <option
                       v-if="requestData.client"
                       :value="requestData.client"
-                    >{{initClientSearch(requestData.client)}}</option>
+                    >{{requestData.client}}</option>
                   </UserSearch>
                 </div>
               </div>
@@ -237,14 +237,6 @@ export default {
       'setClient'
     ]),
 
-    initClientSearch(client) {
-      try {
-        return client.substring(0, client.lastIndexOf(' '));
-      } catch (e) {
-        return '';
-      }
-    },
-
     userChange(val) {
       this.clearError('client');
       this.setClient(val);
@@ -259,8 +251,7 @@ export default {
           first_name: val[0],
           mid_initial: val[1],
           last_name: val[2],
-          email: val[3].substring(1, val[3].length - 1),
-          id: val[4]
+          email: val[3].substring(1, val[3].length - 1)
         };
       } catch (e) {
         //set empty requester if selected val is empty
@@ -322,7 +313,7 @@ export default {
                   .addClass('text-red');
               } else {
                 this.setMessage($('.request-message').val());
-                this.setClient(this.requester.id);
+                this.setClient(this.requester.email);
                 spinner.loading = true;
                 //verify and post change request
                 HTTP()
@@ -380,7 +371,4 @@ export default {
 </script>
 
 <style>
-.ck-editor__editable {
-  height: 250px;
-}
 </style>

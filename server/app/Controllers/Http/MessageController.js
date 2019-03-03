@@ -7,7 +7,7 @@
 
 const Message = use('App/Models/Message');
 const AuthorizationService = use('App/Service/AuthorizationService');
-const MailService = use('App/Service/MailService');
+const MessageService = use('App/Service/MessageService');
 const CrudService = use('App/Service/CrudService');
 const Database = use('Database');
 
@@ -17,20 +17,101 @@ class MessageController {
    */
   async createMessage({ auth, request }) {
     const user = await auth.getUser();
-    const data = request.only(['title', 'content', 'receiverEmail']);
-    data.senderEmail = user.email;
-    data.senderName = user.full_name;
-    return MailService.createMessage(data);
+    const { receiver, title, content } = request.only([
+      'receiver',
+      'title',
+      'content'
+    ]);
+
+    const receiverList = new Array(receiver.length).fill().map((a, i) => ({
+      receiverEmail: receiver[i].substring(
+        receiver[i].indexOf('(') + 1,
+        receiver[i].lastIndexOf(')')
+      ),
+      senderEmail: user.email,
+      senderName: user.full_name,
+      title: title,
+      content: content
+    }));
+    const { isReply } = request.only('isReply');
+
+    for (let rl of receiverList) {
+      AuthorizationService.validateMessage(rl);
+      if (isReply) {
+        await MessageService.createMessage(rl);
+      } else {
+        await MessageService.createReplyMessage(rl);
+      }
+    }
+
+    return receiverList;
   }
 
   /**
-   * Get message list belongs to the user
+   * Get message detail
    */
-  async getMessage({ auth }) {
+  async getMessage({ auth, params }) {
     const user = await auth.getUser();
-    const messages = await Database.table('messages')
+    const message = await Message.query()
       .where('senderEmail', user.email)
-      .orderBy('created_at', 'asc');
+      .andWhere('id', params.id)
+      .fetch();
+
+    AuthorizationService.verifyExistance(message.rows[0], 'message');
+    return message.rows[0];
+  }
+
+  /**
+   * Get message list by type. Inbox, sent, or archived
+   */
+  async getMessageList({ auth, request }) {
+    const user = await auth.getUser();
+    const { type, page, limit, search } = request.all();
+
+    // const search = `%${table.search.value}%`;
+    const messages = await Message.query()
+      .where(function() {
+        switch (type) {
+          case 'sent':
+            this.where('senderEmail', user.email);
+            break;
+          case 'inbox':
+            this.where('receiverEmail', user.email).andWhere(
+              'isArchived',
+              false
+            );
+            break;
+          case 'archive':
+            this.where('receiverEmail', user.email).andWhere(
+              'isArchived',
+              true
+            );
+            break;
+        }
+      })
+      .where(function() {
+        this.where('id', 'like', `%${search}%`)
+          .orWhere('senderEmail', 'like', `%${search || ''}%`)
+          .orWhere('senderName', 'like', `%${search || ''}%`)
+          .orWhere('receiverEmail', 'like', `%${search || ''}%`)
+          .orWhere('title', 'like', `%${search || ''}%`)
+          .orWhere('created_at', 'like', `%${search || ''}%`)
+          .orWhere(
+            'isStar',
+            'like',
+            `%${
+              search ? (search.toLowerCase().includes('star') ? 1 : -1) : ''
+            }%`
+          );
+      })
+      .orderBy('created_at', 'desc')
+      .paginate(page, limit);
+
+    const pageMax = page * limit;
+    messages.pages.end =
+      pageMax > messages.pages.total ? messages.pages.total : pageMax;
+    messages.pages.start = pageMax + 1 - limit;
+    // console.log(messages);
     return messages;
   }
 
@@ -39,7 +120,10 @@ class MessageController {
    * @returns {message}
    */
   async deleteMessage({ auth, params }) {
-    return MailService.deleteMessage(auth, params);
+    return CrudService.destroy(auth, params, Message, {
+      verify: (user, message) =>
+        AuthorizationService.verifyMessageOwnership(message, user)
+    });
   }
 
   /**
@@ -50,8 +134,26 @@ class MessageController {
     return CrudService.update(auth, params, Message, {
       verify: (user, message) =>
         AuthorizationService.verifyMessageOwnership(message, user),
-      work: message => message.merge(request.only(['isRead', 'isArchived']))
+      work: message =>
+        message.merge(request.only(['isRead', 'isArchived', 'isStar']))
     });
+  }
+
+  /**
+   * archive message
+   */
+  async archiveMessage({ auth, request }) {
+    const user = await auth.getUser();
+    const { list, isArchived } = request.only(['list', 'isArchived']);
+
+    if (!list || list.length <= 0) {
+      throw Exception('Empty List');
+    }
+
+    const mail = await Message.query()
+      .where('receiverEmail', user.email)
+      .whereIn('id', list)
+      .update({ isArchived });
   }
 
   /**
@@ -70,7 +172,7 @@ class MessageController {
     AuthorizationService.verifyExistance(sender, ' user.');
 
     //create change request
-    MailService.createRequestFromMail(content, sender);
+    MessageService.createRequestFromMail(content, sender);
   }
 }
 

@@ -46,11 +46,11 @@ export default {
     getLabelClass: type => {
       switch (type) {
         case 'messages':
-          return 'label-success';
+          return 'label-primary';
         case 'notifications':
           return 'label-warning';
         case 'tasks':
-          return 'label-primary';
+          return 'label-success';
       }
     },
     getIcon: type => {

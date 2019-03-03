@@ -12,7 +12,7 @@ class InvalidAccessException extends LogicalException {
 
   handle(error, { response }) {
     return response.status(403).json({
-      error: 'invalid access to ' + error.message
+      error: 'Invalid access to ' + error.message
     });
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <select id="select2" class="js-states form-control">
+  <select :id="id" class="js-states form-control">
     <slot></slot>
   </select>
 </template>
@@ -11,15 +11,21 @@ export default {
     onChange: Function,
     multiple: Boolean,
     searchRole: String,
-    useEmailID: Boolean
+    useEmailID: Boolean,
+    placeholder: String,
+    id: {
+      type: String,
+      default: 'select2'
+    }
   },
   mounted() {
     const self = this;
     //initialize select2 for user search
-    $('#select2').select2({
+    $('#' + self.id).select2({
       width: '100%',
       allowClear: true,
       multiple: self.multiple,
+      placeholder: self.placeholder,
 
       ajax: {
         delay: 500,
@@ -33,19 +39,18 @@ export default {
               success(data);
             })
             .catch(e => {
+              self.$store.dispatch('errorStore/setGlobalError');
               failure(e);
             });
         },
         processResults: function(data, params) {
           // use full name as text and id for the options
           data.results.forEach(d => {
-            if (self.useEmailID) {
-              d.text = `${d.full_name} (${d.email})`;
-              d.id = `${d.full_name} (${d.email}) ${d.id}`;
-            } else {
-              d.text = d.full_name;
-              d.id = d.full_name;
-            }
+            d.text = self.useEmailID
+              ? `${d.full_name} (${d.email})`
+              : d.full_name;
+
+            d.id = d.text;
           });
           return data;
         }
@@ -53,7 +58,7 @@ export default {
     });
 
     //retrieve select2 data
-    $('#select2').on('change', function() {
+    $('#' + self.id).on('change', function() {
       self.onChange($(this).val());
     });
   },
@@ -61,7 +66,7 @@ export default {
   methods: {
     //clear select
     clear() {
-      $('#select2')
+      $('#' + this.id)
         .val(null)
         .trigger('change');
     }

@@ -8,7 +8,7 @@
 const User = use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationCodeService = use('App/Service/RegistrationCodeService');
-const MailService = use('App/Service/MailService');
+const MessageService = use('App/Service/MessageService');
 const NotificationService = use('App/Service/NotificationService');
 const Hash = use('Hash');
 const FlagService = use('App/Service/FlagService');
@@ -59,7 +59,7 @@ class UserController {
     const user = await User.create(userInfo);
 
     //create welcome message
-    MailService.sendWelcomeMessage(code, userInfo);
+    MessageService.sendWelcomeMessage(code, userInfo);
 
     //remove used code
     RegistrationCodeService.removeCode(code.id);
@@ -76,7 +76,7 @@ class UserController {
    */
   async search({ auth, request, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Admin', 'Developer']);
+    AuthorizationService.verifyRole(user);
 
     const data = request.all();
     const userList = await User.query()
@@ -257,6 +257,15 @@ class UserController {
     const user = await auth.getUser();
 
     return await FlagService.getFlaggedList(user);
+  }
+
+  /**
+   * get unread message
+   * @return {array}
+   */
+  async getUnreadMsgList({ auth }) {
+    const user = await auth.getUser();
+    return await MessageService.getUnreadMsgList(user);
   }
 
   /**

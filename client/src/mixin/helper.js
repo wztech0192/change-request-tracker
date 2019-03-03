@@ -33,6 +33,33 @@ export default {
       }
       // minutes
       return Math.round(diff / 60000) + ending[0];
+    },
+
+    // composed a new message with current content and subject
+    forwardMSG(msg) {
+      const forwardData = {
+        receiver: [],
+        title: msg.title,
+        content: msg.content
+      };
+      this.$modal.show('compose-msg', forwardData);
+    },
+
+    // composed a reply message
+    replyMSG(msg) {
+      const replyData = {
+        receiver: [`${msg.senderName} (${msg.senderEmail})`],
+        title: `RE: ${msg.title}`,
+        content: `<p></p><p></p><p></p><p></p><p></p><p></p>\n\n\n\n\n\n\n\n
+            <p>------ PREVIOUS MESSAGE ------</p>\n
+            <p>Date: ${msg.created_at}</p>\n
+            <p> Sender: ${msg.senderName}</p>\n
+            <p>Sender Email: ${msg.senderEmail}</p>\n
+            <p>*****</p>
+            ${msg.content}
+        `
+      };
+      this.$modal.show('compose-msg', replyData);
     }
   }
 };

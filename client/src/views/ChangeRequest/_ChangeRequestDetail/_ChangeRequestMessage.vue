@@ -199,17 +199,8 @@ export default {
 </script>
 
 <style>
-.ck-editor__editable {
-  height: 250px;
-}
 #cr-msg {
   max-height: 75vh;
   overflow: auto;
-}
-
-@media (max-width: 480px) {
-  .ck-editor__editable {
-    height: 150px;
-  }
 }
 </style>

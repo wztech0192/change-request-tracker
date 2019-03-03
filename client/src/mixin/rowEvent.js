@@ -24,7 +24,7 @@ export default {
           title:
             "<span class='text-yellow'><i class='fa fa-exclamation-triangle'></i> Alert! </span>",
           template:
-            "<h4 style='text-align:center;'>You need to select a user</h4>",
+            "<h4 style='text-align:center;'>You need to select a item</h4>",
           maxWidth: 300,
           buttons: [
             {
@@ -53,23 +53,19 @@ export default {
       });
 
       // double click event
-      $(`${id} tbody`).on('dblclick', 'tr', function () {
-        if (!$(this).hasClass('child')) {
-          afterClick(this);
-        }
-      });
+      let clicked = false;
 
-      let touched = false;
-      // double tab event.
-      $(`${id} tbody`).on('touchstart', 'tr', function () {
+      $(`${id} tbody`).on('touchstart, mousedown', 'tr', function (e) {
         if (!$(this).hasClass('child')) {
           addTableSelect(this);
-          if (!touched) {
-            touched = true;
+          if (!clicked) {
+            clicked = true;
+            // if user did not click again in 200ms, reset clicked
             setTimeout(() => {
-              touched = false;
+              clicked = false;
             }, 200);
           } else {
+            e.preventDefault();
             afterClick(this);
           }
         }

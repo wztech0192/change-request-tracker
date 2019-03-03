@@ -4,6 +4,7 @@
       :user="user"
       :flagList="flagList"
       :notifyList="notifyList"
+      :msgList="msgList"
       :clearNewNotification="clearNewNotification"
     />
     <Sidebar :user="user"/>
@@ -15,6 +16,9 @@
     </div>
 
     <Controlbar/>
+    <ReadMessageModal/>
+    <ComposeMessageModal/>
+    <MyDialog/>
   </div>
 </template>
 
@@ -23,6 +27,9 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import Header from '@/components/_Main/Header.vue';
 import Sidebar from '@/components/_Main/Sidebar.vue';
 import Controlbar from '@/components/_Main/Controlbar.vue';
+import MyDialog from '@/components/Modal/MyDialog.vue';
+import ComposeMessageModal from '@/components/Modal/ComposeMessageModal.vue';
+import ReadMessageModal from '@/components/Modal/ReadMessageModal.vue';
 
 export default {
   name: 'Main',
@@ -30,12 +37,21 @@ export default {
   components: {
     Header,
     Sidebar,
-    Controlbar
+    Controlbar,
+    MyDialog,
+    ComposeMessageModal,
+    ReadMessageModal
   },
 
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
-    ...mapState('userStore', ['user', 'flagList', 'notifyList', 'refresh'])
+    ...mapState('userStore', [
+      'user',
+      'flagList',
+      'notifyList',
+      'msgList',
+      'refresh'
+    ])
   },
 
   watch: {
@@ -43,6 +59,7 @@ export default {
     refresh() {
       this.fetchNavMenu('flag');
       this.fetchNavMenu('notification');
+      this.fetchNavMenu('msg');
     }
   },
 
@@ -52,6 +69,7 @@ export default {
       this.fetchUser();
       this.fetchNavMenu('flag');
       this.fetchNavMenu('notification');
+      this.fetchNavMenu('msg');
     }
   },
 

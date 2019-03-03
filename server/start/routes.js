@@ -41,6 +41,7 @@ Route.group(() => {
   Route.get('user/all', 'UserController.getAll');
   Route.get('user/flag', 'UserController.getFlaggedList');
   Route.get('user/notification', 'UserController.getNotificationList');
+  Route.get('user/msg', 'UserController.getUnreadMsgList');
   Route.post(
     'user/notification/paginate',
     'UserController.notificationPaginate'
@@ -95,10 +96,13 @@ Route.group(() => {
   Route.patch('dev/ref/:id', 'DevController.updateRef');
 
   //Message Route
-  Route.get('message', 'MessageController.getMessage');
+  Route.get('message/:id', 'MessageController.getMessage');
+  Route.post('message/list', 'MessageController.getMessageList');
+
   Route.post('message', 'MessageController.createMessage');
 
   Route.delete('message/:id', 'MessageController.deleteMessage');
+  Route.patch('message/archive', 'MessageController.archiveMessage');
   Route.patch('message/:id', 'MessageController.updateMessage');
 
   //Change Request Route

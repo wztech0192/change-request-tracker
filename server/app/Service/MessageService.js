@@ -6,11 +6,22 @@
  */
 
 const Message = use('App/Models/Message');
-const AuthorizationService = use('App/Service/AuthorizationService');
-const CrudService = use('App/Service/CrudService');
 const Mail = use('Mail');
 
 class MessageService {
+  /**
+   * get unread messages
+   * @returns {array}
+   */
+  static async getUnreadMsgList(user) {
+    const unreadList = await Message.query()
+      .where('receiverEmail', user.email)
+      .andWhere('isRead', false)
+      .orderBy('created_at', 'desc')
+      .fetch();
+    return unreadList;
+  }
+
   /**
    * Create new message
    * @returns {message}
@@ -23,14 +34,14 @@ class MessageService {
   }
 
   /**
-   * delete message
+   * Create reply message
    * @returns {message}
    */
-  static async deleteMessage(auth, params) {
-    return CrudService.destroy(auth, params, Message, {
-      verify: (user, message) =>
-        AuthorizationService.verifyMessageOwnership(message, user)
-    });
+  static async createReplyMessage(msgData) {
+    var message = new Message();
+    message.fill(msgData);
+    await message.save();
+    return message;
   }
 
   //create a welcome message when user register

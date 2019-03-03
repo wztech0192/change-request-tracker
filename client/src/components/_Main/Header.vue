@@ -13,21 +13,21 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
-          <Nav-Menu id="msglist" :num="msgList.length" type="messages">
+          <Nav-Menu id="messages" :num="msgList.length" type="messages" footer="/mailbox">
             <li v-for="msg in msgList">
               <!-- start message -->
-              <a>
+              <a @click="$modal.show('read-msg', msg);">
                 <div class="pull-left">
                   <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
                 </div>
                 <h4>
-                  {{msg.sender}}
+                  {{msg.senderName}}
                   <small>
                     <i class="fa fa-clock-o"></i>
-                    {{calculateTimeElapsed(msg.sendTime,['m','h','d'])}}
+                    {{calculateTimeElapsed(msg.created_at,['m','h','d'])}}
                   </small>
                 </h4>
-                <p>{{msg.body}}</p>
+                <p>{{msg.title}}</p>
               </a>
             </li>
           </Nav-Menu>
@@ -191,36 +191,11 @@ export default {
     Logo,
     NavMenu
   },
-  data: () => {
-    return {
-      //array of message for header menu
-      msgList: [
-        {
-          avatar: 'adminLTE/dist/img/default.jpg',
-          sender: 'Somebody',
-          sendTime: '2019-01-21 05:52:23',
-          body: 'Hey this is a testing67'
-        },
-        {
-          avatar: 'adminLTE/dist/img/avatar2.jpg',
-          sender: 'Somebody2',
-          sendTime: '2019-01-29 05:52:23',
-          body: 'Hey this is a testing3'
-        },
-        {
-          avatar: 'adminLTE/dist/img/avatar04.jpg',
-          sender: 'Somebody3',
-          sendTime: '2019-02-22 03:21:12',
-          body: 'Hey this is a testing2'
-        }
-      ]
-    };
-  },
 
   watch: {
     flagList(oldData, newData) {
       if (oldData.length !== newData.length) {
-        $('#task').effect('highlight', { color: '#3c8dbc' }, 1000);
+        $('#task').effect('highlight', { color: '#00a65a' }, 1000);
       }
     },
     notifyList(oldData, newData) {
@@ -231,7 +206,11 @@ export default {
         $('#notifications').effect('highlight', { color: '#f39c12' }, 1000);
       }
     },
-    msgList() {}
+    msgList(oldData, newData) {
+      if (oldData.length !== newData.length) {
+        $('#messages').effect('highlight', { color: '#3c8dbc' }, 1000);
+      }
+    }
   },
 
   //data from parent
@@ -239,6 +218,7 @@ export default {
     user: Object,
     flagList: Object,
     notifyList: Object,
+    msgList: Array,
     clearNewNotification: Function
   },
   methods: {

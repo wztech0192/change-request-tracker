@@ -20,6 +20,7 @@ export default {
     loading: false,
     flagList: [],
     notifyList: [],
+    msgList: [],
     registrationCode: null,
     refresh: 0
   },
@@ -56,7 +57,7 @@ export default {
     },
 
     // get navigation menu list for current user by request
-    // request type: notification, flag, and message.
+    // request type: notification, flag, and unread message.
     fetchNavMenu({ commit }, request) {
       HTTP()
         .get(`/user/${request}`)
@@ -65,7 +66,7 @@ export default {
         })
         .catch(() => {
           commit('setExceptionError', 'Cannot find the user. Try to Re-login.');
-          //    router.push('/login');
+          router.push('/login');
         });
     },
 
@@ -135,6 +136,11 @@ export default {
     // set user flagged list
     notificationCommit(state, notifyList) {
       state.notifyList = notifyList;
+    },
+
+    // set user msg list
+    msgCommit(state, msgList) {
+      state.msgList = msgList;
     },
 
     // login user information include token

@@ -37,9 +37,16 @@ class MessageService {
       .andWhere('isBookmark', true)
       .orderBy('created_at', 'desc')
       .fetch();
+
+    const totalMsg = await Message.query()
+      .where('receiverEmail', user.email)
+      .where('isArchived', false)
+      .getCount();
+
     return {
       unread,
-      bookmark
+      bookmark,
+      totalMsg
     };
   }
 

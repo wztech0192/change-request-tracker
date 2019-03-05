@@ -64,7 +64,9 @@ class FlagService {
       .select(
         'change_requests.status',
         'change_requests.id',
-        'change_requests.title'
+        'change_requests.title',
+        'change_requests.clientName',
+        'change_requests.created_at'
       )
       .innerJoin(
         'change_requests',
@@ -94,11 +96,16 @@ class FlagService {
     const flagTask = await this.getFlaggedTask(user);
     //get change request
     const flagCR = await this.getFlaggedCR(user);
-
+    //get total change request if user is admin or devloper, else get total submited
+    const totalCR =
+      user.role === 'Admin' || user.role === 'Developer'
+        ? await Database.from('change_requests').getCount()
+        : await user.change_requests().getCount();
     return {
       flagTask,
       flagCR,
-      length: flagTask.length + flagCR.length
+      length: flagTask.length + flagCR.length,
+      totalCR
     };
   }
 }

@@ -3,7 +3,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        <i class="fa fa-pie-chart"></i>&nbsp;&nbsp;Data Chart
+        <i class="fa fa-bar-chart"></i>&nbsp;&nbsp;Data Chart
       </h1>
     </section>
 

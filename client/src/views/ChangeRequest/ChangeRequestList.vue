@@ -55,7 +55,7 @@
           </a>
           <li class="pull-left header">
             <h1 style="padding:0; margin:0; font-size:24px; ">
-              <i class="fa fa-tasks"></i>
+              <i class="fa fa-exchange"></i>
               &nbsp;&nbsp;{{isAdmin?'Change Request Manage':'My Change Request'}}
             </h1>
           </li>

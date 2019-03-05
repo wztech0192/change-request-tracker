@@ -26,7 +26,7 @@
           </a>
           <li class="pull-left header">
             <h1 style="padding:0; margin:0;">
-              <i class="fa fa-th"></i>
+              <i class="ion ion-clipboard"></i>
               &nbsp;&nbsp;Developer Todo List
             </h1>
           </li>

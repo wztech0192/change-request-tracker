@@ -14,11 +14,12 @@
     <div class="box box-primary" style="margin:0; height:100%;">
       <div class="box-header with-border">
         <h3 class="box-title">
-          <i class="fa fa-envelope"></i>&nbsp;&nbsp;Read Mail
+          <i class="fa fa-envelope"></i>
+          &nbsp;&nbsp;{{isReceiver?'Read Mail':'Sent Mail'}}
         </h3>
 
         <div class="box-tools pull-right">
-          <a @click="toggleBookmark" class="btn btn-box-tool">
+          <a v-if="isReceiver" @click="toggleBookmark" class="btn btn-box-tool">
             <i class="fa text-yellow" :class="isBookmark?'fa-star':'fa-star-o'"></i>
           </a>
           <a @click="$modal.hide('read-msg')" class="btn btn-box-tool">
@@ -31,8 +32,10 @@
         <div class="mailbox-read-info">
           <h3>{{params.title}}</h3>
           <h5>
-            From: {{params.senderName}}
-            <span class="mailbox-read-time pull-right">{{getDate()}}</span>
+            {{isReceiver? 'From' : 'Receiver'}}: {{isReceiver? params.senderName : params.receiverEmail}}
+            <span
+              class="mailbox-read-time pull-right"
+            >{{getDate()}}</span>
           </h5>
         </div>
         <!-- /.mailbox-read-info -->
@@ -69,6 +72,15 @@ export default {
     };
   },
 
+  computed: {
+    //verfy if the user is the receiver
+    isReceiver() {
+      return (
+        this.$store.getters['userStore/email'] === this.params.receiverEmail
+      );
+    }
+  },
+
   methods: {
     //calculate the message sending date
     getDate() {
@@ -85,7 +97,7 @@ export default {
         this.params = event.params;
         this.isBookmark = this.params.isBookmark;
         //mark read if msg is not read
-        if (!this.params.isRead) {
+        if (this.isReceiver && !this.params.isRead) {
           HTTP()
             .patch(`message/${this.params.id}`, { isRead: true })
             .then(() => {
@@ -106,21 +118,23 @@ export default {
 
     // toggle message bookmark
     toggleBookmark() {
-      this.isBookmark = this.isBookmark === 0 ? 1 : 0;
-      // update the server
-      HTTP()
-        .patch(`message/${this.params.id}`, { isBookmark: this.isBookmark })
-        .then(() => {
-          this.$store.dispatch('userStore/fetchNavMenu', 'msg');
-          //update mailbox
-          this.$store.commit('userStore/refreshMailbox', {
-            id: this.params.id,
-            isBookmark: this.isBookmark
+      if (this.isReceiver) {
+        this.isBookmark = this.isBookmark === 0 ? 1 : 0;
+        // update the server
+        HTTP()
+          .patch(`message/${this.params.id}`, { isBookmark: this.isBookmark })
+          .then(() => {
+            this.$store.dispatch('userStore/fetchNavMenu', 'msg');
+            //update mailbox
+            this.$store.commit('userStore/refreshMailbox', {
+              id: this.params.id,
+              isBookmark: this.isBookmark
+            });
+          })
+          .catch(e => {
+            this.$store.dispatch('errorStore/setGlobalError', e);
           });
-        })
-        .catch(e => {
-          this.$store.dispatch('errorStore/setGlobalError', e);
-        });
+      }
     }
   }
 };

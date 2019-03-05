@@ -170,9 +170,13 @@ class NotificationService {
       .orderBy('created_at', 'desc')
       .fetch();
 
+    //get total change request
+    const totalNotifications = await user.notifications().getCount();
+
     return {
       new: notifyList_new,
-      old: notifyList_old
+      old: notifyList_old,
+      totalNotifications
     };
   }
 

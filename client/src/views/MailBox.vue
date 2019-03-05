@@ -5,7 +5,7 @@
     <section class="content-header">
       <h1>
         <i class="fa fa-envelope"></i>&nbsp;Mailbox
-        <small>{{msgList.unread.length+msgList.bookmark.length}} new messages</small>
+        <small>{{msgList.unread.length}} new messages</small>
       </h1>
     </section>
 
@@ -24,9 +24,7 @@
                 <li :class="{'active':filter.type === 'inbox'}">
                   <a @click="changeFilterType('inbox')">
                     <i class="fa fa-inbox"></i> Inbox
-                    <span
-                      class="label label-primary pull-right"
-                    >{{msgList.unread.length+msgList.bookmark.length}}</span>
+                    <span class="label label-primary pull-right">{{msgList.unread.length}}</span>
                   </a>
                 </li>
                 <li :class="{'active':filter.type === 'sent'}">
@@ -143,7 +141,10 @@
                         <a @click>{{filter.type==='sent'? msg.receiverEmail :msg.senderName}}</a>
                       </td>
 
-                      <td class="mailbox-subject" :class="{'bold':msg.isRead === 0}">{{msg.title}}</td>
+                      <td
+                        class="mailbox-subject"
+                        :class="{'bold': filter.type!=='sent' && msg.isRead === 0}"
+                      >{{msg.title}}</td>
                       <td
                         class="mailbox-date"
                       >{{calculateTimeElapsed(msg.created_at ,[' mins ago', ' hours ago', ' days ago'])}}</td>
@@ -267,10 +268,10 @@ export default {
         for (let i in this.pageData.data) {
           const msg = this.pageData.data[i];
           if (msg.id === newData.id) {
-            if (newData.isBookmark) {
+            if (newData.isBookmark !== undefined) {
               this.pageData.data[i].isBookmark = newData.isBookmark;
             }
-            if (newData.isRead) {
+            if (newData.isRead !== undefined) {
               this.pageData.data[i].isRead = newData.isRead;
             }
             break;
@@ -385,6 +386,8 @@ export default {
             isArchived: this.filter.type === 'inbox'
           })
           .then(() => {
+            this.filter.page = 1;
+            this.filter.checkAll = false;
             this.fetchMessageList();
           })
           .catch(e => {

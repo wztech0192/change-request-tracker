@@ -1,13 +1,6 @@
 <template>
   <div class="wrapper">
-    <Header
-      :user="user"
-      :flagList="flagList"
-      :notifyList="notifyList"
-      :msgList="msgList"
-      :clearNewNotification="clearNewNotification"
-      :clearNewMsg="clearNewMsg"
-    />
+    <Header/>
     <Sidebar :user="user"/>
 
     <div class="content-wrapper">
@@ -46,19 +39,14 @@ export default {
 
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
-    ...mapState('userStore', [
-      'user',
-      'flagList',
-      'notifyList',
-      'msgList',
-      'refresh'
-    ])
+    ...mapState('userStore', ['user', 'refresh'])
   },
 
   watch: {
     //update when refresh value change
     refresh() {
       this.fetchNavMenu('flag');
+
       this.fetchNavMenu('notification');
       this.fetchNavMenu('msg');
     }
@@ -75,12 +63,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('userStore', [
-      'fetchUser',
-      'fetchNavMenu',
-      'clearNewNotification',
-      'clearNewMsg'
-    ])
+    ...mapActions('userStore', ['fetchUser', 'fetchNavMenu'])
   },
 
   mounted() {

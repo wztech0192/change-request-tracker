@@ -4,7 +4,7 @@
  -->
 
 <template>
-  <aside class="main-sidebar" style="font-size : 13px;">
+  <aside class="main-sidebar" style="font-size : 14px;">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
@@ -66,7 +66,7 @@ export default {
         },
         {
           link: '/dev/todo',
-          icon: 'fa fa-th',
+          icon: 'ion ion-clipboard',
           name: 'Todo List'
         },
         {
@@ -79,7 +79,7 @@ export default {
         },
         {
           link: '/admin/change-request/',
-          icon: 'fa fa-tasks',
+          icon: 'fa fa-exchange',
           name: 'Manage Request'
         },
         {
@@ -89,7 +89,7 @@ export default {
         },
         {
           link: '/admin/chart',
-          icon: 'fa fa-pie-chart',
+          icon: 'fa fa-bar-chart',
           name: 'Data Chart'
         },
         {
@@ -117,7 +117,7 @@ export default {
         },
         {
           link: '/change-request',
-          icon: 'fa fa-tasks',
+          icon: 'fa fa-exchange',
           name: 'Track Request Status'
         },
         {
@@ -157,5 +157,10 @@ export default {
 
 .sidebar-menu > li:hover > a > i {
   color: #00a2ff !important;
+}
+.sidebar-menu > li > a > .fa,
+.sidebar-menu > li > a > .glyphicon,
+.sidebar-menu > li > a > .ion {
+  width: 24px;
 }
 </style>

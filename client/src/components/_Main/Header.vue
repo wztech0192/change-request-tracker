@@ -10,6 +10,7 @@
       </a>
 
       <!-- Navbar Right Menu -->
+      <!-- message menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
@@ -19,9 +20,10 @@
             type="messages"
             footer="/mailbox"
           >
+            <!-- new message -->
             <li class="nav-menu-break">
               <label>
-                <small>{{msgList.unread.length}} New</small>
+                <small>New: {{msgList.unread.length}}</small>
               </label>
               <label class="pull-right">
                 <small @click="clearNewMsg" class="clickable dismiss">
@@ -47,6 +49,7 @@
               </a>
             </li>
 
+            <!--bookmarked message menu -->
             <li class="nav-menu-break">
               <label>
                 <small>
@@ -58,7 +61,7 @@
 
             <li v-for="msg in msgList.bookmark">
               <!-- start message -->
-              <a @click="$modal.show('read-msg', msg);">
+              <a @click="$modal.show('read-msg', msg) ">
                 <div class="pull-left">
                   <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
                 </div>
@@ -74,6 +77,7 @@
             </li>
           </Nav-Menu>
 
+          <!-- notifications menu -->
           <Nav-Menu
             id="notifications"
             :num="notifyList.new.length"
@@ -81,6 +85,7 @@
             footer="/notifications"
             text="Notifications"
           >
+            <!-- unread notification -->
             <li class="nav-menu-break">
               <label>
                 <small>Unread: {{notifyList.new.length}}</small>
@@ -102,7 +107,7 @@
                 {{notify.content}}
               </a>
             </li>
-
+            <!-- read notification  -->
             <li class="nav-menu-break">
               <label>
                 <small>Read (Last 3 Days) :{{notifyList.old.length}}</small>
@@ -120,7 +125,7 @@
               </a>
             </li>
           </Nav-Menu>
-
+          <!-- flag menu -->
           <Nav-Menu
             id="task"
             :num="flagList.length"
@@ -226,16 +231,16 @@
 <script>
 import Logo from '@/components/_Main/_Header/Logo.vue';
 import NavMenu from '@/components/_Main/_Header/NavMenu.vue';
-import helper from '@/mixin/helper.js';
-
+import sharedList from '@/mixin/sharedList.js';
 export default {
-  mixins: [helper],
+  mixins: [sharedList],
   name: 'Header',
   components: {
     Logo,
     NavMenu
   },
 
+  // change changes, highligh when there is change made in length
   watch: {
     flagList(newData, oldData) {
       if (
@@ -259,83 +264,6 @@ export default {
         oldData.bookmark.length !== newData.bookmark.length
       ) {
         $('#messages').effect('highlight', { color: '#3c8dbc' }, 1000);
-      }
-    }
-  },
-
-  //data from parent
-  props: {
-    user: Object,
-    flagList: Object,
-    notifyList: Object,
-    msgList: Object,
-    clearNewNotification: Function,
-    clearNewMsg: Function
-  },
-  methods: {
-    //if has date and time, split date out and return it
-    getDate: DateAndTime => {
-      if (DateAndTime) {
-        return DateAndTime.split(' ')[0];
-      }
-    },
-
-    notifyDetail(notify) {
-      if (notify.isNew) {
-        // remove new status
-        this.clearNewNotification(notify.id);
-      }
-      //display notify detail modal
-      this.$modal.show('dialog', {
-        title:
-          "<span class='text-blue'><i class='fa fa-info'></i> Notification</span>",
-        template: `
-        <label>Create Date</label>
-        <p>${notify.created_at}</p>
-        <label>Content</label>
-        <p>${notify.content}</p>
-        `,
-        maxWidth: 300,
-        buttons: notify.link
-          ? [
-              {
-                title: 'Direct Me',
-                handler: () => {
-                  this.$router.push(notify.link);
-                  this.$modal.hide('dialog');
-                }
-              },
-              {
-                title: 'Hide',
-                default: true
-              }
-            ]
-          : [
-              {
-                title: 'Ok',
-                default: true
-              }
-            ]
-      });
-    },
-
-    //define progress bar color based on its percentage
-    getProgressBarColor: percent => {
-      if (percent < 100) {
-        return 'progress-bar-primary';
-      }
-      return 'progress-bar-success';
-    },
-
-    // display maximum of 35 characters
-    limitContentLength(content, length) {
-      if (content.length > length) {
-        //split from the last empty space
-        var i = content.indexOf(' ', length - 8);
-        if (i < 0) i = length;
-        return content.substring(0, content.indexOf(' ', i)) + '...';
-      } else {
-        return content;
       }
     }
   }

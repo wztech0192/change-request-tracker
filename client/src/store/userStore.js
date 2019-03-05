@@ -127,6 +127,11 @@ export default {
     // check if user is developer
     isDev(state) {
       return state.user.role === 'Developer';
+    },
+
+    // return email of current user
+    email(state) {
+      return state.user.email;
     }
   },
 

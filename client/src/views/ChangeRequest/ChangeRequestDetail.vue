@@ -184,6 +184,11 @@ export default {
     //update when refresh value change
     refresh() {
       this.fetchRequestData();
+    },
+
+    '$route.params.id': function() {
+      console.log(this);
+      this.fetchRequestData();
     }
   },
 

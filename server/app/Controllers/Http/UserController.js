@@ -106,6 +106,11 @@ class UserController {
    */
   async self({ auth }) {
     const user = await auth.getUser();
+    user.updated_at = new Date();
+    await user.save();
+
+    //total user
+    user.total = await User.getCount();
     return user;
   }
 

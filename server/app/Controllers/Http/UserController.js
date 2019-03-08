@@ -206,12 +206,16 @@ class UserController {
       false
     );
 
+    //notify role change
+    NotificationService.roleChange(target, user, role);
+
     //change role and save
     targetUser.role = role;
     if (targetUser.role == 'Developer') {
       targetUser.isDev = 1;
     }
     await targetUser.save();
+
     return targetUser;
 
     /* //if request a role change, verify current user's role then update target user

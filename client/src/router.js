@@ -8,7 +8,7 @@ import NotifyList from './views/NotificationList.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
 import DataSearch from './views/Admin/DataSearch.vue';
-import CreateRegisterCode from './views/Admin/CreateRegisterCode.vue';
+import RegisterCodeForm from './views/Admin/RegisterCodeForm.vue';
 import Dashboard from './views/Dashboard.vue';
 import MailBox from './views/MailBox.vue';
 import CREntry from './views/ChangeRequest/ChangeRequestEntry.vue';
@@ -122,7 +122,7 @@ export default new Router({
 
     {
       path: '/admin/generate-code',
-      component: CreateRegisterCode,
+      component: RegisterCodeForm,
       beforeEnter: Authenication
     },
 

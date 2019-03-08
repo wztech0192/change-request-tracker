@@ -85,7 +85,25 @@ class NotificationService {
   }
 
   /**
-   * notify every admin when new change request was created
+   * notify admin and user when his role got changed
+   */
+  static async roleChange(target, issuer, role) {
+    //notify all admin
+    this._notifyAdmin(length => {
+      // call back function to fill array with resource data
+      const notifyList = new Array(length + 1).fill().map(a => ({
+        user_id: target.user_id,
+        content: `The role of ${target.full_name} was changed 
+                  from ${target.role} to ${role}. The action is performed
+                  by ${issuer.full_name}`,
+        icon: 'fa-user-edit',
+        link: `/user/${target.email}`
+      }));
+      return notifyList;
+    });
+  }
+  /**
+   * notify owner when change request got adjusted
    */
   static async updateChangeRequest({ user_id, id }, type) {
     let icon = '';

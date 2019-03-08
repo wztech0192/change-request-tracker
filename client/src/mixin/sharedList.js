@@ -1,3 +1,8 @@
+/**
+ * @author Wei Zheng
+ * @description Methods used in header nav menu and dashboard
+ */
+
 import { mapState, mapActions, mapGetters } from 'vuex';
 import helper from './helper';
 

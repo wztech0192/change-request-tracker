@@ -1,0 +1,45 @@
+// {type:usecase}
+// {direction:leftToRight}
+
+
+[Admin]-(Generate Registeration Code)
+
+
+
+
+[User]-(Login)
+[User]-(Send / Receive / Review Message)
+[User]-(Receive / Review Notification)
+[User]-(Flag Change Request)
+(Flag Change Request) > (Review Change Request)
+[User]-(Review Change Request)
+
+
+[User]<[Admin]
+[Admin]-(Adjust Change Request Status)
+(Adjust Change Request Status)<(Notify Owner)
+[Admin]-(Create Registration Code)
+(Fill User Information)<(Create Registration Code)
+[Admin]-(Change Client Role)
+(Change Client Role)>(Notify Owner)
+(Change Client Role)>(Notify Admin)
+[Admin]-(Review Request Chart)
+[Admin]-(Delete Client)
+[Admin]-(Fill Change Request for Client)
+(Fill Change Request for Client)<(Submit Change Request)
+[User]<[Client]
+[Client]-(Register Account With Registration Code)
+(Fill User Information)<(Register Account With Registration Code)
+[Client]-(Submit Change Request)
+[Client]-(Submit Change Request From Email)
+(Submit Change Request)>(Notify Admin)
+(Submit Change Request)>(Notify Owner)
+(Submit Change Request)>(Review Change Request)
+(Submit Change Request From Email)<(Submit Change Request)
+
+[Developer]>[Client]
+[Developer]>[Admin]
+[Developer]-(Add Todo Task)
+[Developer]-(Flag Todo Task)
+[Developer]-(Generate Dummy User)
+[Developer]-(Generate Dummy Request)

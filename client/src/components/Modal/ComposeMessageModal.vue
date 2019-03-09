@@ -186,6 +186,6 @@ export default {
 
 <style>
 #modal_editor .ck-editor__editable {
-  height: 50vh !important;
+  height: 40vh !important;
 }
 </style>

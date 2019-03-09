@@ -63,11 +63,7 @@
       </div>
       <hr>
 
-      <a
-        href="Registration Code Verification"
-        @click.prevent="registrationCodeDialog"
-        class="text-center"
-      >Register a new membership</a>
+      <a @click.prevent="registrationCodeDialog" class="text-center">Register a new membership</a>
     </form>
   </div>
 </template>
@@ -104,7 +100,9 @@ export default {
       'setToken',
       'setRegistrationCode'
     ]),
+
     ...mapActions('errorStore', ['setGlobalError']),
+    ...mapActions('userStore', ['loginUser']),
 
     //show registration code dialog
     registrationCodeDialog() {
@@ -172,8 +170,7 @@ export default {
         .then(({ data }) => {
           // redirect router if data has token, else show error message
           if (data.token) {
-            this.setToken(data.token);
-            router.push('/');
+            this.loginUser(data.token);
           } else {
             this.showErrorAndClearPW('Wrong Password or Email!');
           }

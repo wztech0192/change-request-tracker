@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="auth">
     <transition name="slide-left" mode="out-in">
       <router-view/>
     </transition>
@@ -15,4 +15,12 @@ export default {
   }
 };
 </script>
+
+<style>
+#auth {
+  top: 0;
+  position: absolute;
+  width: 100%;
+}
+</style>
 

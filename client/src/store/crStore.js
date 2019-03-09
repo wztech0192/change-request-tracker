@@ -40,6 +40,7 @@ export default {
           commit('setCRList', data);
         })
         .catch((e) => {
+          commit('setCRList', null);
           this.dispatch('errorStore/setGlobalError', e);
         });
     }

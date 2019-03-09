@@ -47,7 +47,7 @@ export default {
             commit('setGlobalError', errorData.error.message);
           }
         } catch (e) {
-          commit('setGlobalError', 'Unknow Error Occurs');
+          commit('setGlobalError', msg);
         }
       }
     },

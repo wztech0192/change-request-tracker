@@ -22,7 +22,8 @@ export default {
     // calculate total time elapsed from target date to now
     calculateTimeElapsed(target, ending) {
       // calculate duration
-      const diff = new Date() - new Date(target);
+      const diff = new Date() - Date.parse(target.replace(/-/g, '/')); // safari does not support YYYY-MM-DD
+
       if (diff > 86400000) {
         // days
         return Math.round(diff / 86400000) + ending[2];

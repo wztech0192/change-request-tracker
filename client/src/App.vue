@@ -8,12 +8,15 @@
       {{getGlobalError}}
     </div>
     <div id="app-content">
-      <Main v-if="isLoggedIn"/>
-      <Auth v-else/>
+      <Main/>
+      <transition name="slide-left" mode="out-in">
+        <Auth v-if="!isLoggedIn"/>
+      </transition>
     </div>
     <h1 id="loading-screen">
       <i class="fa fa-spinner fa-spin"></i>
     </h1>
+    <MyDialog/>
   </div>
 </template>
 
@@ -21,11 +24,13 @@
 import { mapGetters, mapActions } from 'vuex';
 import Main from '@/components/Main.vue';
 import Auth from '@/components/Auth.vue';
+import MyDialog from '@/components/Modal/MyDialog.vue';
 
 export default {
   components: {
     Main,
-    Auth
+    Auth,
+    MyDialog
   },
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
@@ -33,12 +38,12 @@ export default {
   },
   watch: {
     //refresh page when login or logout
-    isLoggedIn() {
+    /* isLoggedIn() {
       document.body.style.background = '#d2d6de';
       $('#app-content').hide();
       $('#loading-screen').show();
       location.reload();
-    }
+    }*/
   },
 
   created() {

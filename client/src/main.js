@@ -79,14 +79,13 @@ import { sync } from 'vuex-router-sync';
 import VModal from 'vue-js-modal';
 
 import Vue from 'vue';
-import Chart from './assets/adminlte/bower_components/chart.js/Chart.min';
-import ClassicEditor from './assets/adminlte/bower_components/ckeditor5-build-classic/ckeditor';
+
 import router from './router';
 import store from './store/index';
 import App from './App.vue';
 
-window.ClassicEditor = ClassicEditor;
-window.Chart = Chart;
+window.ClassicEditor = require('./assets/adminlte/bower_components/ckeditor5-build-classic/ckeditor');
+window.Chart = require('./assets/adminlte/bower_components/chart.js/Chart.min');
 
 Vue.config.productionTip = false;
 Vue.use(VModal, { dialog: true });

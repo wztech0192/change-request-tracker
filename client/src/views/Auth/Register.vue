@@ -194,6 +194,7 @@ export default {
   methods: {
     ...mapMutations('userStore', ['setLoading', 'setToken']),
     ...mapActions('errorStore', ['setGlobalError']),
+    ...mapActions('userStore', ['loginUser']),
 
     //clear register datas by set it to empty object
     clearRegisterData() {
@@ -247,10 +248,7 @@ export default {
           .then(({ data }) => {
             // Set token and clear register data if token is avaliable, else return validation error
             if (data.token) {
-              this.setToken(data.token);
-              // redirect route plus reload page
-              // window.location.href = "/";
-              router.push('/');
+              this.loginUser(data.token);
             } else {
               this.setErrorMessage(data);
             }

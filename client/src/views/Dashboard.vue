@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="notifyList && msgList && flagList">
     <section class="content-header">
       <h1>
         <i class="fa fa-dashboard"></i>&nbsp;&nbsp;Dash Board
@@ -281,7 +281,7 @@
                       <label class="label label-success">New messages: {{msgList.unread.length}}</label>
                     </th>
                   </tr>
-                  <tr v-for="msg in msgList.bookmark" @click="$modal.show('read-msg', msg)">
+                  <tr v-for="msg in msgList.unread" @click="$modal.show('read-msg', msg)">
                     <img
                       style="
                     width: 25px;
@@ -361,6 +361,7 @@ export default {
 }
 @media (max-width: 991px) {
   .dashbox {
+    min-height: auto;
     height: auto;
     max-height: 400px;
   }

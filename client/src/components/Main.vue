@@ -1,18 +1,16 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :class="{'visibility-hide':!isLoggedIn}">
     <Header/>
     <Sidebar :user="user"/>
 
     <div class="content-wrapper">
       <transition name="slide-left" mode="out-in">
-        <router-view/>
+        <router-view v-if="isLoggedIn"/>
       </transition>
     </div>
-
     <Controlbar/>
     <ReadMessageModal/>
     <ComposeMessageModal/>
-    <MyDialog/>
   </div>
 </template>
 
@@ -21,7 +19,6 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import Header from '@/components/_Main/Header.vue';
 import Sidebar from '@/components/_Main/Sidebar.vue';
 import Controlbar from '@/components/_Main/Controlbar.vue';
-import MyDialog from '@/components/Modal/MyDialog.vue';
 import ComposeMessageModal from '@/components/Modal/ComposeMessageModal.vue';
 import ReadMessageModal from '@/components/Modal/ReadMessageModal.vue';
 
@@ -32,7 +29,6 @@ export default {
     Header,
     Sidebar,
     Controlbar,
-    MyDialog,
     ComposeMessageModal,
     ReadMessageModal
   },
@@ -46,7 +42,6 @@ export default {
     //update when refresh value change
     refresh() {
       this.fetchNavMenu('flag');
-
       this.fetchNavMenu('notification');
       this.fetchNavMenu('msg');
     }
@@ -67,11 +62,17 @@ export default {
   },
 
   mounted() {
-    document.body.className = 'skin-black sidebar-mini';
-    document.body.style.overflow = 'auto';
+    if (this.isLoggedIn) {
+      document.body.className = 'skin-black sidebar-mini';
+      document.body.style.overflow = 'auto';
+    }
   }
 };
 </script>
 
 <style>
+.visibility-hide {
+  visibility: hidden;
+  opacity: 0;
+}
 </style>

@@ -58,7 +58,7 @@ function Authenication(to, from, next) {
 
 // reset token if user enter login/register page
 function resetToken(to, from, next) {
-  store.dispatch('userStore/logoutToken');
+  store.dispatch('userStore/logoutClear');
   next();
 }
 

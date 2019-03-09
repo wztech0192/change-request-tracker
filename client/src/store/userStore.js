@@ -18,9 +18,9 @@ export default {
     ex_error: null,
     token: null,
     loading: false,
-    flagList: [],
-    notifyList: [],
-    msgList: [],
+    flagList: null,
+    notifyList: null,
+    msgList: null,
     registrationCode: null,
     refresh: 0,
     msgRefreshData: null
@@ -103,9 +103,29 @@ export default {
       commit('setExceptionError', string);
     },
 
-    // set token to null
-    logoutToken({ commit }) {
+    // set token and everything to null
+    logoutClear({ state, commit }) {
+      commit('flagCommit', null);
+      commit('msgCommit', null);
+      commit('notificationCommit', null);
       commit('setToken', null);
+      commit('setUser', { email: state.user.email });
+      this.commit('crStore/setCRList', null);
+    },
+
+    // login user
+    loginUser({ commit, dispatch }, token) {
+      // set token
+      commit('setToken', token);
+      // fetech information
+      dispatch('fetchUser');
+      dispatch('fetchNavMenu', 'flag');
+      dispatch('fetchNavMenu', 'notification');
+      dispatch('fetchNavMenu', 'msg');
+      document.body.className = 'skin-black sidebar-mini';
+      document.body.style.overflowY = 'auto';
+      document.body.style.background = '#d2d6de';
+      router.push('/');
     }
   },
 

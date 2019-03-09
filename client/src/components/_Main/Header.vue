@@ -15,6 +15,7 @@
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
           <Nav-Menu
+            v-if="msgList"
             id="messages"
             :num="msgList.bookmark.length+msgList.unread.length"
             type="messages"
@@ -79,6 +80,7 @@
 
           <!-- notifications menu -->
           <Nav-Menu
+            v-if="notifyList"
             id="notifications"
             :num="notifyList.new.length"
             type="notifications"
@@ -127,6 +129,7 @@
           </Nav-Menu>
           <!-- flag menu -->
           <Nav-Menu
+            v-if="flagList"
             id="task"
             :num="flagList.length"
             type="tasks"
@@ -244,24 +247,30 @@ export default {
   watch: {
     flagList(newData, oldData) {
       if (
-        oldData.flagCR.length !== newData.flagCR.length ||
-        oldData.flagTask.length !== newData.flagTask.length
+        newData &&
+        oldData &&
+        (oldData.flagCR.length !== newData.flagCR.length ||
+          oldData.flagTask.length !== newData.flagTask.length)
       ) {
         $('#task').effect('highlight', { color: '#00a65a' }, 1000);
       }
     },
     notifyList(newData, oldData) {
       if (
-        oldData.old.length !== newData.old.length ||
-        oldData.new.length !== newData.new.length
+        newData &&
+        oldData &&
+        (oldData.old.length !== newData.old.length ||
+          oldData.new.length !== newData.new.length)
       ) {
         $('#notifications').effect('highlight', { color: '#f39c12' }, 1000);
       }
     },
     msgList(newData, oldData) {
       if (
-        oldData.unread.length !== newData.unread.length ||
-        oldData.bookmark.length !== newData.bookmark.length
+        newData &&
+        oldData &&
+        (oldData.unread.length !== newData.unread.length ||
+          oldData.bookmark.length !== newData.bookmark.length)
       ) {
         $('#messages').effect('highlight', { color: '#3c8dbc' }, 1000);
       }

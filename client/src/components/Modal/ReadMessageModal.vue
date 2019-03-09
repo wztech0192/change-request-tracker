@@ -84,11 +84,15 @@ export default {
   methods: {
     //calculate the message sending date
     getDate() {
-      const date = new Date(this.params.created_at);
-      let dateString = date.toDateString().split(' ');
-      const formatedDateString =
-        dateString[2] + ' ' + dateString[1] + ', ' + dateString[3];
-      return formatedDateString + ' ' + date.toLocaleTimeString();
+      //safari does not support YYYY-MM-DD format
+      if (this.params.created_at) {
+        const date = new Date(this.params.created_at.replace(/-/g, '/'));
+        let dateString = date.toDateString().split(' ');
+        const formatedDateString =
+          dateString[2] + ' ' + dateString[1] + ', ' + dateString[3];
+        return formatedDateString + ' ' + date.toLocaleTimeString();
+      }
+      return null;
     },
 
     //get initiate params. {senderEmail, title, content, receiverEmail, receiverName, created_at}

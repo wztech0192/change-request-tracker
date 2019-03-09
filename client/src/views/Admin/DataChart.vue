@@ -15,7 +15,7 @@
             <div class="col-md-6">
               <!-- Calendar -->
               <div class="box box-solid" style="box-shadow: 4px 4px 10px grey;">
-                <div class="box-header" style="border-bottom:1px solid gray;">
+                <div class="box-header">
                   <i class="fa fa-calendar"></i>
 
                   <h3 class="box-title">Calendar</h3>
@@ -111,15 +111,12 @@ export default {
       })
       .on('changeMonth', e => {
         setTimeout(() => {
-          var active = $('.datepicker-days').find('td.active');
+          var active = $('.datepicker-days')
+            .find('td.active')
+            .eq(0);
           if (active.length > 0) {
             active
               .removeClass('active')
-              .parent()
-              .addClass('active');
-          } else {
-            $('.datepicker-days')
-              .find('.today')
               .parent()
               .addClass('active');
           }

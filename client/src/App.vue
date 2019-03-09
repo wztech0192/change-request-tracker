@@ -50,16 +50,11 @@ export default {
     //   console.log(this.isLoggedIn);
     /* Resolve conflict in jQuery UI tooltip with Bootstrap tooltip */
     $.widget.bridge('uibutton', $.ui.button);
+    //set select2 theme
+    $.fn.select2.defaults.set('theme', 'bootstrap');
   },
 
   mounted() {
-    //prevent tab key
-    /*  $(document).keydown(function(objEvent) {
-      if (objEvent.keyCode == 9) {
-        //tab pressed
-        objEvent.preventDefault(); // stops its action
-      }
-    });*/
     $('body').tooltip({
       selector: '[data-toggle="tooltip"]',
       trigger: 'hover'

@@ -207,7 +207,7 @@ class UserController {
     );
 
     //notify role change
-    NotificationService.roleChange(target, user, role);
+    NotificationService.roleChange(targetUser, user, role);
 
     //change role and save
     targetUser.role = role;

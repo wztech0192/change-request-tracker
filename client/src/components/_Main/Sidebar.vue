@@ -52,7 +52,7 @@
       </form>
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li v-for="item in navItem" :class="{'header':item.split}">
+        <li v-for="item in navItem" :class="{'header':item.split}" v-if="!item.hide">
           <span v-if="item.split">{{item.split}}</span>
           <router-link v-else :to="item.link">
             <i :class="item.icon"></i>
@@ -101,48 +101,57 @@ export default {
     };
   },
   computed: {
-    navItem: () => {
+    navItem() {
       return [
         {
-          split: 'Developer'
+          split: 'Developer',
+          hide: !this.isDev
         },
         {
           link: '/dev/todo',
           icon: 'ion ion-clipboard',
-          name: 'Todo List'
+          name: 'Todo List',
+          hide: !this.isDev
         },
         {
           link: '/dev/tool',
           icon: 'fa fa-wrench',
-          name: 'Dev Tool'
+          name: 'Dev Tool',
+          hide: !this.isDev
         },
         {
-          split: 'Admin'
+          split: 'Admin',
+          hide: !this.isAdmin
         },
         {
           link: '/admin/change-request/',
           icon: 'fa fa-exchange',
-          name: 'Manage Request'
+          name: 'Manage Request',
+          hide: !this.isAdmin
         },
         {
           link: '/admin/change-request/search',
           icon: 'fa fa-search',
-          name: 'Find Request'
+          name: 'Find Request',
+          hide: !this.isAdmin
         },
         {
           link: '/admin/chart',
           icon: 'fa fa-bar-chart',
-          name: 'Data Chart'
+          name: 'Data Chart',
+          hide: !this.isAdmin
         },
         {
           link: '/admin/user-list',
           icon: 'fa fa-users',
-          name: 'Manage User'
+          name: 'Manage User',
+          hide: !this.isAdmin
         },
         {
           link: '/admin/generate-code',
           icon: 'fa fa-user-plus',
-          name: 'Register Code'
+          name: 'Register Code',
+          hide: !this.isAdmin
         },
         {
           split: 'NAVIGATION'
@@ -173,7 +182,8 @@ export default {
   //data from parent
   props: {
     user: { type: Object, required: false, default: 'Anonymous' },
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    isDev: Boolean
   },
 
   mounted() {
@@ -224,7 +234,7 @@ export default {
         }
       },
       ajax: {
-        delay: 500,
+        delay: 300,
         transport: function({ data }, success, failure) {
           var url = self.searchByUser
             ? `user/search/all`

@@ -87,6 +87,10 @@ export default {
   }
 }
 
+.small-box,
+.box {
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
 body {
   font-family: 'Roboto', sans-serif !important;
   font-size: 15px;

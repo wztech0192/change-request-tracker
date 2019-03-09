@@ -147,7 +147,7 @@
                   <small class="pull-right">{{item.percentage}}%</small>
                   {{limitContentLength(item.content, 40)}}
                 </h3>
-                <div class="progress xs active">
+                <div class="progress xs">
                   <div
                     class="progress-bar progress-bar-striped"
                     :class="getProgressBarColor(item.percentage)"

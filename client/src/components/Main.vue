@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" :class="{'visibility-hide':!isLoggedIn}">
     <Header/>
-    <Sidebar :user="user"/>
+    <Sidebar :user="user" :isAdmin="isAdmin"/>
 
     <div class="content-wrapper">
       <transition name="slide-left" mode="out-in">
@@ -34,7 +34,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('userStore', ['isLoggedIn']),
+    ...mapGetters('userStore', ['isLoggedIn', 'isAdmin', 'isDeveloper']),
     ...mapState('userStore', ['user', 'refresh'])
   },
 
@@ -50,6 +50,8 @@ export default {
   created() {
     // set user profile into userStore.user state if user is logged in
     if (this.isLoggedIn) {
+      $.fn.select2.defaults.set('theme', 'bootstrap');
+
       this.fetchUser();
       this.fetchNavMenu('flag');
       this.fetchNavMenu('notification');

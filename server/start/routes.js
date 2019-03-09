@@ -121,6 +121,7 @@ Route.group(() => {
   Route.post('change-request', 'ChangeRequestController.create');
   Route.delete('change-request/:id', 'ChangeRequestController.destroy');
   Route.patch('change-request/:id', 'ChangeRequestController.update');
+  Route.post('change-request/search/:target', 'ChangeRequestController.search');
 
   //Flag and UnFlag Change Request
   Route.delete(

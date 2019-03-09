@@ -19,7 +19,6 @@ export default {
     }
   },
   mounted() {
-    $.fn.select2.defaults.set('theme', 'bootstrap');
     const self = this;
     //initialize select2 for user search
     $('#' + self.id).select2({
@@ -80,13 +79,6 @@ export default {
   font-size: 1000%;
 }
 
-.sda {
-  position: absolute;
-  /* float: right; */
-  margin-left: -25px;
-  margin-top: 5px;
-  font-size: 20px;
-}
 span #select2-select2-container {
   padding-top: 5px;
 }

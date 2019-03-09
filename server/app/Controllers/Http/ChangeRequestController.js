@@ -219,9 +219,48 @@ class ChangeRequestController {
           changeRequest,
           changeData
         );
-        Notification.updateChangeRequest(changeRequest, changeData.type);
+        Notification.updateChangeRequest(
+          changeRequest,
+          changeData.type,
+          user.id
+        );
       }
     });
+  }
+
+  /**
+   * search change request
+   */
+  async search({ auth, request, params }) {
+    const user = await auth.getUser();
+    //if search every change request, verify if user is a admin or developer
+    if (params.target === 'all') {
+      AuthorizationService.verifyRole(user, ['Admin', 'Developer']);
+    }
+    const data = request.all();
+
+    const term = data.term || '';
+    const list = await ChangeRequest.query()
+      .where(function() {
+        this.where('clientName', 'like', `%${term}%`)
+          .orWhere('status', 'like', `%${term}%`)
+          .orWhere('id', 'like', `%${term}%`);
+      })
+      .andWhere(
+        'user_id',
+        'like',
+        params.target === 'all' ? '%%' : params.target
+      )
+      .orderBy('created_at', 'desc')
+      .paginate(data.page, 10);
+
+    return {
+      results: list.rows,
+      pagination: {
+        more: list.pages.page < list.pages.lastPage
+      },
+      totals: list.rows.length
+    };
   }
 
   /**

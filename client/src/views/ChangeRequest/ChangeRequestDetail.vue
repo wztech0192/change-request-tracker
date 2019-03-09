@@ -27,11 +27,11 @@
           >
             <transition name="slide-left" mode="out-in">
               <span v-if="!requestData.isFlag" @click="flagChangeRequest(true)" key="flag">
-                {{requestData.status}}
+                {{requestData.status}}&nbsp;
                 <i class="fa fa-flag-o"></i>
               </span>
               <span v-else @click="flagChangeRequest(false)" key="unflag">
-                {{requestData.status}}
+                {{requestData.status}}&nbsp;
                 <i class="fa fa-flag"></i>
               </span>
             </transition>

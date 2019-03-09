@@ -76,7 +76,7 @@ class NotificationService {
       const notifyList = new Array(length + 1).fill().map(a => ({
         user_id: user_id,
         change_request_id: id,
-        content: `CR #${id} was created by ${clientName}`,
+        content: `CR ID:${id} was created by ${clientName}`,
         icon: 'fa-upload text-blue',
         link: `/change-request/${id}/content`
       }));
@@ -105,7 +105,7 @@ class NotificationService {
   /**
    * notify owner when change request got adjusted
    */
-  static async updateChangeRequest({ user_id, id }, type) {
+  static async updateChangeRequest({ user_id, id }, type, issuerID) {
     let icon = '';
     let detail = 'content was modified';
     let link = 'history';
@@ -134,14 +134,20 @@ class NotificationService {
         break;
     }
 
-    //create notification
-    Notification.create({
+    const data = {
       user_id: user_id,
       change_request_id: id,
-      content: `CR #${id} ${detail}`,
+      content: `CR ID:${id} ${detail}`,
       icon: icon,
       link: `/change-request/${id}/${link}`
-    });
+    };
+
+    //create notification for the client
+    Notification.create(data);
+
+    //create notification for issuer
+    data.user_id = issuerID;
+    Notification.create(data);
   }
 
   /**

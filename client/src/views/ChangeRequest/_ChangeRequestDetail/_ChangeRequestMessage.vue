@@ -18,8 +18,7 @@
           style="padding:10px; "
         >
           <!-- User image -->
-          <img class="img-circle img-sm" src="@/assets/img/default.jpg" alt="User Image">
-
+          <Avator class="img-circle img-sm" :fullName="msg.senderName"/>
           <div class="comment-text">
             <span class="username">
               {{msg.senderName}}
@@ -49,7 +48,7 @@
 import { mapActions, mapMutations } from 'vuex';
 import HTTP from '@/http';
 import router from '@/router';
-
+import Avator from '@/components/_Main/Avator';
 export default {
   data() {
     return {
@@ -59,6 +58,10 @@ export default {
       msgNum: 20,
       refresher: null
     };
+  },
+
+  components: {
+    Avator
   },
 
   props: {

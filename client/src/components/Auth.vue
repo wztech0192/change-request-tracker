@@ -22,5 +22,8 @@ export default {
   position: absolute;
   width: 100%;
 }
+#auth .box {
+  box-shadow: none !important;
+}
 </style>
 

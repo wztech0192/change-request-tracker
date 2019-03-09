@@ -10,7 +10,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
+          <Avator class="img-circle" :fn="user.first_name" :ln="user.last_name"/>
         </div>
         <div class="pull-left info capitalize">
           <p>{{user.full_name}}</p>
@@ -87,12 +87,18 @@
 </template>
 
 <script>
+import Avator from '@/components/_Main/Avator';
 import HTTP from '@/http';
 import helper from '@/mixin/helper';
 
 export default {
   mixins: [helper],
   name: 'Sidebar',
+
+  components: {
+    Avator
+  },
+
   data() {
     return {
       searchByUser: true,
@@ -169,7 +175,8 @@ export default {
         {
           link: '/change-request',
           icon: 'fa fa-exchange',
-          name: 'Track Request Status'
+          name: 'Track Request Status',
+          hide: this.isAdmin
         },
         {
           link: '/mailbox',
@@ -199,7 +206,7 @@ export default {
       width: '150px',
       multiple: true,
       maximumSelectionLength: 1,
-
+      minimumInputLength: 1,
       placeholder: 'Search....',
       templateSelection: (state, parent) => {
         parent.css('width', '90%');
@@ -281,7 +288,7 @@ export default {
         if (this.searchByUser) {
         } else {
           //open change request
-          this.$router.push('/change-request/' + this.searchItem);
+          this.$router.push(`/change-request/${this.searchItem}/content`);
         }
       }
     }

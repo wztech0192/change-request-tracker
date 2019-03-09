@@ -2,8 +2,12 @@
   <div v-if="notifyList && msgList && flagList">
     <section class="content-header">
       <h1>
-        <i class="fa fa-dashboard"></i>&nbsp;&nbsp;Dash Board
+        <i class="fa fa-dashboard"></i>
+        &nbsp;&nbsp;Dash Board
       </h1>
+      <ol class="breadcrumb">
+        <li class="active">Last visit: {{user.updated_at}}</li>
+      </ol>
     </section>
     <section class="content">
       <!-- ./box-body -->
@@ -18,8 +22,8 @@
             <div class="icon">
               <i class="fa fa-user"></i>
             </div>
-            <router-link to="/" class="small-box-footer">
-              Profile
+            <router-link to="/change-request/entry" class="small-box-footer">
+              Enter Request
               <i class="fa fa-arrow-circle-right"></i>
             </router-link>
           </div>
@@ -56,7 +60,7 @@
               :to="isAdmin?'/admin/change-request/':'/change-request/'"
               class="small-box-footer"
             >
-              Manage All
+              Track All
               <i class="fa fa-arrow-circle-right"></i>
             </router-link>
           </div>
@@ -282,16 +286,10 @@
                     </th>
                   </tr>
                   <tr v-for="msg in msgList.unread" @click="$modal.show('read-msg', msg)">
-                    <img
-                      style="
-                    width: 25px;
-                    height: 25px;
-                    margin-top:5px;
-                    border-radius: 50%; display:inline-text;"
-                      src="@/assets/img/default.jpg"
-                      class="user-image"
-                      alt="User Image"
-                    >
+                    <td>
+                      <Avator class="img-circle" :fullName="msg.senderName"/>
+                    </td>
+
                     <td style="white-space: nowrap;">{{msg.senderName}}&nbsp;&nbsp;</td>
                     <td style="white-space: nowrap;">{{msg.senderEmail}}&nbsp;&nbsp;</td>
                     <td style="white-space: nowrap;">{{msg.created_at}}</td>
@@ -306,16 +304,10 @@
                     </th>
                   </tr>
                   <tr v-for="msg in msgList.bookmark" @click="$modal.show('read-msg', msg)">
-                    <img
-                      style="
-                    width: 25px;
-                    height: 25px;
-                    margin-top:5px;
-                    border-radius: 50%; display:inline-text;"
-                      src="@/assets/img/default.jpg"
-                      class="user-image"
-                      alt="User Image"
-                    >
+                    <td>
+                      <Avator class="img-circle" :fullName="msg.senderName"/>
+                    </td>
+
                     <td style="white-space: nowrap;">{{msg.senderName}}&nbsp;&nbsp;</td>
                     <td style="white-space: nowrap;">{{msg.senderEmail}}&nbsp;&nbsp;</td>
                     <td style="white-space: nowrap;">{{msg.created_at}}</td>
@@ -337,11 +329,15 @@
 <script>
 import { mapState } from 'vuex';
 import sharedList from '@/mixin/sharedList';
+import Avator from '@/components/_Main/Avator';
 
 export default {
   mixins: [sharedList],
   computed: {
     ...mapState('userStore', ['msgList', 'notifyList', 'flagList'])
+  },
+  components: {
+    Avator
   }
 };
 </script>

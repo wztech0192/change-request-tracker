@@ -93,15 +93,32 @@ class NotificationService {
       // call back function to fill array with resource data
       const notifyList = new Array(length + 1).fill().map(a => ({
         user_id: target.user_id,
-        content: `The role of ${target.full_name} was changed 
+        content: `${target.full_name}'s role has been changed 
                   from ${target.role} to ${role}. The action is performed
                   by ${issuer.full_name}`,
-        icon: 'fa-user-edit',
+        icon: 'fa-user',
         link: `/user/${target.email}`
       }));
       return notifyList;
     });
   }
+
+  /**
+   * notify admin when a user was deleted
+   */
+  static async userDelete(target, issuer) {
+    //notify all admin
+    this._notifyAdmin(length => {
+      // call back function to fill array with resource data
+      const notifyList = new Array(length).fill().map(a => ({
+        user_id: null,
+        content: `${target.full_name} was deleted by ${issuer.full_name}`,
+        icon: 'fa-user-times'
+      }));
+      return notifyList;
+    });
+  }
+
   /**
    * notify owner when change request got adjusted
    */

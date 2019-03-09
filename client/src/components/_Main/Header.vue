@@ -22,7 +22,7 @@
             footer="/mailbox"
           >
             <!-- new message -->
-            <li class="nav-menu-break">
+            <li class="nav-menu-break-new">
               <label>
                 <small>New: {{msgList.unread.length}}</small>
               </label>
@@ -88,7 +88,7 @@
             text="Notifications"
           >
             <!-- unread notification -->
-            <li class="nav-menu-break">
+            <li class="nav-menu-break-new">
               <label>
                 <small>Unread: {{notifyList.new.length}}</small>
               </label>
@@ -180,34 +180,22 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a class="dropdown-toggle" data-toggle="dropdown">
-              <img src="@/assets/img/default.jpg" class="user-image" alt="User Image">
+              <Avator class="user-image" :fn="user.first_name" :ln="user.last_name"/>
+
               <span class="capitalize hidden-xs">{{user.full_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
-
-                <p class="capitalize">
+                <Avator class="img-circle" :fn="user.first_name" :ln="user.last_name"/>
+                <p>
                   {{user.full_name}} - {{user.role}}
+                  <small>Email {{user.email}}</small>
                   <small>Member since {{getDate(user.created_at)}}</small>
+                  <small>Last visit {{getDate(user.updated_at)}}</small>
                 </p>
               </li>
               <!-- Menu Body -->
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a>Button</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a>Button</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a>Button</a>
-                  </div>
-                </div>
-                <!-- /.row -->
-              </li>
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
@@ -235,12 +223,15 @@
 import Logo from '@/components/_Main/_Header/Logo.vue';
 import NavMenu from '@/components/_Main/_Header/NavMenu.vue';
 import sharedList from '@/mixin/sharedList.js';
+import Avator from '@/components/_Main/Avator';
+
 export default {
   mixins: [sharedList],
   name: 'Header',
   components: {
     Logo,
-    NavMenu
+    NavMenu,
+    Avator
   },
 
   // change changes, highligh when there is change made in length
@@ -284,7 +275,8 @@ export default {
   transition: 0.3s ease;
 }
 .notifications-menu small,
-.nav-menu-break small {
+.nav-menu-break small,
+.nav-menu-break-new small {
   font-size: 70%;
   color: gray;
   margin: -5px 0px 0px 10px;
@@ -298,11 +290,14 @@ export default {
 .navbar .dismiss:hover {
   color: green;
 }
+.navbar .nav-menu-break-new {
+  box-shadow: inset 0px 10px 30px lightgreen;
+}
 .navbar .nav-menu-break {
   box-shadow: inset 0px 10px 30px lightblue;
 }
 .navbar .new {
-  box-shadow: inset -3px -3px 15px -2px lightblue;
+  box-shadow: inset -3px -3px 10px -4px lightgreen;
 }
 
 .navbar-nav > .notifications-menu > .dropdown-menu,

@@ -185,6 +185,7 @@ class UserController {
       'Developer',
       'Admin'
     ]);
+    await NotificationService.userDelete(targetUser, user);
     await targetUser.delete();
     return targetUser;
   }

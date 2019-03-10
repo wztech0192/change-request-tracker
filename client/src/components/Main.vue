@@ -9,7 +9,9 @@
       </transition>
     </div>
     <Controlbar/>
+
     <ReadMessageModal/>
+    <UserProfileModal/>
     <ComposeMessageModal/>
   </div>
 </template>
@@ -21,6 +23,7 @@ import Sidebar from '@/components/_Main/Sidebar.vue';
 import Controlbar from '@/components/_Main/Controlbar.vue';
 import ComposeMessageModal from '@/components/Modal/ComposeMessageModal.vue';
 import ReadMessageModal from '@/components/Modal/ReadMessageModal.vue';
+import UserProfileModal from '@/components/Modal/UserProfileModal.vue';
 
 export default {
   name: 'Main',
@@ -30,7 +33,8 @@ export default {
     Sidebar,
     Controlbar,
     ComposeMessageModal,
-    ReadMessageModal
+    ReadMessageModal,
+    UserProfileModal
   },
 
   computed: {

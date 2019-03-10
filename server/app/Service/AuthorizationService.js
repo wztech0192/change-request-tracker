@@ -67,8 +67,9 @@ class AuthorizationService {
         //throw a InvalidAccessException if the current user's role is not in allowed roles list
         //or target user has equal authority level as current user
         if (
-          allowRoles.indexOf(targetUser.role) != -1 ||
-          allowRoles.indexOf(user.role) == -1
+          allowRoles &&
+          (allowRoles.indexOf(targetUser.role) != -1 ||
+            allowRoles.indexOf(user.role) == -1)
         ) {
           throw new InvalidAccessException('user');
         }

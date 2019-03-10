@@ -190,7 +190,6 @@
                 <Avator class="img-circle" :fn="user.first_name" :ln="user.last_name"/>
                 <p>
                   {{user.full_name}} - {{user.role}}
-                  <small>Email {{user.email}}</small>
                   <small>Member since {{getDate(user.created_at)}}</small>
                   <small>Last visit {{getDate(user.updated_at)}}</small>
                 </p>
@@ -199,7 +198,10 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a class="btn btn-default btn-flat">Profile</a>
+                  <a
+                    class="btn btn-default btn-flat"
+                    @click="$modal.show('user-modal',user.email)"
+                  >Profile</a>
                 </div>
                 <div class="pull-right">
                   <router-link to="/login" class="btn btn-default btn-flat">Sign out</router-link>

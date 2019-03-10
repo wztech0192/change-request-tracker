@@ -5,6 +5,20 @@
 
 export default {
   methods: {
+    // re-format date string
+    formatDate(date) {
+      // safari does not support YYYY-MM-DD format
+      if (date) {
+        date = new Date(date.replace(/-/g, '/'));
+        const dateString = date.toDateString().split(' ');
+        const formatedDateString = `${dateString[2]} ${dateString[1]}, ${
+          dateString[3]
+        }`;
+        return `${formatedDateString} ${date.toLocaleTimeString()}`;
+      }
+      return null;
+    },
+
     // get css class based on status
     getStatusCSS(css, status) {
       switch (status) {

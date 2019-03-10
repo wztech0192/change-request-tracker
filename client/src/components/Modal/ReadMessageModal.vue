@@ -9,7 +9,6 @@
     :pivot-y="0.3"
     transition="fade"
     @before-open="getParams"
-    @opened="$emit('opened', $event)"
   >
     <div class="box box-primary" style="margin:0; height:100%;">
       <div class="box-header with-border">
@@ -35,7 +34,7 @@
             {{isReceiver? 'From' : 'Receiver'}}: {{isReceiver? params.senderName : params.receiverEmail}}
             <span
               class="mailbox-read-time pull-right"
-            >{{getDate()}}</span>
+            >{{formatDate(params.created_at)}}</span>
           </h5>
         </div>
         <!-- /.mailbox-read-info -->
@@ -82,19 +81,6 @@ export default {
   },
 
   methods: {
-    //calculate the message sending date
-    getDate() {
-      //safari does not support YYYY-MM-DD format
-      if (this.params.created_at) {
-        const date = new Date(this.params.created_at.replace(/-/g, '/'));
-        let dateString = date.toDateString().split(' ');
-        const formatedDateString =
-          dateString[2] + ' ' + dateString[1] + ', ' + dateString[3];
-        return formatedDateString + ' ' + date.toLocaleTimeString();
-      }
-      return null;
-    },
-
     //get initiate params. {senderEmail, title, content, receiverEmail, receiverName, created_at}
     getParams(event) {
       if (event) {

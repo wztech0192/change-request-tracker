@@ -94,6 +94,11 @@ export default {
             { data: 'full_name', title: 'User Name', class: 'all' },
             { data: 'role', title: 'Role', class: 'all' },
             { data: 'email', title: 'Email', class: 'not-mobile' },
+            {
+              data: 'totalRequest',
+              title: 'CR#',
+              class: 'not-mobile'
+            },
             { data: 'created_at', title: 'Join Date', class: 'not-mobile' }
           ],
           searchDelay: 600,
@@ -113,6 +118,14 @@ export default {
             $(row)
               .find('td:eq(0)')
               .css('font-weight', 'bold');
+
+            $(row)
+              .find('td:eq(1)')
+              .html(
+                `<a class='display-profile' value='${data.email}'>${
+                  data.full_name
+                }</a>`
+              );
           },
           initComplete: function() {
             //click select event
@@ -120,6 +133,11 @@ export default {
               self.showChangeRoleDialog(
                 self.table.row($(target).index()).data()
               );
+            });
+
+            // display user profile when click name
+            $('table').on('click', '.display-profile', function() {
+              self.$modal.show('user-modal', this.getAttribute('value'));
             });
           }
         });

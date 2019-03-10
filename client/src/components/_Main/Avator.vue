@@ -117,4 +117,13 @@ export default {
   font-size: 26px !important;
   line-height: 50px !important;
 }
+
+.profile-user-img {
+  height: 80px;
+  width: 80px;
+  padding: 3px;
+  font-size: 35px !important;
+  line-height: 70px !important;
+  border: 3px solid #d2d6de;
+}
 </style>

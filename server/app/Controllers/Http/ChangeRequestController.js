@@ -150,7 +150,8 @@ class ChangeRequestController {
       data,
       client
     );
-
+    client.totalRequest++;
+    client.save();
     await client.change_requests().save(changeRequest);
 
     //save change request message is message exist
@@ -236,6 +237,8 @@ class ChangeRequestController {
     //if search every change request, verify if user is a admin or developer
     if (params.target === 'all') {
       AuthorizationService.verifyRole(user, ['Admin', 'Developer']);
+    } else {
+      AuthorizationService.verifyExistance(user, ' user');
     }
     const data = request.all();
 
@@ -434,6 +437,8 @@ class ChangeRequestController {
       client
     );
 
+    client.totalRequest++;
+    client.save();
     await client.change_requests().save(changeRequest);
 
     //create change request history

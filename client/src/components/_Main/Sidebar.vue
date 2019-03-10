@@ -222,8 +222,8 @@ export default {
       },
       templateResult: (state, parent) => {
         if (self.searchByUser) {
-          state.id = state.full_name;
-          parent.setAttribute('title', state.email);
+          state.id = state.email;
+          parent.setAttribute('title', state.role);
           return state.full_name;
         } else {
           parent.value = state.id;
@@ -286,6 +286,7 @@ export default {
     openItem() {
       if (this.searchItem) {
         if (this.searchByUser) {
+          this.$modal.show('user-modal', this.searchItem);
         } else {
           //open change request
           this.$router.push(`/change-request/${this.searchItem}/content`);

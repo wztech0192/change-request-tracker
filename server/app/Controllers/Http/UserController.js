@@ -76,7 +76,7 @@ class UserController {
    */
   async search({ auth, request, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user);
+    AuthorizationService.verifyExistance(user, ' user');
 
     const data = request.all();
     const userList = await User.query()
@@ -115,13 +115,14 @@ class UserController {
   }
 
   /**
-   * Get User
+   * Get User by email
    * @return {user}
    */
   async get({ auth, params }) {
     const user = await auth.getUser();
-    const targetUser = await User.find(params.id);
-    AuthorizationService.verifyPermissionForUser(targetUser, user, null, true);
+    AuthorizationService.verifyExistance(user);
+    const targetUser = await User.findBy('email', params.email);
+    AuthorizationService.verifyExistance(targetUser);
     return targetUser;
   }
 

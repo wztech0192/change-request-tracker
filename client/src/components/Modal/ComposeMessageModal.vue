@@ -11,6 +11,9 @@
     @opened="initModal"
     @before-open="getParams"
   >
+    <div v-if="loading" class="overlay">
+      <i class="fa fa-spinner fa-spin"></i>
+    </div>
     <div class="box-header with-border">
       <h3 class="box-title">
         <i class="fa fa-envelope"></i>&nbsp;&nbsp;Compose New Message
@@ -87,13 +90,15 @@ export default {
         receiver: null,
         title: null,
         content: null
-      }
+      },
+      loading: false
     };
   },
 
   methods: {
     //send message
     sendMessage() {
+      this.loading = true;
       if (!this.isDisabled()) {
         HTTP()
           .post('message', this.msgData)
@@ -102,6 +107,7 @@ export default {
             this.$store.dispatch('userStore/fetchNavMenu', 'msg');
             this.$store.commit('userStore/refreshMailbox', { refresh: true });
             this.discardMessage();
+            this.loading = false;
           })
           .catch(e => {
             this.$store.dispatch('errorStore/setGlobalError', e);

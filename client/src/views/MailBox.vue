@@ -138,7 +138,9 @@
                         </a>
                       </td>
                       <td class="mailbox-name">
-                        <a @click>{{filter.type==='sent'? msg.receiverEmail :msg.senderName}}</a>
+                        <a
+                          @click="$modal.show('user-modal',filter.type==='sent'? msg.receiverEmail :msg.senderEmail)"
+                        >{{filter.type==='sent'? msg.receiverEmail :msg.senderName}}</a>
                       </td>
 
                       <td

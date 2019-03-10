@@ -50,7 +50,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  static async newUser({ id, full_name, role }) {
+  static async newUser({ id, full_name, role, email }) {
     //notify all admin
     this._notifyAdmin(length => {
       if (role !== 'Admin' && role !== 'Developer') {
@@ -61,7 +61,8 @@ class NotificationService {
       return new Array(length).fill().map(a => ({
         user_id: id,
         content: `${full_name} has joined as a ${role.toLowerCase()}`,
-        icon: 'fa-sign-in'
+        icon: 'fa-sign-in',
+        link: `@${email}`
       }));
     });
   }
@@ -97,7 +98,7 @@ class NotificationService {
                   from ${target.role} to ${role}. The action is performed
                   by ${issuer.full_name}`,
         icon: 'fa-user',
-        link: `/user/${target.email}`
+        link: `@${target.email}`
       }));
       return notifyList;
     });

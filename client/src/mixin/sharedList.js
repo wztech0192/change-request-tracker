@@ -44,9 +44,15 @@ export default {
         buttons: notify.link
           ? [
             {
-              title: 'Direct Me',
+              title:
+                  notify.link.charAt(0) === '@' ? 'Show Profile' : 'Direct Me',
               handler: () => {
-                this.$router.push(notify.link);
+                if (notify.link.charAt(0) === '@') {
+                  this.$modal.show('user-modal', notify.link.substring(1));
+                } else {
+                  this.$router.push(notify.link);
+                }
+
                 this.$modal.hide('dialog');
               }
             },

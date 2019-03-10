@@ -50,7 +50,7 @@ Route.group(() => {
     'user/notification/clear-new/:target',
     'UserController.updateNotification'
   );
-  Route.get('user/:id', 'UserController.get');
+  Route.get('user/:email', 'UserController.get');
   Route.get('user/by-role/:role', 'UserController.getRoleList');
   Route.post('user/search/:role', 'UserController.search');
   Route.post('user/datatable', 'UserController.datatable');

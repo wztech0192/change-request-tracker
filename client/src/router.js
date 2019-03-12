@@ -4,6 +4,8 @@ import DevTodo from './views/Dev/Todo.vue';
 import DevTool from './views/Dev/Tool.vue';
 import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
+import Contact from './views/Contact.vue';
+import About from './views/About.vue';
 import NotifyList from './views/NotificationList.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
@@ -93,6 +95,17 @@ export default new Router({
     {
       path: '/notifications',
       component: NotifyList,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/contact',
+      component: Contact,
+      beforeEnter: Authenication
+    },
+    {
+      path: '/about',
+      component: About,
       beforeEnter: Authenication
     },
 

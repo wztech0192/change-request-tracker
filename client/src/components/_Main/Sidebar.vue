@@ -110,7 +110,7 @@ export default {
     navItem() {
       return [
         {
-          split: 'Developer',
+          split: 'DEVELOPER',
           hide: !this.isDev
         },
         {
@@ -126,7 +126,7 @@ export default {
           hide: !this.isDev
         },
         {
-          split: 'Admin',
+          split: 'ADMIN',
           hide: !this.isAdmin
         },
         {
@@ -160,7 +160,7 @@ export default {
           hide: !this.isAdmin
         },
         {
-          split: 'NAVIGATION'
+          split: 'APPLICATION'
         },
         {
           link: '/',
@@ -182,6 +182,19 @@ export default {
           link: '/mailbox',
           icon: 'fa fa-envelope',
           name: 'Mailbox'
+        },
+        {
+          split: 'INFORMATION'
+        },
+        {
+          link: '/contact',
+          icon: 'fa fa-commenting',
+          name: 'Contact'
+        },
+        {
+          link: '/about',
+          icon: 'fa fa-info-circle',
+          name: 'About'
         }
       ];
     }

@@ -32,17 +32,18 @@ export default {
       } else {
         try {
           const errorData = msg.response.data;
-          if (errorData.message) {
-            commit('setGlobalError', errorData.message);
-          } else if (typeof errorData.error === 'string') {
-            commit('setGlobalError', errorData.error);
-          } else if (errorData.name === 'ExpiredJwtToken') {
+
+          if (errorData.error && errorData.error.name === 'ExpiredJwtToken') {
             // if error is expired jwt token, redirect to login page
             commit(
               'setGlobalError',
               'Your session has expired. Please re-login.'
             );
             router.push('/login');
+          } else if (errorData.message) {
+            commit('setGlobalError', errorData.message);
+          } else if (typeof errorData.error === 'string') {
+            commit('setGlobalError', errorData.error);
           } else {
             commit('setGlobalError', errorData.error.message);
           }

@@ -40,16 +40,16 @@ export default {
             if (data) {
               commit('setUser', data);
             } else {
-              commit(
-                'setExceptionError',
+              this.dispatch(
+                'errorStore/setExceptionError',
                 'Cannot find the user. Try to Re-login.'
               );
               router.push('/login');
             }
           })
           .catch(() => {
-            commit(
-              'setExceptionError',
+            this.dispatch(
+              'errorStore/setExceptionError',
               'Cannot find the user. Try to Re-login.'
             );
             router.push('/login');

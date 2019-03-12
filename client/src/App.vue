@@ -3,7 +3,7 @@
     <div :class="{'fade z-index-out': !getGlobalError}" class="alert alert-danger flat error-bar">
       <button class="close" @click.prevent="clearGlobalError">X</button>
       <h4 style="text-align:left; margin:0;">
-        <i class="icon fa fa-ban"></i> Alert!
+        <i class="icon fa fa-warning"></i> Alert!
       </h4>
       {{getGlobalError}}
     </div>
@@ -13,6 +13,7 @@
         <Auth v-if="!isLoggedIn"/>
       </transition>
     </div>
+
     <h1 id="loading-screen">
       <i class="fa fa-spinner fa-spin"></i>
     </h1>
@@ -35,15 +36,6 @@ export default {
   computed: {
     ...mapGetters('userStore', ['isLoggedIn']),
     ...mapGetters('errorStore', ['getGlobalError'])
-  },
-  watch: {
-    //refresh page when login or logout
-    /* isLoggedIn() {
-      document.body.style.background = '#d2d6de';
-      $('#app-content').hide();
-      $('#loading-screen').show();
-      location.reload();
-    }*/
   },
 
   created() {

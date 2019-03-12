@@ -109,8 +109,9 @@ export default {
             dataSrc: ({ data }) => {
               return data;
             },
-            error: (e, e2) => {
-              self.setGlobalError(e2);
+            error: (e, e2, e3) => {
+              self.setGlobalError(e3);
+              self.$router.push('/');
             }
           },
           createdRow: function(row, data, dataIndex) {

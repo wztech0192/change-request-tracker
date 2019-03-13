@@ -70,13 +70,7 @@
                   </a>
                   
                   <a class="box-tools pull-right">
-                    <button
-                      type="button"
-                      class="btn btn-box-tool"
-                      data-toggle="tooltip"
-                      title="Registor's Ability To Edit Information."
-                      @click="allowEditClick"
-                    >
+                    <button type="button" class="btn btn-box-tool" @click="allowEditClick">
                       User Editable&nbsp;&nbsp;
                       <i :class="getEditCondition()"></i>
                     </button>

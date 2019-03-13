@@ -7,13 +7,7 @@
   <div v-if="requestData">
     <section class="content-header">
       <h1 style="padding:0; margin:0;">
-        <a
-          style="color:inherit;"
-          @click="$router.push(previousRoute)"
-          data-toggle="tooltip"
-          data-placement="bottom"
-          title="Go Back"
-        >
+        <a style="color:inherit;" @click="$router.push(previousRoute)">
           <i class="fa fa-reply"></i>
         </a>
         &nbsp;&nbsp;Change Request
@@ -21,9 +15,6 @@
           <label
             class="label cr-status-trans clickable"
             :class="getStatusCSS('label',requestData.status)"
-            data-toggle="tooltip"
-            data-placement="left"
-            :data-original-title="requestData.isFlag?'Un-Flag It':'Flag It'"
           >
             <transition name="slide-left" mode="out-in">
               <span v-if="!requestData.isFlag" @click="flagChangeRequest(true)" key="flag">

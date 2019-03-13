@@ -11,7 +11,7 @@
         <div class="col-md-6">
           <div class="box box-danger" style="max-width:800px; margin:0 auto;">
             <!-- /.box-header -->
-            <div class="box-body bg-danger">
+            <div class="box-body">
               <h2 class="text-center">
                 <label>Report Bugs!</label>
               </h2>
@@ -33,7 +33,7 @@
         <div class="col-md-6">
           <div class="box box-warning" style="max-width:800px; margin:0 auto;">
             <!-- /.box-header -->
-            <div class="box-body bg-warning">
+            <div class="box-body">
               <h2 class="text-center">
                 <label>Ask for Helps</label>
               </h2>
@@ -58,14 +58,14 @@
         <div class="col-md-6">
           <div class="box box-primary" style="max-width:800px; margin:0 auto;">
             <!-- /.box-header -->
-            <div class="box-body bg-primary">
+            <div class="box-body">
               <h2 class="text-center">
                 <label>Recommend Improvement</label>
               </h2>
               <h4 class="text-center">Wei Zheng - Developer</h4>
               <h4 class="text-center">
                 Email:
-                <a style="color:white;" href="mailto:wjzheng@usca.edu">wjzheng@usca.edu</a>
+                <a href="mailto:wjzheng@usca.edu">wjzheng@usca.edu</a>
               </h4>
               <hr>
               <button
@@ -80,7 +80,7 @@
         <div class="col-md-6">
           <div class="box box-success" style="max-width:800px; margin:0 auto;">
             <!-- /.box-header -->
-            <div class="box-body bg-success">
+            <div class="box-body">
               <h2 class="text-center">
                 <label>Praise the Apps!</label>
               </h2>

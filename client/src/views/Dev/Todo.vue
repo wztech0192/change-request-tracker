@@ -60,8 +60,6 @@
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Edit"
                     @click="showPromptModal(true, 'Edit Todo #'+(i+1), todo)"
                   >
                     <i class="fa fa-edit"></i>
@@ -71,8 +69,6 @@
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Delete"
                     @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Todo?',todo)"
                   >
                     <i class="fa fa-trash"></i>
@@ -82,21 +78,13 @@
                   <button
                     type="button"
                     class="pull-right btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Add Task"
                     @click="showPromptModal(false, 'Create New Task For Todo #'+(i+1), todo)"
                   >
                     <i class="fa fa-plus-square"></i>
                   </button>
 
                   <!-- Todo Flag -->
-                  <button
-                    type="button"
-                    class="pull-right btn btn-box-tool"
-                    data-toggle="tooltip"
-                    title="Flag"
-                    @click="flagTodo(todo)"
-                  >
+                  <button type="button" class="pull-right btn btn-box-tool" @click="flagTodo(todo)">
                     <i v-if="!todo.isFlagged" class="fa fa-flag-o"></i>
                     <i v-else class="fa fa-flag" style="color:blue;"></i>
                   </button>
@@ -148,8 +136,6 @@
                       <button
                         type="button"
                         class="pull-right btn btn-box-tool"
-                        data-toggle="tooltip"
-                        title="Edit"
                         @click="showPromptModal(true, 'Edit Task #'+(i+1), task, todo)"
                       >
                         <i class="fa fa-edit"></i>
@@ -159,8 +145,6 @@
                       <button
                         type="button"
                         class="pull-right btn btn-box-tool"
-                        data-toggle="tooltip"
-                        title="Delete"
                         @click="showConfirmModal('Are You Sure You Want To Permanently Remove This Task?',task, todo)"
                       >
                         <i class="fa fa-trash"></i>

@@ -70,14 +70,14 @@
           </a>
           <ul class="treeview-menu">
             <li>
-              <a href="pages/tables/simple.html">
-                <i class="fa fa-circle-o"></i>Simple tables
-              </a>
+              <router-link to="/document/web-api">
+                <i class="fa fa-link"></i>Web API
+              </router-link>
             </li>
             <li>
-              <a href="pages/tables/data.html">
-                <i class="fa fa-circle-o"></i> Data tables
-              </a>
+              <router-link to="/document/page-routes">
+                <i class="fa fa-arrow-circle-right"></i> Page Routes
+              </router-link>
             </li>
           </ul>
         </li>

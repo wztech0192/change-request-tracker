@@ -6,6 +6,8 @@ import Login from './views/Auth/Login.vue';
 import Register from './views/Auth/Register.vue';
 import Contact from './views/Contact.vue';
 import About from './views/About.vue';
+import WebAPI from './views/Document/WebAPI.vue';
+import PageRoute from './views/Document/PageRoute.vue';
 import NotifyList from './views/NotificationList.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
@@ -60,7 +62,7 @@ function Authenication(to, from, next) {
 
 // reset token if user enter login/register page
 function resetToken(to, from, next) {
-  console.log("hi");
+  console.log('hi');
   store.dispatch('userStore/logoutClear');
   next();
 }
@@ -107,6 +109,18 @@ export default new Router({
     {
       path: '/about',
       component: About,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/document/web-api',
+      component: WebAPI,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/document/page-routes',
+      component: PageRoute,
       beforeEnter: Authenication
     },
 

@@ -134,7 +134,12 @@
               <li>
                 Change request can also submit through Email:
                 <i>
-                  <b>change.request@foo.com.</b>
+                  <b>
+                    <a
+                      style="color:gray"
+                      href="mailto:submit-request@rsicrt.com"
+                    >submit-request@rsicrt.com</a>
+                  </b>
                 </i>
                 <br>
               </li>

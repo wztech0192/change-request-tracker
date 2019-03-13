@@ -53,13 +53,13 @@ class UserController {
       return validation.messages();
     }
 
-    MyHelper.mapUserInfo(userInfo, code.role);
+    MyHelper.mapUserInfo(userInfo, code);
 
     //create user
     const user = await User.create(userInfo);
 
     //create welcome message
-    MessageService.sendWelcomeMessage(code, userInfo);
+    MessageService.sendWelcomeMessage(userInfo);
 
     //remove used code
     RegistrationCodeService.removeCode(code.id);

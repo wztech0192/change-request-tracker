@@ -187,7 +187,6 @@ export default {
     },
 
     '$route.params.id': function() {
-      console.log(this);
       this.fetchRequestData();
     }
   },

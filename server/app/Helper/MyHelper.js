@@ -38,12 +38,13 @@ class MyHelper {
   /**
    * map user information
    */
-  static mapUserInfo(userInfo, role) {
+  static mapUserInfo(userInfo, code) {
     //set format user data
     if (userInfo.mid_initial) {
       userInfo.mid_initial = this.modifyString(userInfo.mid_initial) + '.';
     }
-    userInfo.role = role;
+    userInfo.role = code.role;
+    userInfo.email = code.email.toLowerCase();
     userInfo.last_name = this.modifyString(userInfo.last_name);
     userInfo.first_name = this.modifyString(userInfo.first_name);
 
@@ -56,7 +57,6 @@ class MyHelper {
    * map user information from code info
    */
   static mapUserInfoFrom(code, userInfo) {
-    userInfo.email = code.email;
     userInfo.first_name = code.first_name;
     userInfo.last_name = code.last_name;
     userInfo.mid_initial = code.mid_initial;

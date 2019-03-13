@@ -77,7 +77,7 @@ class NotificationService {
       const notifyList = new Array(length + 1).fill().map(a => ({
         user_id: user_id,
         change_request_id: id,
-        content: `CR ID:${id} was created by ${clientName}`,
+        content: `CR ID: ${id} was created by ${clientName}`,
         icon: 'fa-upload text-blue',
         link: `/change-request/${id}/content`
       }));
@@ -155,7 +155,7 @@ class NotificationService {
     const data = {
       user_id: user_id,
       change_request_id: id,
-      content: `CR ID:${id} ${detail}`,
+      content: `CR ID: ${id} ${detail}`,
       icon: icon,
       link: `/change-request/${id}/${link}`
     };

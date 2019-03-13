@@ -148,7 +148,7 @@ export default {
 
     initModal() {
       const self = this;
-
+      //set params data
       this.getParams();
 
       // preset receiver

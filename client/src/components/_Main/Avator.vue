@@ -69,6 +69,7 @@ export default {
         case 'Z':
           return 'bg-black';
       }
+      return 'bg-purple';
     }
   }
 };

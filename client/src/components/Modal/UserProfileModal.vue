@@ -65,6 +65,13 @@
             >
               <b>Enter Change Request</b>
             </a>
+            <a
+              v-if="user.role==='Client' && isAdmin"
+              @click="searchCR()"
+              class="btn btn-default btn-block"
+            >
+              <b>Search Change Requests</b>
+            </a>
           </div>
         </transition>
       </div>
@@ -133,6 +140,16 @@ export default {
       this.setClient(`${this.user.full_name} (${this.user.email})`);
       //redirect to change request entry
       this.$router.push('/change-request/entry');
+      //hide modal
+      this.$modal.hide('user-modal');
+    },
+
+    // use search component to search change requests belongs to this user
+    searchCR() {
+      //redirect to data search
+      this.$router.push(
+        '/admin/change-request/search?user=' + this.user.full_name
+      );
       //hide modal
       this.$modal.hide('user-modal');
     }

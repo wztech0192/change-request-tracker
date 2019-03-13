@@ -129,6 +129,7 @@ body {
   font-weight: bold;
 }
 a {
+  text-decoration: none !important;
   cursor: pointer;
 }
 .clickable {

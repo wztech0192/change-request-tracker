@@ -33,6 +33,11 @@ Route.group(() => {
     'change-request/mail-submit',
     'ChangeRequestController.createFromMail'
   );
+
+  Route.post(
+    'change-request/mail-request-info',
+    'ChangeRequestController.mailbackCRInfo'
+  );
 }).prefix('api');
 
 Route.group(() => {

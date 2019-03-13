@@ -49,7 +49,9 @@
                     searchRole="all"
                     :onChange="userChange"
                     :multiple="true"
-                  />
+                  >
+                    <option v-if="paramsTarget" :value="paramsTarget">{{paramsTarget}}</option>
+                  </UserSearch>
                 </div>
                 <!-- /.input group -->
               </div>
@@ -148,6 +150,7 @@ export default {
       spinner: {
         loading: false
       },
+      paramsTarget: null,
       columns: [
         { data: 'id' },
         { data: 'clientName' },
@@ -174,6 +177,10 @@ export default {
     ...mapState('crStore', ['listTab', 'tab'])
   },
 
+  created() {
+    this.searchParams();
+  },
+
   mounted() {
     const self = this;
     //Date range picker
@@ -190,6 +197,7 @@ export default {
       }
     );
     // empty date by default
+
     $('#daterange').val('');
   },
 
@@ -218,6 +226,17 @@ export default {
         .catch(e => {
           this.setGlobalError(e);
         });
+    },
+
+    //search target from params
+    searchParams() {
+      // get search user in route params
+      this.paramsTarget = this.$route.query.user;
+      //if paramsTarget is not empty begin search
+      if (this.paramsTarget) {
+        this.filter.clientsName = [this.paramsTarget];
+        this.beginSearch();
+      }
     }
   }
 };

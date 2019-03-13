@@ -37,7 +37,7 @@
               <!-- start message -->
               <a @click="$modal.show('read-msg', msg);">
                 <div class="pull-left">
-                  <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
+                  <Avator class="img-circle" :fullName="msg.senderName"/>
                 </div>
                 <h4>
                   {{msg.senderName}}
@@ -64,7 +64,7 @@
               <!-- start message -->
               <a @click="$modal.show('read-msg', msg) ">
                 <div class="pull-left">
-                  <img src="@/assets/img/default.jpg" class="img-circle" alt="User Image">
+                  <Avator class="img-circle" :fullName="msg.senderName"/>
                 </div>
                 <h4>
                   {{msg.senderName}}

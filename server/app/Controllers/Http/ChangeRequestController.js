@@ -413,18 +413,15 @@ class ChangeRequestController {
    * Create new change request from incoming email
    */
   async createFromMail({ request }) {
-    const mailJSON = request.only(['sender', 'subject', 'body-plain']);
-
-    const client = await User.findBy('email', mailJSON['sender'].toLowerCase());
+    const mailJSON = request.all();
+    const client = await User.query()
+      .where('email', mailJSON['sender'].toLowerCase())
+      .andWhere('role', 'Client')
+      .first();
 
     // return denied message if client does not exit
-    if (!client || !mailJSON['subject'] || !mailJSON['body-plain']) {
-      MessageService.returnMail(
-        mailJSON['sender'],
-        'Submission Denied',
-        'You are not register in our system. Please register a account by visiting <a href="www.google.com">www.google.com</a>.'
-      );
-      return 'Denied';
+    if (MessageService.requestMailDenied(client, mailJSON)) {
+      return 'denied';
     }
 
     //map change request using helper
@@ -432,7 +429,7 @@ class ChangeRequestController {
       new ChangeRequest(),
       {
         title: mailJSON['subject'],
-        details: mailJSON['body-plain']
+        details: mailJSON['body-html'] || mailJSON['body-plain']
       },
       client
     );
@@ -452,13 +449,52 @@ class ChangeRequestController {
     await Notification.newChangeRequest(changeRequest);
 
     //send a success message
-    MessageService.returnMail(
-      mailJSON['sender'],
-      'Submission Success!',
-      'Your change request has been received!'
-    );
+    MessageService.requestMailApproved(mailJSON['sender'], changeRequest.id);
 
     return changeRequest;
+  }
+
+  /**
+   * handle email change request information request
+   */
+  async mailbackCRInfo({ request }) {
+    const { sender, subject } = request.only(['sender', 'subject']);
+
+    //get sender user account
+    const user = await User.query()
+      .where('email', sender.toLowerCase())
+      .first();
+
+    // return denied message if client does not exit or wrong request subject
+    if (MessageService.trackCRDenied(user, subject)) {
+      return 'Denied';
+    }
+
+    //change request query
+    const query = ChangeRequest.query();
+
+    // only display the request own by the user if user is not admin
+    if (user.role !== 'Admin' && user.role !== 'Developer') {
+      query.where('user_id', user.id);
+    }
+
+    //if subject is track
+    if (subject !== 'track') {
+      // -1 if subject is not a number
+      const changeRequest = await query
+        .where('id', isNaN(subject) ? -1 : subject)
+        .first();
+      MessageService.trackCRID(user.email, changeRequest);
+    } else {
+      const crList = await query
+        .orderBy('created_at', 'desc')
+        .limit(10)
+        .fetch();
+
+      MessageService.trackCRList(user.email, crList.rows);
+    }
+
+    return 'Ok';
   }
 }
 

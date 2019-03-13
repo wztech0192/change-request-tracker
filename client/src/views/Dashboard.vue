@@ -225,7 +225,7 @@
             <div class="box-header with-border">
               <h3 class="box-title">Flagged Tasks</h3>
               <div class="box-tools">
-                <router-link to="/notifications" class="btn btn-tool btn-sm text-black">
+                <router-link to="/dev/todo" class="btn btn-tool btn-sm text-black">
                   <i class="ion ion-clipboard"></i> Todo List
                 </router-link>
               </div>

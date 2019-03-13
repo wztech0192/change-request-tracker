@@ -13,7 +13,20 @@
     </div>
     <form class="register-box-body" @submit.prevent="registerSubmit">
       <p class="login-box-msg">Register a new membership</p>
-
+      <div class="form-group has-feedback" :class="{'has-error':error.email_error}">
+        <input
+          name="email"
+          type="email"
+          class="form-control"
+          readonly="readonly"
+          placeholder="Email: example@domain.com"
+          autocomplete="username"
+          v-model="registerData.email"
+          @blur="clearError('email')"
+        >
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        <span class="help-block">&nbsp;{{error.email_error}}</span>
+      </div>
       <div>
         <div class="form-group has-feedback" :class="{'has-error':error.first_name_error}">
           <input
@@ -54,20 +67,7 @@
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.last_name_error}}</span>
         </div>
-        <div class="form-group has-feedback" :class="{'has-error':error.email_error}">
-          <input
-            name="email"
-            type="email"
-            class="form-control"
-            :readonly="!this.allowEdit"
-            placeholder="Email: example@domain.com"
-            autocomplete="username"
-            v-model="registerData.email"
-            @blur="clearError('email')"
-          >
-          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-          <span class="help-block">&nbsp;{{error.email_error}}</span>
-        </div>
+
         <div class="form-group has-feedback" :class="{'has-error':error.password_error}">
           <input
             name="password"

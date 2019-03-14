@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import HTTP from '@/http';
 import rowEvent from '@/mixin/rowEvent.js';
 
@@ -59,6 +59,10 @@ export default {
 
   mounted() {
     this.initiateTable();
+  },
+
+  computed: {
+    ...mapGetters('userStore', ['isDev'])
   },
 
   methods: {
@@ -285,7 +289,14 @@ export default {
         <select class="form-control role-selector" style="width: 100%;">
           <option ${this.getSelectedRole(user, 'Client')}>Client</option>
           <option ${this.getSelectedRole(user, 'Admin')}>Admin</option>
-          <option ${this.getSelectedRole(user, 'Developer')}>Developer</option>
+          ${
+            this.isDev
+              ? `<option ${this.getSelectedRole(
+                  user,
+                  'Developer'
+                )}>Developer</option>`
+              : ''
+          }
         </select>`;
 
       return template;

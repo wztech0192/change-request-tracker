@@ -19,8 +19,8 @@ class UserSchema extends Schema {
       table.boolean('isDev').defaultTo(false);
       table.string('first_name', 30).notNullable();
       table.string('last_name', 30).notNullable();
-      table.string('mid_initial', 5);
-      table.string('full_name', 160).notNullable();
+      table.string('mid_initial', 30);
+      table.string('full_name', 90).notNullable();
       table.timestamps();
     });
   }

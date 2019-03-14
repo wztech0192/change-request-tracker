@@ -9,7 +9,7 @@ const Message = use('App/Models/Message');
 const Mail = use('Mail');
 const url =
   process.env.NODE_ENV === 'production'
-    ? 'http://129.252.199.132/~weiZ/crt/public'
+    ? 'https://52fffb97.ngrok.io/~weiZ/crt/public'
     : 'http://localhost:8080';
 const noReplyEmail = 'no-reply@rsicrt.com';
 const submitEmail = 'submit-request@rsicrt.com';

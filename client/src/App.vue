@@ -162,6 +162,7 @@ a {
 .fade-leave-active {
   opacity: 0;
 }
+
 .slide-left-enter-active,
 .slide-left-leave-active,
 .slide-right-enter-active,
@@ -183,6 +184,29 @@ a {
   opacity: 0;
   transform: translate(-2em, 0);
 }
+
+.slide-top-enter-active,
+.slide-top-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition-duration: 0.4s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  overflow: hidden;
+}
+
+.slide-top-enter,
+.slide-down-leave-active {
+  opacity: 0;
+  transform: translate(0, 8em);
+}
+
+.slide-top-leave-active,
+.slide-down-enter {
+  opacity: 0;
+  transform: translate(0, -8em);
+}
+
 .v--modal-block-scroll,
 .v--modal-box {
   overflow: auto !important;

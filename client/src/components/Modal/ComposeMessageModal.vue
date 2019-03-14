@@ -7,7 +7,7 @@
     width="85%"
     :max-width="1000"
     :pivot-y="0.3"
-    transition="fade"
+    transition="slide-down"
     @opened="initModal"
     @before-open="getParams"
   >

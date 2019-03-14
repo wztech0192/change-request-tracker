@@ -7,7 +7,7 @@
     width="80%"
     :max-width="maxWidth"
     :pivot-y="0.3"
-    :transition="transition"
+    transition="slide-down"
     @before-open="beforeOpened"
     @before-close="beforeClosed"
     @opened="$emit('opened', $event)"

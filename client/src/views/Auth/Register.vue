@@ -33,6 +33,7 @@
             type="text"
             class="form-control"
             placeholder="First Name"
+            maxlength="30"
             name="first_name"
             :readonly="!this.allowEdit"
             v-model="registerData.first_name"
@@ -46,6 +47,7 @@
             type="text"
             class="form-control"
             placeholder="M."
+            maxlength="30"
             name="mid_initial"
             :readonly="!this.allowEdit"
             v-model="registerData.mid_initial"
@@ -59,6 +61,7 @@
             type="text"
             class="form-control"
             placeholder="Last name"
+            maxlength="30"
             name="last_name"
             :readonly="!this.allowEdit"
             v-model="registerData.last_name"
@@ -72,6 +75,7 @@
           <input
             name="password"
             type="password"
+            maxlength="30"
             class="form-control"
             placeholder="Password"
             autocomplete="new-password"
@@ -82,6 +86,7 @@
         </div>
         <div class="form-group has-feedback" :class="{'has-error':error.password_error}">
           <input
+            maxlength="30"
             name="password_retype"
             type="password"
             class="form-control"

@@ -7,7 +7,7 @@
     height="auto"
     :max-width="500"
     :pivot-y="0.3"
-    transition="fade"
+    transition="slide-down"
     @before-open="getUser"
     @before-close="clearUser()"
   >

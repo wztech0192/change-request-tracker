@@ -29,6 +29,11 @@ export default {
       // set error message if msg is a string
       if (typeof msg === 'string') {
         commit('setGlobalError', msg);
+      } else if (msg.code === 'ECONNABORTED') {
+        commit(
+          'setGlobalError',
+          'Connection fail, please try again in another time.'
+        );
       } else {
         try {
           const errorData = msg.response.data;

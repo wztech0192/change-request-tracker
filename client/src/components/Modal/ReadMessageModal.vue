@@ -7,7 +7,7 @@
     height="90%"
     :max-width="1100"
     :pivot-y="0.3"
-    transition="fade"
+    transition="slide-down"
     @before-open="getParams"
   >
     <div class="box box-primary" style="margin:0; height:100%;">

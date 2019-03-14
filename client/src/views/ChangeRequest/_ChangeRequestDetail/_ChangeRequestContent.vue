@@ -19,7 +19,7 @@
 
       <textarea
         v-if="isAdmin && editMode"
-        calss="form-control"
+        class="form-control"
         style="width:100%; line-height:1; font-size:18px; margin-left:10px;"
         :value="requestData.title"
         @input="setTitle"
@@ -70,6 +70,14 @@ export default {
       newContent: {},
       editMode: false
     };
+  },
+
+  watch: {
+    requestData() {
+      console.log(this.editor);
+      this.newContent.title = this.requestData.title;
+      this.editor.setData(this.requestData.details);
+    }
   },
 
   created() {

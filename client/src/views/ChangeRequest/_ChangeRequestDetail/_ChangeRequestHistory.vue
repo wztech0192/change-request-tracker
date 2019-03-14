@@ -72,6 +72,7 @@ export default {
     },
     //update when refresh value change
     refresh() {
+      console.log('hi');
       this.fetchRequestHistory();
     }
   },

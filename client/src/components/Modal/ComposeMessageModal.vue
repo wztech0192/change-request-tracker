@@ -98,8 +98,8 @@ export default {
   methods: {
     //send message
     sendMessage() {
-      this.loading = true;
       if (!this.isDisabled()) {
+        this.loading = true;
         HTTP()
           .post('message', this.msgData)
           .then(() => {

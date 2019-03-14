@@ -72,6 +72,13 @@ export default {
   },
 
   watch: {
+    msgList() {
+      var el = $('#cr-msg');
+      //perform a scroll to if the current position is bottom and messageList change
+      if (el.scrollTop() >= el[0].scrollHeight - el.outerHeight() - 10) {
+        this.scrollDown();
+      }
+    },
     //update when refresh value change
     refresh() {
       this.fetchRequestMsg();
@@ -114,16 +121,6 @@ export default {
         self.fetchRequestMsg((self.msgNum += 5));
       }
     });
-  },
-
-  watch: {
-    msgList() {
-      var el = $('#cr-msg');
-      //perform a scroll to if the current position is bottom and messageList change
-      if (el.scrollTop() >= el[0].scrollHeight - el.outerHeight() - 10) {
-        this.scrollDown();
-      }
-    }
   },
 
   methods: {

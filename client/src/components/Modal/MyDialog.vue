@@ -87,13 +87,13 @@ export default {
   methods: {
     beforeOpened(event) {
       window.addEventListener('keyup', this.onKeyUp);
-
+      document.body.style.overflow = 'hidden';
       this.params = event.params || {};
       this.$emit('before-opened', event);
     },
     beforeClosed(event) {
       window.removeEventListener('keyup', this.onKeyUp);
-
+      document.body.style.overflow = 'auto';
       this.params = {};
       this.$emit('before-closed', event);
     },

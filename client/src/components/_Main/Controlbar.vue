@@ -80,10 +80,10 @@
               >
                 <div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix">
                   <span
-                    style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"
+                    style="display:block; width: 20%; float: left; height: 7px; background: #222"
                   ></span>
                   <span
-                    style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"
+                    style="display:block; width: 80%; float: left; height: 7px; background: #222"
                   ></span>
                 </div>
                 <div>
@@ -257,7 +257,7 @@
                   ></span>
                 </div>
               </a>
-              <p class="text-center no-margin" style="font-size: 12px">Black Light</p>
+              <p class="text-center no-margin" style="font-size: 12px">White Light</p>
             </li>
             <li style="float:left; width: 33.33333%; padding: 5px;">
               <a
@@ -290,7 +290,7 @@
             <li style="float:left; width: 33.33333%; padding: 5px;">
               <a
                 href="javascript:void(0)"
-                data-skin="skin-green-light"
+                data-skin="skin-green-gray"
                 style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)"
                 class="clearfix full-opacity-hover"
               >
@@ -377,7 +377,7 @@
 
 <script>
 export default {
-  name: "Controlbar"
+  name: 'Controlbar'
 };
 </script>
 

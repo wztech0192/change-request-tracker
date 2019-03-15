@@ -62,6 +62,28 @@
 
         <li class="treeview">
           <a href="#">
+            <i class="fa fa-question-circle"></i>
+            <span>Information</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li>
+              <router-link to="/contact">
+                <i class="fa fa-commenting"></i>Contact
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/about">
+                <i class="fa fa-info-circle"></i>About
+              </router-link>
+            </li>
+          </ul>
+        </li>
+
+        <li class="treeview">
+          <a href="#">
             <i class="fa fa-book"></i>
             <span>Document</span>
             <span class="pull-right-container">
@@ -182,19 +204,6 @@ export default {
           link: '/mailbox',
           icon: 'fa fa-envelope',
           name: 'Mailbox'
-        },
-        {
-          split: 'INFORMATION'
-        },
-        {
-          link: '/contact',
-          icon: 'fa fa-commenting',
-          name: 'Contact'
-        },
-        {
-          link: '/about',
-          icon: 'fa fa-info-circle',
-          name: 'About'
         }
       ];
     }

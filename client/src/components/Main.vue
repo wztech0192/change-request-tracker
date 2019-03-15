@@ -68,7 +68,7 @@ export default {
   mounted() {
     if (this.isLoggedIn) {
       document.body.className = 'skin-black sidebar-mini';
-      document.body.style.overflow = 'auto';
+            document.body.style.overflowY = 'auto';
     }
   }
 };

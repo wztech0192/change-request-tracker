@@ -104,6 +104,7 @@ export default {
   methods: {
     ...mapMutations('crStore', ['setClient']),
     getUser(event) {
+      document.body.style.overflow = 'auto';
       this.loading = true;
       if (event) {
         //get user by params email
@@ -122,6 +123,7 @@ export default {
     },
 
     clearUser() {
+      document.body.style.overflow = 'auto';
       this.user = null;
     },
 

@@ -74,7 +74,6 @@ export default {
 
   watch: {
     requestData() {
-      console.log(this.editor);
       this.newContent.title = this.requestData.title;
       this.editor.setData(this.requestData.details);
     }

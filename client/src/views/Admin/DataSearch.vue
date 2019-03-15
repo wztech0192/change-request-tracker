@@ -111,7 +111,7 @@
         <!-- /.box-body -->
       </form>
 
-      <div class="col-md-6 box box-primary">
+      <div class="box box-primary">
         <div v-if="spinner.loading" class="overlay">
           <i class="fa fa-spinner fa-spin"></i>
         </div>

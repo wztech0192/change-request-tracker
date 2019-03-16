@@ -46,7 +46,7 @@
                     {{calculateTimeElapsed(msg.created_at,['m','h','d'])}}
                   </small>
                 </h4>
-                <p>{{msg.title}}</p>
+                <p>{{limitContentLength(msg.title, 45)}}</p>
               </a>
             </li>
 
@@ -73,7 +73,7 @@
                     {{calculateTimeElapsed(msg.created_at,['m','h','d'])}}
                   </small>
                 </h4>
-                <p>{{msg.title}}</p>
+                <p>{{limitContentLength(msg.title, 45)}}</p>
               </a>
             </li>
           </Nav-Menu>
@@ -169,7 +169,7 @@
 
             <li v-for="item in flagList.flagCR">
               <!-- item is a change reuqest if request id is greater than 0-->
-              <router-link :to="`/change-request/${item.id}/content`">
+              <router-link :to="`/change-request/${item.id}/content`" :title="'ID: '+item.id">
                 <small class="pull-right">
                   <label class="label" :class="getStatusCSS('label',item.status)">{{item.status}}</label>
                 </small>

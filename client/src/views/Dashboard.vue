@@ -13,7 +13,7 @@
       <!-- ./box-body -->
       <div class="row">
         <!-- user block -->
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-red">
             <div class="inner">
               <h3>{{user.total}}</h3>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <!-- notification block -->
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-yellow">
             <div class="inner">
               <h3>{{notifyList.totalNotifications}}</h3>
@@ -47,7 +47,7 @@
         </div>
 
         <!-- flag block -->
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-green">
             <div class="inner">
               <h3>{{flagList.totalCR}}</h3>
@@ -67,7 +67,7 @@
         </div>
 
         <!-- message block -->
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-aqua">
             <div class="inner">
               <h3>{{msgList.totalMsg}}</h3>
@@ -75,7 +75,7 @@
               <p>Total Messages</p>
             </div>
             <div class="icon">
-              <i class="fa fa-bell-o"></i>
+              <i class="fa fa-envelope"></i>
             </div>
             <router-link to="/mailbox" class="small-box-footer">
               Visit Mailbox

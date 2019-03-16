@@ -11,7 +11,7 @@ export default {
       if (date) {
         date = new Date(date.replace(/-/g, '/'));
         const dateString = date.toDateString().split(' ');
-        const formatedDateString = `${dateString[2]} ${dateString[1]}, ${
+        const formatedDateString = `${dateString[1]} ${dateString[2]}, ${
           dateString[3]
         }`;
         return `${formatedDateString} ${date.toLocaleTimeString()}`;

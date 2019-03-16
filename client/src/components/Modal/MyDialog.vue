@@ -9,7 +9,6 @@
     :pivot-y="0.3"
     transition="slide-down"
     @before-open="beforeOpened"
-    @before-close="beforeClosed"
     @opened="$emit('opened', $event)"
     @closed="$emit('closed', $event)"
   >
@@ -87,13 +86,11 @@ export default {
   methods: {
     beforeOpened(event) {
       window.addEventListener('keyup', this.onKeyUp);
-      document.body.style.overflow = 'hidden';
       this.params = event.params || {};
       this.$emit('before-opened', event);
     },
     beforeClosed(event) {
       window.removeEventListener('keyup', this.onKeyUp);
-      document.body.style.overflow = 'auto';
       this.params = {};
       this.$emit('before-closed', event);
     },

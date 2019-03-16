@@ -20,7 +20,7 @@
       <textarea
         v-if="isAdmin && editMode"
         class="form-control"
-        style="width:100%; line-height:1; font-size:18px; margin-left:10px;"
+        style="width:98%; line-height:1; font-size:18px; margin-left:10px;"
         :value="requestData.title"
         @input="setTitle"
       ></textarea>

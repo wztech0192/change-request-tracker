@@ -31,30 +31,51 @@
       </h1>
     </section>
     <section class="content">
-      <div
-        class="box form-background cr-status-trans"
-        :class="getStatusCSS('box',requestData.status)"
-      >
+      <div class="box bg-white cr-status-trans" :class="getStatusCSS('box',requestData.status)">
         <div class="box-body">
-          <div>
-            <span class="pull-right">
-              <label>Post On:</label>
-              {{requestData.created_at.split(" ")[0]}}
-            </span>
-            <span>
-              <label>Client Name:</label>
-              {{requestData.clientName}}
-            </span>
-          </div>
-          <div>
-            <span class="pull-right">
-              <label>Update On:</label>
-              {{requestData.updated_at.split(" ")[0]}}
-            </span>
-            <span>
-              <label>Request ID:</label>
-              {{requestData.id}}
-            </span>
+          <div class="row cr-detail">
+            <div class="col-lg-4">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th>Client Name:</th>
+                    <td>{{requestData.clientName}}</td>
+                  </tr>
+                  <tr>
+                    <th>Request ID:</th>
+                    <td>{{requestData.id}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-4">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th>Messages:</th>
+                    <td>{{requestData.totalMessage}}</td>
+                  </tr>
+                  <tr>
+                    <th>Histories:</th>
+                    <td>{{requestData.totalHistory}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-4">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th>Post At:</th>
+                    <td>{{formatDate(requestData.created_at)}}</td>
+                  </tr>
+                  <tr>
+                    <th>Updated At:</th>
+                    <td>{{formatDate(requestData.updated_at)}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <br>
           <div>
@@ -94,7 +115,7 @@
               data-placement="bottom"
             >COMPLETE</label>
           </div>
-          <hr>
+          <br>
           <!-- Custom Tabs (Pulled to the right)  :class="{'active':todoType==='FLAG'}" -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -305,5 +326,12 @@ export default {
 
 .cr-status-trans {
   transition: 0.3s ease;
+}
+
+.cr-detail div table tbody th {
+  width: 40%;
+}
+.cr-detail div table {
+  margin: 0;
 }
 </style>

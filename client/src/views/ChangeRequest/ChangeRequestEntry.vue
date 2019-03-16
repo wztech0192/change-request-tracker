@@ -75,13 +75,10 @@
                 Request Detail
                 <span v-if="error.detail_error">-- Detail Cannot be empty</span>
               </label>
-              <div class="box" :class="{'box-danger': error.detail_error}">
-                <div class="box-body">
-                  <textarea id="editor" name="editor" style="width: 100%"></textarea>
-                </div>
-              </div>
+              
+              <textarea id="editor" name="editor" class="form-control" style="width: 100%"></textarea>
 
-              <br>
+              <hr>
 
               <!-- Client information -->
               <div class="box box-primary collapsed-box">
@@ -206,6 +203,7 @@ export default {
       .then(editor => {
         self.editor = editor;
         editor.setData(self.requestData.details);
+        console.log(Array.from(editor.ui.componentFactory.names()));
         // clear detail error when blur
         editor.ui.focusTracker.on(
           'change:isFocused',

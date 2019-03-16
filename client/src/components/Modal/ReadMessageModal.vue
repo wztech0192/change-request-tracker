@@ -8,7 +8,6 @@
     :max-width="1100"
     :pivot-y="0.3"
     transition="slide-down"
-    @before-close="beforeClosed"
     @before-open="getParams"
   >
     <div class="box box-primary" style="margin:0; height:100%;">
@@ -84,7 +83,6 @@ export default {
   methods: {
     //get initiate params. {senderEmail, title, content, receiverEmail, receiverName, created_at}
     getParams(event) {
-      document.body.style.overflow = 'hidden';
       if (event) {
         this.params = event.params;
         this.isBookmark = this.params.isBookmark;
@@ -106,10 +104,6 @@ export default {
             });
         }
       }
-    },
-
-    beforeClosed(event) {
-      document.body.style.overflow = 'auto';
     },
 
     // toggle message bookmark

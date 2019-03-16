@@ -68,11 +68,6 @@ export default {
 .ck-editor__editable {
   height: 250px;
 }
-@media (max-width: 480px) {
-  .ck-editor__editable {
-    height: 150px;
-  }
-}
 
 .small-box,
 .box {
@@ -89,11 +84,15 @@ body {
 .skin-black .wrapper {
   background-color: #1e282c;
 }
-
+.small-box .icon {
+  top: -18px;
+}
 .dataTables_wrapper {
   min-height: 400px;
 }
-
+.tooltip {
+  z-index: 1000 !important;
+}
 .overlay > h2 {
   font-size: 10vw;
   padding: 10vw;
@@ -218,16 +217,15 @@ h1 {
 
 .list-item {
   display: inline-block;
-  margin-right: 10px;
 }
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s;
+  transition: all 0.4s;
 }
 .list-enter, .list-leave-to
 /* .list-leave-active for below version 2.1.8 */ {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(10px);
 }
 
 .none-ex {
@@ -235,6 +233,10 @@ h1 {
 }
 
 @media (max-width: 480px) {
+  .ck-editor__editable {
+    height: 150px;
+  }
+
   .not-mobile-ex {
     display: none;
   }

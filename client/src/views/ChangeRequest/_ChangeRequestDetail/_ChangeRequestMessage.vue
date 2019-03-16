@@ -5,12 +5,15 @@
 
 
 <template>
-  <div class="box box-comments" style="box-shadow:0px 0px 5px grey;">
-    <div v-if="!msgList || msgList.length<=0">
-      <h3 style="text-align:center;">There is no message</h3>
-    </div>
+  <div
+    class="box box-comments"
+    style="box-shadow:0px 0px 5px grey; background-color:white !important;"
+  >
     <div id="cr-msg">
-      <transition-group name="list" tag="div">
+      <div v-if="!msgList || msgList.length<=0">
+        <h2 style="text-align:center; padding:10%;">Empty...</h2>
+      </div>
+      <transition-group name="slide-down" tag="div">
         <div
           v-for="msg in msgList"
           :key="msg.id"
@@ -20,7 +23,7 @@
           <!-- User image -->
           <Avator class="img-circle img-sm" :fullName="msg.senderName"/>
           <div class="comment-text">
-            <span class="username">
+            <span class="username" style="border-bottom:solid white 5px;">
               {{msg.senderName}}
               <span class="text-muted pull-right">{{formatTime(msg.created_at)}}</span>
             </span>
@@ -200,7 +203,7 @@ export default {
 
 <style>
 #cr-msg {
-  max-height: 75vh;
+  height: 50vh;
   overflow: auto;
 }
 </style>

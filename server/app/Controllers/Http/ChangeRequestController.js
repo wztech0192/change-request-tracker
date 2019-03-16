@@ -479,7 +479,7 @@ class ChangeRequestController {
     }
 
     //if subject is track
-    if (subject !== 'track') {
+    if (subject.toLowerCase() !== 'track') {
       // -1 if subject is not a number
       const changeRequest = await query
         .where('id', isNaN(subject) ? -1 : subject)

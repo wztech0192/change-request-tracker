@@ -123,7 +123,7 @@ export default {
       }
     },
 
-    //filter Histories into each date.
+    //filter Histories into each date. O(n)
     filterHist(histories) {
       var i = 0,
         j = 0;

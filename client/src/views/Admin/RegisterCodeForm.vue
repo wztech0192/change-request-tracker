@@ -46,13 +46,11 @@
               >&nbsp;{{error.email_error}}</span>
 
               <!-- Message Input -->
-              <label>Message</label>
-              <div class="box">
-                <div class="box-body">
-                  <textarea id="editor" name="editor" style="width: 100%"></textarea>
-                </div>
-              </div>
-              <br>
+              <label>Optional Message to Receiver</label>
+              
+              <textarea id="editor" name="editor" style="width: 100%"></textarea>
+
+              <hr>
 
               <!-- Regsiter information -->
               <div
@@ -65,7 +63,7 @@
                     data-widget="collapse"
                     :class="{'text-red':error.first_name_error||error.last_name_error}"
                   >
-                    <i class="fa fa-user"></i>&nbsp;&nbsp;Register Info
+                    <i class="fa fa-user"></i>&nbsp;&nbsp;Receiver Info
                     <span v-if="!codeData.allowEdit">- Must!</span>
                   </a>
                   
@@ -132,7 +130,7 @@
             <ul>
               <li>Receiver email is required.</li>
               <li>
-                Register Information will be require only if "User Ediable" is set to
+                Receiver Information will be require only if "User Ediable" is set to
                 <i
                   class="fa fa-minus-square"
                 ></i>.
@@ -141,7 +139,7 @@
                 Role can be assigned under Requester Info. The default role is
                 <i>client</i>
               </li>
-              <li>Information of code user can be preset by click "Register Info" tab.</li>
+              <li>Information of code user can be preset by click "Receiver Info" tab.</li>
               <li>"User Ediable" option allow/forbidden code user to edit the preset information.</li>
               <li>A E-Mail will automatically send to the code user.</li>
               <li>Please inform the code user to check junk mail box.</li>

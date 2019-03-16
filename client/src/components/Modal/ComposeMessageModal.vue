@@ -10,7 +10,6 @@
     transition="slide-down"
     @opened="initModal"
     @before-open="getParams"
-    @before-close="beforeClosed"
   >
     <div v-if="loading" class="overlay">
       <i class="fa fa-spinner fa-spin"></i>
@@ -148,7 +147,6 @@ export default {
     },
 
     initModal() {
-      document.body.style.overflow = 'hidden';
       const self = this;
       //set params data
       this.getParams();
@@ -174,10 +172,6 @@ export default {
           self.msgData.content = editor.getData();
         });
       });
-    },
-
-    beforeClosed(event) {
-      document.body.style.overflow = 'auto';
     },
 
     //validate if all the required field has been filled

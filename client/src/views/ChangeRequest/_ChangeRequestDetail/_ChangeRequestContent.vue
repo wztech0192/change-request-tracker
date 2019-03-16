@@ -85,16 +85,30 @@ export default {
 
   mounted() {
     var self = this;
-    //initialize editor
-    ClassicEditor.create(document.querySelector('#editor'))
-      .then(editor => {
-        self.editor = editor;
-        // bind edited data
-        editor.model.document.on('change', () => {
-          self.newContent.details = editor.getData();
-        });
+    if (this.isAdmin) {
+      //initialize editor
+      ClassicEditor.create(document.querySelector('#editor'), {
+        toolbar: [
+          'bold',
+          'italic',
+          'bulletedList',
+          'numberedList',
+          'blockQuote',
+          'link',
+          'mediaEmbed',
+          'undo',
+          'redo'
+        ]
       })
-      .catch(e => self.setGlobalError(e));
+        .then(editor => {
+          self.editor = editor;
+          // bind edited data
+          editor.model.document.on('change', () => {
+            self.newContent.details = editor.getData();
+          });
+        })
+        .catch(e => self.setGlobalError(e));
+    }
   },
 
   methods: {

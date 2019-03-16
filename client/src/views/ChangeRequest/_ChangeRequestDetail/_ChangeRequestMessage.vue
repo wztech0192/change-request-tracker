@@ -101,10 +101,11 @@ export default {
       toolbar: [
         'bold',
         'italic',
-        'link',
         'bulletedList',
         'numberedList',
         'blockQuote',
+        'link',
+        'mediaEmbed',
         'undo',
         'redo'
       ]

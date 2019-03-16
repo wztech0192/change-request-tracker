@@ -30,12 +30,12 @@ Route.group(() => {
     'RegistrationCodeController.verifyRegistrationCode'
   );
   Route.post(
-    'change-request/mail-submit',
+    'change-request/mail-submit/:key',
     'ChangeRequestController.createFromMail'
   );
 
   Route.post(
-    'change-request/mail-request-info',
+    'change-request/mail-request-info/:key',
     'ChangeRequestController.mailbackCRInfo'
   );
 }).prefix('api');

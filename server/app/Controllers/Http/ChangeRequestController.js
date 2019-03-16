@@ -412,7 +412,7 @@ class ChangeRequestController {
   /**
    * Create new change request from incoming email
    */
-  async createFromMail({ request }) {
+  async createFromMail({ request, params }) {
     const mailJSON = request.all();
     const client = await User.query()
       .where('email', mailJSON['sender'].toLowerCase())
@@ -420,7 +420,7 @@ class ChangeRequestController {
       .first();
 
     // return denied message if client does not exit
-    if (MessageService.requestMailDenied(client, mailJSON)) {
+    if (MessageService.requestMailDenied(client, mailJSON, params.key)) {
       return 'denied';
     }
 
@@ -457,7 +457,7 @@ class ChangeRequestController {
   /**
    * handle email change request information request
    */
-  async mailbackCRInfo({ request }) {
+  async mailbackCRInfo({ request, params }) {
     const { sender, subject } = request.only(['sender', 'subject']);
 
     //get sender user account
@@ -466,7 +466,7 @@ class ChangeRequestController {
       .first();
 
     // return denied message if client does not exit or wrong request subject
-    if (MessageService.trackCRDenied(user, subject)) {
+    if (MessageService.trackCRDenied(user, subject, params.key)) {
       return 'Denied';
     }
 

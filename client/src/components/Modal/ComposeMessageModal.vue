@@ -163,7 +163,20 @@ export default {
       //  this.msgData.receiver = null;
       //initialize editor
 
-      ClassicEditor.create(self.$refs.compose_editor).then(editor => {
+      ClassicEditor.create(self.$refs.compose_editor, {
+        toolbar: [
+          'bold',
+          'italic',
+          'bulletedList',
+          'numberedList',
+          'blockQuote',
+
+          'link',
+          'mediaEmbed',
+          'undo',
+          'redo'
+        ]
+      }).then(editor => {
         // self.editor = editor;
         editor.setData(self.msgData.content || '');
 
@@ -191,6 +204,6 @@ export default {
 
 <style>
 #modal_editor .ck-editor__editable {
-  height: 40vh !important;
+  height: 45vh !important;
 }
 </style>

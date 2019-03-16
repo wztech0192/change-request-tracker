@@ -7,13 +7,19 @@
 
 const Message = use('App/Models/Message');
 const Mail = use('Mail');
+
+// if production, use public url in env file
 const url =
   process.env.NODE_ENV === 'production'
-    ? 'https://52fffb97.ngrok.io/~weiZ/crt/public'
+    ? process.env.PUBLIC_URL
     : 'http://localhost:8080';
-const noReplyEmail = 'no-reply@rsicrt.com';
-const submitEmail = 'submit-request@rsicrt.com';
-const infoEmail = 'cr-track@rsicrt.com';
+
+// refers to the value in env
+const noReplyEmail = `${process.env.NO_REPLY_REC}@${
+  process.env.MAILGUN_DOMAIN
+}`;
+const submitEmail = `${process.env.SUBMIT_REC}@${process.env.MAILGUN_DOMAIN}`;
+const infoEmail = `${process.env.INFO_REC}@${process.env.MAILGUN_DOMAIN}`;
 
 class MessageService {
   /**
@@ -79,9 +85,14 @@ class MessageService {
     return message;
   }
 
-  // check if the request email and user is valid. Return denied message if fails.
-  static requestMailDenied(client, mailJSON) {
-    if (!client || !mailJSON['subject'] || !mailJSON['body-plain']) {
+  // check if the request email, user, and api key is valid. Return denied message if fails.
+  static requestMailDenied(client, mailJSON, key) {
+    if (
+      key !== process.env.MAILGUN_API_KEY ||
+      !client ||
+      !mailJSON['subject'] ||
+      !mailJSON['body-plain']
+    ) {
       this._sendEmail(
         mailJSON['sender'],
         'Submission Denied',
@@ -106,14 +117,15 @@ class MessageService {
       visiting the CRTracker website <a href="${url}/change-request/${crID}/content"><b>${url}/change-request/${crID}/content</b></a>
       </li>
       <li>
-      send a email to <a href='mailto:${infoEmail}'><b>${infoEmail}</b></a> with subject:
+      send a email to <a href='mailto:${infoEmail}?subject=track || ${crID}'><b>${infoEmail}</b></a> with subject:
       <ul>
       <li>
-      <b><i>'track'</i></b> to track the newest 10 change request.
+      <a href="mailto:${infoEmail}?subject=track"><b>'track'</b></a> - track the newest 10 change requests.
       </li>
        <li>
-        <b><i>'${crID}'</i></b> to track individual change request.
+        <a href="mailto:${infoEmail}?subject=${crID}"><b>'${crID}'</b></a> - track individual change request.
       </li>
+
       </ul>
       </li>
       </ol>
@@ -175,7 +187,7 @@ class MessageService {
       </tbody>
       </table>
       <br>
-      <p>View More details by visit <a href='${url}/change-request/${
+      <p>View more details by visit <a href='${url}/change-request/${
           cr.id
         }/content'>${url}/change-request/${cr.id}/content</a></p>
       `
@@ -189,9 +201,9 @@ class MessageService {
     }
   }
 
-  // return denied message
-  static trackCRDenied(receiver, subject) {
-    if (!receiver || !subject) {
+  // valid if api key, receiver, and subject is valid
+  static trackCRDenied(receiver, subject, key) {
+    if (key !== process.env.MAILGUN_API_KEY || !receiver || !subject) {
       //send a denied message
       this._sendEmail(
         mailJSON['sender'],
@@ -263,12 +275,13 @@ class MessageService {
       <li>Use CRTracker notification system to track your action.</li>
       <li>Use CRTracker message system to communicate with anyone in our system.</li>
       <li>Submit Change Request.</li>
-      <li>(Client Only) Submit Change Request via email. <a href="mailto:${submitEmail}">${submitEmail}</a></li>
+      <li>(Client Only) Submit Change Request via email. <a href="mailto:${submitEmail}?
+      subject=Request Title:&body=Request Detail:">${submitEmail}</a></li>
       <li>Track Change Request.</li>
-      <li>Track Change Request via email: <a href="mailto:${infoEmail}">${infoEmail}</a> - with the subject: </li>
+      <li>Track Change Request via email: <a href="mailto:${infoEmail}?subject=track || id">${infoEmail}</a> - with the subject: </li>
       <ul>
-      <li><b>'track'</b> - track the newest 10 change requests</li>
-      <li><b>'#id'</b> - track change request by id</li>
+      <li><a href="mailto:${infoEmail}?subject=track"><b>'track'</b></a> - track the newest 10 change requests</li>
+      <li><a href="mailto:${infoEmail}?subject=id"><b>'id'</b></a> - track change request by id</li>
       </ul>
       </ul>
       </div>

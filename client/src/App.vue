@@ -66,7 +66,9 @@ export default {
 
 <style>
 .ck-editor__editable {
-  height: 250px;
+  min-height: 100px;
+  height: auto;
+  max-height: 400px;
 }
 
 .small-box,
@@ -233,10 +235,6 @@ h1 {
 }
 
 @media (max-width: 480px) {
-  .ck-editor__editable {
-    height: 150px;
-  }
-
   .not-mobile-ex {
     display: none;
   }

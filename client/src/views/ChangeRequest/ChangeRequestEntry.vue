@@ -12,7 +12,7 @@
         <i class="fa fa-edit"></i>&nbsp;&nbsp;Change Request Entry
       </h1>
     </section>
-    <section class="content">
+    <section class="content" id="cr-entry">
       <div class="row">
         <div class="col-md-8">
           <form class="box" @submit.prevent="submitRequest">
@@ -199,11 +199,27 @@ export default {
     }
 
     //initialize editor
-    ClassicEditor.create(document.querySelector('#editor'))
+    ClassicEditor.create(document.querySelector('#editor'), {
+      toolbar: [
+        'bold',
+        'italic',
+        'bulletedList',
+        'numberedList',
+        'blockQuote',
+
+        'link',
+        'mediaEmbed',
+        'undo',
+        'redo'
+      ]
+    })
       .then(editor => {
         self.editor = editor;
         editor.setData(self.requestData.details);
         console.log(Array.from(editor.ui.componentFactory.names()));
+        console.log(
+          ClassicEditor.builtinPlugins.map(plugin => plugin.pluginName)
+        );
         // clear detail error when blur
         editor.ui.focusTracker.on(
           'change:isFocused',
@@ -374,4 +390,7 @@ export default {
 </script>
 
 <style>
+#cr-entry .ck-editor__editable {
+  min-height: 40vh !important;
+}
 </style>

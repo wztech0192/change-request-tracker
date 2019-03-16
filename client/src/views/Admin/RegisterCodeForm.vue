@@ -39,6 +39,11 @@
                   placeholder="example@domain.com"
                   @blur="clearError('email')"
                 >
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-primary" title="generate">
+                    <i class="fa fa-paper-plane"></i>
+                  </button>
+                </span>
               </div>
               <span
                 class="help-block"
@@ -50,11 +55,13 @@
               
               <textarea id="editor" name="editor" style="width: 100%"></textarea>
 
-              <hr>
+              <br>
+              <br>
 
               <!-- Regsiter information -->
               <div
-                class="box box-primary collapsed-box"
+                class="box box-primary"
+                id="cbox"
                 :style="[(error.first_name_error||error.last_name_error)?{'border-top-color': '#f56954'}:{'border-top-color': '#3c8dbc'}]"
               >
                 <div class="box-header with-border">
@@ -63,8 +70,8 @@
                     data-widget="collapse"
                     :class="{'text-red':error.first_name_error||error.last_name_error}"
                   >
-                    <i class="fa fa-user"></i>&nbsp;&nbsp;Receiver Info
-                    <span v-if="!codeData.allowEdit">- Must!</span>
+                    <i class="fa fa-user"></i>
+                    &nbsp;&nbsp;Receiver Info - {{codeData.allowEdit?'Optional':'Must!'}}
                   </a>
                   
                   <a class="box-tools pull-right">
@@ -76,7 +83,7 @@
                   <!-- /.box-tools -->
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body" style="display:none;">
+                <div class="box-body">
                   <div class="form-group" :class="{'has-error':error.first_name_error}">
                     <label>First Name</label>
                     
@@ -164,7 +171,19 @@ export default {
   mounted() {
     var self = this;
     //initialize editor
-    ClassicEditor.create(document.querySelector('#editor'))
+    ClassicEditor.create(document.querySelector('#editor'), {
+      toolbar: [
+        'bold',
+        'italic',
+        'bulletedList',
+        'numberedList',
+        'blockQuote',
+        'link',
+        'mediaEmbed',
+        'undo',
+        'redo'
+      ]
+    })
       .then(editor => {
         self.editor = editor;
         // bind code contetn to editor data
@@ -175,7 +194,7 @@ export default {
       .catch(e => self.setGlobalError(e));
 
     //initialize collapse box
-    $('.collapsed-box').boxWidget({
+    $('#cbox').boxWidget({
       animationSpeed: 300,
       collapseTrigger: "[data-widget='collapse']"
     });

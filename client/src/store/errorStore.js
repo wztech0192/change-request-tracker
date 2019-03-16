@@ -38,7 +38,7 @@ export default {
         try {
           const errorData = msg.response.data;
 
-          if (errorData.error && errorData.error.name === 'ExpiredJwtToken') {
+          if (errorData.name === 'ExpiredJwtToken') {
             // if error is expired jwt token, redirect to login page
             commit(
               'setGlobalError',

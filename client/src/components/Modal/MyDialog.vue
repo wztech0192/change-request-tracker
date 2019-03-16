@@ -125,6 +125,8 @@ export default {
           return 'fa fa-times';
         case 'Direct Me':
           return 'fa fa-arrow-circle-o-right';
+        case 'Show Profile':
+          return 'fa fa-user';
       }
     },
 
@@ -137,6 +139,7 @@ export default {
         case 'Cancel':
           return 'vue-dialog-cancel';
         case 'Direct Me':
+        case 'Show Profile':
           return 'vue-dialog-direct';
       }
     }

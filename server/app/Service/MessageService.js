@@ -275,8 +275,7 @@ class MessageService {
       <li>Use CRTracker notification system to track your action.</li>
       <li>Use CRTracker message system to communicate with anyone in our system.</li>
       <li>Submit Change Request.</li>
-      <li>(Client Only) Submit Change Request via email. <a href="mailto:${submitEmail}?
-      subject=Request Title:&body=Request Detail:">${submitEmail}</a></li>
+      <li>(Client Only) Submit Change Request via email. <a href="mailto:${submitEmail}">${submitEmail}</a></li>
       <li>Track Change Request.</li>
       <li>Track Change Request via email: <a href="mailto:${infoEmail}?subject=track || id">${infoEmail}</a> - with the subject: </li>
       <ul>

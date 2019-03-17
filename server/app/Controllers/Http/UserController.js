@@ -79,13 +79,21 @@ class UserController {
     AuthorizationService.verifyExistance(user, ' user');
 
     const data = request.all();
+    const searchData = data.term || '';
+    const splitSearch = searchData.split(' ');
+
     const userList = await User.query()
       .where(function() {
-        this.where('full_name', 'like', `%${data.term || ''}%`).orWhere(
-          'email',
-          'like',
-          `%${data.term || ''}%`
-        );
+        this.where('email', 'like', `%${searchData}%`);
+        if (splitSearch.length >= 3) {
+          //search full name
+          this.orWhere('full_name', 'like', `%${searchData}%`);
+        } else {
+          for (let data of splitSearch) {
+            // split the string and search each splitted item
+            this.orWhere('full_name', 'like', `%${data || 'N/A'}%`);
+          }
+        }
       })
       .andWhere('role', 'like', params.role === 'all' ? '%%' : params.role)
 
@@ -152,7 +160,18 @@ class UserController {
       (table, page, search) =>
         User.query()
           .where('id', 'like', search)
-          .orWhere('full_name', 'like', search)
+          .orWhere(function() {
+            var splitSearch = search.split(' ');
+            if (splitSearch.length >= 3) {
+              //search full name
+              this.orWhere('full_name', 'like', `%${search}%`);
+            } else {
+              for (let data of splitSearch) {
+                // split the string and search each splitted item
+                this.orWhere('full_name', 'like', `%${data || 'N/A'}%`);
+              }
+            }
+          })
           .orWhere('email', 'like', search)
           .orWhere('role', 'like', search)
           .orWhere('created_at', 'like', search)

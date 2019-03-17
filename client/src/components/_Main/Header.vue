@@ -112,7 +112,7 @@
             <!-- read notification  -->
             <li class="nav-menu-break">
               <label>
-                <small>Read (Last 3 Days) :{{notifyList.old.length}}</small>
+                <small>{{notifyList.old.length }} Newest Notifications</small>
               </label>
             </li>
 

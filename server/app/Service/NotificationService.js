@@ -89,13 +89,14 @@ class NotificationService {
    * notify admin and user when his role got changed
    */
   static async roleChange(target, issuer, role) {
+    var oldRole = target.role;
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
       const notifyList = new Array(length + 1).fill().map(a => ({
         user_id: target.user_id,
         content: `${target.full_name}'s role has been changed 
-                  from ${target.role} to ${role}. The action is performed
+                  from ${oldRole} to ${role}. The action is performed
                   by ${issuer.full_name}`,
         icon: 'fa-user',
         link: `@${target.email}`
@@ -198,13 +199,11 @@ class NotificationService {
    * @return {notification list object}
    */
   static async getNotification(user) {
-    const threeDaysBefore = new Date(new Date() - 250560000);
-
     const notifyList_old = await user
       .notifications()
       .where('isNew', '0')
-      .andWhere('created_at', '>', threeDaysBefore)
       .orderBy('created_at', 'desc')
+      .limit(10)
       .fetch();
     const notifyList_new = await user
       .notifications()

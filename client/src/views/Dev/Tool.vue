@@ -97,7 +97,8 @@ export default {
             .post(`/regist-code`, {
               role: Math.random() >= 0.5 ? 'Client' : 'Admin',
               email: email.trim(),
-              allowEdit: true
+              allowEdit: true,
+              content: 'This is from the dev tool of my capstone project'
             })
             .then(({ data }) => {
               console.log(data);

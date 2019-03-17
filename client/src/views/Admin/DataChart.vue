@@ -324,7 +324,9 @@ export default {
 .datepicker table tbody .day {
   border-radius: 0;
 }
-
+.datepicker table tr td.disabled {
+  color: rgb(219, 219, 219) !important;
+}
 #calendar .table-condensed tbody tr:hover {
   background-color: rgba(173, 216, 230, 0.4);
 }

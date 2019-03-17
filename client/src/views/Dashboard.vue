@@ -134,12 +134,12 @@
                       </a>
                     </td>
                   </tr>
-                  <!-- Read Notification From Last 3 days-->
+                  <!-- Newest 10 Read Notification-->
                   <tr>
                     <th colspan="4">
                       <label
                         class="label label-primary"
-                      >{{notifyList.old.length}} Notifications From Last 3 Days</label>
+                      >{{notifyList.old.length}} Newest Notifications</label>
                     </th>
                   </tr>
                   <tr v-for="notify in notifyList.old">

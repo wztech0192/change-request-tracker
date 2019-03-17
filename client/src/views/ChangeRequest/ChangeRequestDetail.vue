@@ -83,36 +83,24 @@
               class="cr-status label clickable"
               :class="{'label-danger':requestData.status==='Cancelled'}"
               @click="changeStatus('Cancelled')"
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Cancelled"
             >CANCEL</label>
             
             <label
               class="cr-status label clickable"
               :class="{'label-warning':requestData.status==='To Do'}"
               @click="changeStatus('To Do')"
-              data-toggle="tooltip"
-              title="To Do"
-              data-placement="bottom"
             >TO DO</label>
             
             <label
               class="cr-status label clickable"
               :class="{'label-primary':requestData.status==='In Progress'}"
               @click="changeStatus('In Progress')"
-              data-toggle="tooltip"
-              title="In Progress"
-              data-placement="bottom"
             >In PROGRESS</label>
             
             <label
               class="cr-status label clickable"
               :class="{'label-success':requestData.status==='Complete'}"
               @click="changeStatus('Complete')"
-              data-toggle="tooltip"
-              title="Complete"
-              data-placement="bottom"
             >COMPLETE</label>
           </div>
           <br>
@@ -318,7 +306,7 @@ export default {
   display: inline-block;
   box-shadow: 0px 2px 5px grey;
   width: 25%;
-  color: transparent;
+  color: lightgrey;
   border-radius: 0;
   transition: 0.3s ease;
   padding: 5px 0;

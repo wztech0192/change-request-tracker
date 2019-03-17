@@ -245,7 +245,7 @@ export default {
       templateResult: (state, parent) => {
         if (self.searchByUser) {
           state.id = state.email;
-          parent.setAttribute('title', state.role);
+          parent.setAttribute('title', `${state.role} - ${state.email}`);
           return state.full_name;
         } else {
           parent.value = state.id;

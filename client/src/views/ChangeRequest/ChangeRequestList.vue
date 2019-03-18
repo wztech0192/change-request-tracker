@@ -6,7 +6,7 @@
 
 <template>
   <div>
-    <section class="content">
+    <section v-if="ChangeRequestList" class="content">
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
           <li class="dropdown" :class="isOtherTab()">

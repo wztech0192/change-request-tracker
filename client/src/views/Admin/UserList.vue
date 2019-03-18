@@ -34,10 +34,7 @@
     <section class="content">
       <div class="box">
         <div class="box-body">
-          <table id="user-table" class="table table-hover display" style="width:100%;">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
+          <table id="user-table" class="table table-hover display" style="width:100%;"></table>
           <div v-if="loading" class="overlay">
             <i class="fa fa-spinner fa-spin"></i>
           </div>

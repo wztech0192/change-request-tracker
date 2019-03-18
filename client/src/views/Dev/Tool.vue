@@ -98,7 +98,8 @@ export default {
               role: Math.random() >= 0.5 ? 'Client' : 'Admin',
               email: email.trim(),
               allowEdit: true,
-              content: 'This is from the dev tool of my capstone project'
+              content:
+                'This is not a spam. This is from CS Capstone project of Wei Zheng.'
             })
             .then(({ data }) => {
               console.log(data);

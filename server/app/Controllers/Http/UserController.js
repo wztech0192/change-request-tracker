@@ -80,20 +80,19 @@ class UserController {
 
     const data = request.all();
     const searchData = data.term || '';
-    const splitSearch = searchData.split(' ');
 
     const userList = await User.query()
+
       .where(function() {
-        this.where('email', 'like', `%${searchData}%`);
-        if (splitSearch.length >= 3) {
-          //search full name
-          this.orWhere('full_name', 'like', `%${searchData}%`);
-        } else {
-          for (let data of splitSearch) {
-            // split the string and search each splitted item
-            this.orWhere('full_name', 'like', `%${data || 'N/A'}%`);
-          }
-        }
+        this.where('email', 'like', `%${searchData}%`)
+          .orWhere('role', 'like', `%${searchData}%`)
+          .orWhere(function() {
+            const splitSearch = searchData.split(' ');
+            for (let split of splitSearch) {
+              // split the string and search each splitted item
+              this.where('full_name', 'like', `%${split || 'N/A'}%`);
+            }
+          });
       })
       .andWhere('role', 'like', params.role === 'all' ? '%%' : params.role)
 
@@ -161,15 +160,10 @@ class UserController {
         User.query()
           .where('id', 'like', search)
           .orWhere(function() {
-            var splitSearch = search.split(' ');
-            if (splitSearch.length >= 3) {
-              //search full name
-              this.orWhere('full_name', 'like', `%${search}%`);
-            } else {
-              for (let data of splitSearch) {
-                // split the string and search each splitted item
-                this.orWhere('full_name', 'like', `%${data || 'N/A'}%`);
-              }
+            const splitSearch = search.split(' ');
+            for (let split of splitSearch) {
+              // split the string and search each splitted item
+              this.where('full_name', 'like', `%${split || 'N/A'}%`);
             }
           })
           .orWhere('email', 'like', search)
@@ -238,45 +232,6 @@ class UserController {
     await targetUser.save();
 
     return targetUser;
-
-    /* //if request a role change, verify current user's role then update target user
-    if (data.role) {
-      //role check
-      AuthorizationService.verifyPermissionForUser(
-        targetUser,
-        user,
-        ['Developer', 'Admin'],
-        false
-      );
-      targetUser.role = data.role;
-      if (targetUser.role == 'Developer') {
-        targetUser.isDev = 1;
-      }
-    }
-    //else allow user to update themselve for some profile
-    else {
-      //allow self update
-      AuthorizationService.verifyPermissionForUser(
-        targetUser,
-        user,
-        null,
-        true
-      );
-      data = request.except(['full_name', 'email', 'password']);
-
-      if (data.passworld || data.email) {
-        //validate password or email
-        const validation = await Validator.validateAll(data, User.changeRules);
-        if (validation.fails()) return validation.messages();
-
-        //if has password request, hash the password
-        if (data.password) {
-          data.password = await Hash.make(data.password);
-        }
-      }
-
-      targetUser.merge(data);
-    }*/
   }
 
   /**

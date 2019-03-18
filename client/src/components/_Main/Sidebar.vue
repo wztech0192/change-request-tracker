@@ -263,7 +263,7 @@ export default {
         }
       },
       ajax: {
-        delay: 300,
+        delay: 250,
         transport: function({ data }, success, failure) {
           var url = self.searchByUser
             ? `user/search/all`

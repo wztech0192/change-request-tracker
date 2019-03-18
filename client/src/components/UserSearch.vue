@@ -28,7 +28,7 @@ export default {
       placeholder: self.placeholder,
 
       ajax: {
-        delay: 500,
+        delay: 250,
 
         transport: function({ data }, success, failure) {
           HTTP()

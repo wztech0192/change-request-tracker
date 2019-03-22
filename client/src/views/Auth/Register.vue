@@ -203,10 +203,12 @@ export default {
 
     //clear register datas by set it to empty object
     clearRegisterData() {
-      this.registerData.first_name = null;
-      this.registerData.mid_initial = null;
-      this.registerData.last_name = null;
-      this.registerData.email = null;
+      if (!this.allowEdit) {
+        this.registerData.first_name = null;
+        this.registerData.mid_initial = null;
+        this.registerData.last_name = null;
+      }
+
       this.registerData.password = null;
       this.registerData.password_retype = null;
       this.error.first_name_error = null;

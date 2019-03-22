@@ -2,6 +2,7 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
+const Validator = use('Validator');
 
 class RegistrationCode extends Model {
   /**
@@ -20,6 +21,47 @@ class RegistrationCode extends Model {
     return {
       email: 'required|email|unique:users'
     };
+  }
+
+  /**
+   * validate new register account information
+   */
+  static async isValidate(data) {
+    //if allowEdit is false, validate registor information input
+    if (!data.allowEdit) {
+      const validation = await Validator.validateAll(data, this.registerRules);
+      //return validation fail message if failed
+      if (validation.fails()) {
+        return validation.messages();
+      }
+    } else {
+      //validate email input
+      const emailValidate = await Validator.validate(
+        data,
+        this.registerEmailRules
+      );
+      if (emailValidate.fails()) {
+        return emailValidate.messages();
+      }
+    }
+
+    return 'pass';
+  }
+
+  /**
+   * validate new register account information
+   */
+  static async isEmailValidate(userInfo) {
+    const validation = await Validator.validateAll(
+      userInfo,
+      this.registerRules
+    );
+
+    if (validation.fails()) {
+      return validation.messages();
+    } else {
+      return 'pass';
+    }
   }
 }
 

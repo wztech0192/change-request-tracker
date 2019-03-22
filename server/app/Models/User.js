@@ -6,6 +6,8 @@ const Model = use('Model');
 /** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash');
 
+const Validator = use('Validator');
+
 class User extends Model {
   static boot() {
     super.boot();
@@ -33,15 +35,21 @@ class User extends Model {
       last_name: 'required|max:30'
     };
   }
+
   /**
-   * set require rules for validator
+   * validate new register account information
    */
-  static get changeRules() {
-    return {
-      username: 'unique:users',
-      email: 'email|unique:users',
-      password: 'min:6|max:30'
-    };
+  static async isValidate(userInfo) {
+    const validation = await Validator.validateAll(
+      userInfo,
+      this.registerRules
+    );
+
+    if (validation.fails()) {
+      return validation.messages();
+    } else {
+      return 'pass';
+    }
   }
 
   /**

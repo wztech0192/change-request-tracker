@@ -7,68 +7,18 @@
 
 const User = use('App/Models/User');
 const AuthorizationService = use('App/Service/AuthorizationService');
-const RegistrationCodeService = use('App/Service/RegistrationCodeService');
 const MessageService = use('App/Service/MessageService');
 const NotificationService = use('App/Service/NotificationService');
-const Hash = use('Hash');
 const FlagService = use('App/Service/FlagService');
 const MyHelper = use('App/Helper/MyHelper');
-const Validator = use('Validator');
-const Database = use('Database');
 
 class UserController {
   /**
    * Take email and password then attempt to login
-   *
    */
   async login({ request, auth }) {
     const { email, password } = request.all();
-    const token = await auth.attempt(email, password);
-    return token;
-  }
-
-  /**
-   * Take email and password then create a user inside database. If success call login function
-   * @return {login}
-   */
-  async register({ request }) {
-    //verify registration code
-    const code = await RegistrationCodeService.getMatchCode(
-      request.only('code')
-    );
-
-    const userInfo = request.except(['code', 'password_retype']);
-
-    //if not allow to edit, set registration data to code data
-    if (code.allowEdit === 0) {
-      MyHelper.mapUserInfoFrom(code, userInfo);
-    }
-
-    //validate all request data, return message if fails
-    const validation = await Validator.validateAll(
-      userInfo,
-      User.registerRules
-    );
-    if (validation.fails()) {
-      return validation.messages();
-    }
-
-    MyHelper.mapUserInfo(userInfo, code);
-
-    //create user
-    const user = await User.create(userInfo);
-
-    //create welcome message
-    MessageService.sendWelcomeMessage(userInfo);
-
-    //remove used code
-    RegistrationCodeService.removeCode(code.id);
-
-    // notify new registerd user
-    NotificationService.newUser(user);
-
-    //pass arguments from this method to login
-    return this.login(...arguments);
+    return await auth.attempt(email, password);
   }
 
   /**

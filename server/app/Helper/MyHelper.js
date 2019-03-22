@@ -30,36 +30,39 @@ class MyHelper {
 
   /**
    *  capitalize the first letter of the word and lowercase the rest
+   *  remove all special character or number
    */
-  static modifyString(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  static formatString(string) {
+    if (string) {
+      return (
+        string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+      ).replace(/[\W\d]*/g, '');
+    }
+    return string;
   }
 
   /**
    * map user information
    */
   static mapUserInfo(userInfo, code) {
-    //set format user data
+    // if not allow edit, map user info from code
+    if (code.allowEdit == false) {
+      userInfo.first_name = code.first_name;
+      userInfo.last_name = code.last_name;
+      userInfo.mid_initial = code.mid_initial;
+    }
+
+    //format user data
     if (userInfo.mid_initial) {
-      userInfo.mid_initial = this.modifyString(userInfo.mid_initial) + '.';
+      userInfo.mid_initial = this.formatString(userInfo.mid_initial) + '.';
     }
     userInfo.role = code.role;
     userInfo.email = code.email.toLowerCase();
-    userInfo.last_name = this.modifyString(userInfo.last_name);
-    userInfo.first_name = this.modifyString(userInfo.first_name);
+    userInfo.last_name = this.formatString(userInfo.last_name);
+    userInfo.first_name = this.formatString(userInfo.first_name);
 
     userInfo.full_name = `${userInfo.first_name} ${userInfo.mid_initial ||
       ''} ${userInfo.last_name}`;
-    return userInfo;
-  }
-
-  /**
-   * map user information from code info
-   */
-  static mapUserInfoFrom(code, userInfo) {
-    userInfo.first_name = code.first_name;
-    userInfo.last_name = code.last_name;
-    userInfo.mid_initial = code.mid_initial;
     return userInfo;
   }
 

@@ -23,11 +23,11 @@ const Helpers = use('Helpers');
 
 Route.group(() => {
   //User Authenication
-  Route.post('auth/register', 'UserController.register');
+  Route.post('auth/register', 'RegistrationController.register');
   Route.post('auth/login', 'UserController.login');
   Route.post(
     'regist-code/verify',
-    'RegistrationCodeController.verifyRegistrationCode'
+    'RegistrationController.verifyRegistrationCode'
   );
   Route.post(
     'change-request/mail-submit/:key',
@@ -63,18 +63,15 @@ Route.group(() => {
   Route.patch('user/:id', 'UserController.update');
 
   //Registration code
-  Route.get('regist-code', 'RegistrationCodeController.getRegistrationCode');
-  Route.post(
-    'regist-code',
-    'RegistrationCodeController.createRegistrationCode'
-  );
+  Route.get('regist-code', 'RegistrationController.getRegistrationCode');
+  Route.post('regist-code', 'RegistrationController.createRegistrationCode');
   Route.delete(
     'regist-code/:id',
-    'RegistrationCodeController.deleteRegistrationCode'
+    'RegistrationController.deleteRegistrationCode'
   );
   Route.patch(
     'regist-code/:id',
-    'RegistrationCodeController.updateRegistrationCode'
+    'RegistrationController.updateRegistrationCode'
   );
 
   //Developer Tool Route

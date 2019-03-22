@@ -7,7 +7,7 @@
 
 const Notification = use('App/Models/Notification');
 const Database = use('Database');
-const MyHelper = use('App/Helper/MyHelper');
+const MapHelper = use('App/Helper/MapHelper');
 
 class NotificationService {
   /**
@@ -174,7 +174,7 @@ class NotificationService {
    * @return {Datatable JSON}
    */
   static async notificationPaginate(user, request) {
-    return await MyHelper.mapDatatableFrom(
+    return await MapHelper.mapDatatableFrom(
       request,
       // callback function to perform custom query
       (table, page, search) =>

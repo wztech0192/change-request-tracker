@@ -6,13 +6,17 @@
  */
 
 const User = use('App/Models/User');
-const AuthorizationService = use('App/Service/AuthorizationService');
+const VerificationHelper = use('App/Helper/VerificationHelper');
 const MessageService = use('App/Service/MessageService');
 const NotificationService = use('App/Service/NotificationService');
 const FlagService = use('App/Service/FlagService');
-const MyHelper = use('App/Helper/MyHelper');
+const MapHelper = use('App/Helper/MapHelper');
 
 class UserController {
+  constructor() {
+    this.messageService = new MessageService();
+  }
+
   /**
    * Take email and password then attempt to login
    */
@@ -26,7 +30,7 @@ class UserController {
    */
   async search({ auth, request, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyExistance(user, ' user');
+    VerificationHelper.verifyExistance(user, ' user');
 
     const data = request.all();
     const searchData = data.term || '';
@@ -77,9 +81,9 @@ class UserController {
    */
   async get({ auth, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyExistance(user);
+    VerificationHelper.verifyExistance(user);
     const targetUser = await User.findBy('email', params.email);
-    AuthorizationService.verifyExistance(targetUser);
+    VerificationHelper.verifyExistance(targetUser);
     return targetUser;
   }
 
@@ -89,7 +93,7 @@ class UserController {
    */
   async getRoleList({ auth, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const userQuery = await User.query()
       .where('role', params.role)
       .fetch();
@@ -101,9 +105,9 @@ class UserController {
    */
   async datatable({ auth, request }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
 
-    return await MyHelper.mapDatatableFrom(
+    return await MapHelper.mapDatatableFrom(
       request,
       // callback function to perform custom query
       (table, page, search) =>
@@ -132,7 +136,7 @@ class UserController {
    */
   async getAll({ auth }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const userQuery = await User.query().fetch();
     return userQuery.rows;
   }
@@ -145,7 +149,7 @@ class UserController {
     const user = await auth.getUser();
     const targetUser = await User.find(params.id);
     //permission verify
-    AuthorizationService.verifyPermissionForDeleteUser(targetUser, user, [
+    VerificationHelper.verifyPermissionForDeleteUser(targetUser, user, [
       'Developer',
       'Admin'
     ]);
@@ -164,7 +168,7 @@ class UserController {
     let { role } = request.only('role');
 
     //verify handler's role
-    AuthorizationService.verifyPermissionForUser(
+    VerificationHelper.verifyPermissionForUser(
       targetUser,
       user,
       ['Developer', 'Admin'],
@@ -200,7 +204,7 @@ class UserController {
    */
   async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
-    return await MessageService.getMenuMsgList(user);
+    return await this.messageService.getMenuMsgList(user);
   }
 
   /**

@@ -46,7 +46,7 @@ Route.group(() => {
   Route.get('user/all', 'UserController.getAll');
   Route.get('user/flag', 'UserController.getFlaggedList');
   Route.get('user/notification', 'UserController.getNotificationList');
-  Route.get('user/msg', 'UserController.getMenuMsgList');
+  Route.get('user/msg', 'MessageController.getMenuMsgList');
   Route.post(
     'user/notification/paginate',
     'UserController.notificationPaginate'
@@ -84,12 +84,8 @@ Route.group(() => {
 
   //Message Route
   Route.get('message/:id', 'MessageController.getMessage');
-
   Route.post('message/list', 'MessageController.getMessageList');
-
   Route.post('message', 'MessageController.createMessage');
-
-  Route.delete('message/:id', 'MessageController.deleteMessage');
   Route.patch('message/clear-new', 'MessageController.clearNewMessages');
   Route.patch('message/archive', 'MessageController.archiveMessage');
   Route.patch('message/:id', 'MessageController.updateMessage');

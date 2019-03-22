@@ -10,7 +10,7 @@ const ResourceNotExistException = use(
   'App/Exceptions/ResourceNotExistException'
 );
 
-class AuthorizationService {
+class VerificationHelper {
   /**
    * verify if user has permission to handle this resource
    */
@@ -103,15 +103,6 @@ class AuthorizationService {
       throw new ResourceNotExistException(message);
     }
   }
-
-  //validate if all message field are filled.
-  static validateMessage(msg) {
-    if (!msg.receiverEmail || !msg.title || !msg.content) {
-      throw new InvalidAccessException(
-        'Action. Make sure every field has filled!'
-      );
-    }
-  }
 }
 
-module.exports = AuthorizationService;
+module.exports = VerificationHelper;

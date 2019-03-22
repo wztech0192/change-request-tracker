@@ -5,32 +5,38 @@
  * @description Create / validate registration code and register new user
  */
 
-const AuthorizationService = use('App/Service/AuthorizationService');
+const VerificationHelper = use('App/Helper/VerificationHelper');
 const RegistrationService = use('App/Service/RegistrationService');
-const MyHelper = use('App/Helper/MyHelper');
+const MapHelper = use('App/Helper/MapHelper');
 
 class RegistrationController {
+  constructor() {
+    this.registrationService = new RegistrationService();
+  }
+
   /**
    * Take email and password then create a user and save into database. If success call return user token
    * @return {token}
    */
   async register({ request, auth }) {
     //verify registration code, throw exceptions if failed
-    const code = await RegistrationService.getMatchCode(request.only('code'));
+    const code = await this.registrationService.getMatchCode(
+      request.only('code')
+    );
 
     //map user information
-    const userInfo = MyHelper.mapUserInfo(
+    const userInfo = MapHelper.mapUserInfo(
       request.except(['code', 'password_retype']),
       code
     );
 
     //validate, return message if fails
-    const validation = await RegistrationService.isUserValidate(userInfo);
+    const validation = await this.registrationService.isUserValidate(userInfo);
     if (validation !== 'pass') {
       return validation;
     } else {
       //create new user
-      await RegistrationService.createNewUser(userInfo, code);
+      await this.registrationService.createNewUser(userInfo, code);
 
       //pass arguments from this method to login
       return await auth.attempt(userInfo.email, userInfo.password);
@@ -44,24 +50,24 @@ class RegistrationController {
     let data = request.all();
 
     //validate data
-    const validation = await RegistrationService.isCodeValidate(data);
+    const validation = await this.registrationService.isCodeValidate(data);
     if (validation !== 'pass') {
       return validation;
     }
 
     //authenticate user
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
 
     // create code and return code
-    return await RegistrationService.createRegistrationCode(user, data);
+    return await this.registrationService.createRegistrationCode(user, data);
   }
 
   /**
    * Get registrationCode from data that match with input code
    */
   async verifyRegistrationCode({ request }) {
-    return RegistrationService.getMatchCode(request.only('code'));
+    return this.registrationService.getMatchCode(request.only('code'));
   }
 }
 

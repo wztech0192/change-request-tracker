@@ -12,7 +12,7 @@ const ChangeRequestHistory = use(
 const ChangeRequestMessage = use(
   'App/Models/ChangeRequest/ChangeRequestMessage'
 );
-const MyHelper = use('App/Helper/MyHelper');
+const MapHelper = use('App/Helper/MapHelper');
 const NotificationService = use('App/Service/NotificationService');
 
 class ChangeRequestService {
@@ -22,7 +22,7 @@ class ChangeRequestService {
    */
   async create(data, client, issuer, message) {
     //map change request using helper
-    const changeRequest = MyHelper.mapChangeRequest(
+    const changeRequest = MapHelper.mapChangeRequest(
       new ChangeRequest(),
       data,
       client
@@ -45,7 +45,7 @@ class ChangeRequestService {
     //save change request message is message exist
     if (message) {
       // replace < and > to html code &#60; and &#62 for security
-      message = MyHelper.sanitize(message);
+      message = MapHelper.sanitize(message);
       await this.createCRMessage(changeRequest, `<p>${message}</p>`);
     }
 
@@ -57,7 +57,7 @@ class ChangeRequestService {
    */
   async createCRMessage(changeRequest, content) {
     // replace < and > to html code &#60; and &#62 for security
-    content = MyHelper.sanitize(content);
+    content = MapHelper.sanitize(content);
     await ChangeRequestMessage.create({
       change_request_id: changeRequest.id,
       content: content,
@@ -94,4 +94,4 @@ class ChangeRequestService {
   }
 }
 
-module.exports = new ChangeRequestService();
+module.exports = ChangeRequestService;

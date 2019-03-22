@@ -251,7 +251,7 @@ export default {
       errorMsg: null,
 
       //filtering type
-      todoType: 'ALL'
+      todoType: 'FLAG'
     };
   },
 
@@ -438,14 +438,17 @@ export default {
       var { parent, item } = this.modalInfo;
       //remove task from its parent tasks array
       parent.tasks = parent.tasks.filter(value => value !== item);
-
-      //calculate new completion percentage after task is deleted
-      var dPercent = item.isCompleted ? (1 / parent.task_num) * 100 : 0;
-      parent.percentage -= dPercent;
-      parent.task_num--;
-      parent.percentage = Math.round(
-        ((parent.task_num + 1) * parent.percentage) / parent.task_num
-      );
+      if (parent.tasks.length === 0) {
+        parent.percentage = 0;
+      } else {
+        //calculate new completion percentage after task is deleted
+        var dPercent = item.isCompleted ? (1 / parent.task_num) * 100 : 0;
+        parent.percentage -= dPercent;
+        parent.task_num--;
+        parent.percentage = Math.round(
+          ((parent.task_num + 1) * parent.percentage) / parent.task_num
+        );
+      }
 
       HTTP()
         .delete(`/dev/task/${item.id}`)

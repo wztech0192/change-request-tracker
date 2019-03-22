@@ -2,10 +2,10 @@
 
 /**
  * @author Wei Zheng
- * @description reusable method
+ * @description reusable method used to map object
  */
 
-class MyHelper {
+class MapHelper {
   /**
    * map datatabse json
    */
@@ -39,6 +39,24 @@ class MyHelper {
       ).replace(/[\W\d]*/g, '');
     }
     return string;
+  }
+
+  /**
+   * map receiver list into data
+   * @return {Array}
+   */
+  static mapReceiveData(user, request) {
+    const { receiver, title, content } = request.all();
+    return new Array(receiver.length).fill().map((a, i) => ({
+      receiverEmail: receiver[i].substring(
+        receiver[i].indexOf('(') + 1,
+        receiver[i].lastIndexOf(')')
+      ),
+      senderEmail: user.email,
+      senderName: user.full_name,
+      title: title,
+      content: content
+    }));
   }
 
   /**
@@ -167,4 +185,4 @@ class MyHelper {
   }
 }
 
-module.exports = MyHelper;
+module.exports = MapHelper;

@@ -12,6 +12,10 @@ const ChangeRequestService = use('App/Service/ChangeRequestService');
 const ltr = 'abcdefghijklmnopqrstuvwxyz';
 
 class DevService {
+  constructor() {
+    this.changeRequestService = new ChangeRequestService();
+  }
+
   /**----------------------Dev Todo CRUD--------------------------
    * Get all dev ToDo and its task
    * @returns {Object}
@@ -194,7 +198,7 @@ class DevService {
    * Adjust change request data, for dev
    */
   async adjustChangeRequest() {
-    ChangeRequestService.adjustChangeRequest();
+    this.changeRequestService.adjustChangeRequest();
   }
 
   /**
@@ -207,7 +211,7 @@ class DevService {
     for (let i = 0; i < num; i++) {
       randUser = users[Math.round(Math.random() * (users.length - 1))];
       //create new change request
-      ChangeRequestService.create(
+      this.changeRequestService.create(
         {
           totalMessage: 0,
           totalHistory: 0,
@@ -222,4 +226,4 @@ class DevService {
   }
 }
 
-module.exports = new DevService();
+module.exports = DevService;

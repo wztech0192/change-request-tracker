@@ -5,10 +5,14 @@
  * @description create, read, update, and delete for developer todo, developer task, and developer reference
  */
 
-const AuthorizationService = use('App/Service/AuthorizationService');
+const VerificationHelper = use('App/Helper/VerificationHelper');
 const DevService = use('App/Service/DevService');
 
 class DevController {
+  constructor() {
+    this.devService = new DevService();
+  }
+
   /**
    * Get all dev ToDo and its task
    * @returns {Object}
@@ -16,17 +20,17 @@ class DevController {
   async index({ auth }) {
     //authorize
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    return await DevService.getList();
+    VerificationHelper.verifyRole(user, ['Developer']);
+    return await this.devService.getList();
   }
 
   async _baseCrud({ auth, request, params }, callback) {
     const user = await auth.getUser();
     //verify user role, return 404 if failed
-    AuthorizationService.verifyRole(user, ['Developer']);
+    VerificationHelper.verifyRole(user, ['Developer']);
     const result = await callback(params.id, request);
     //verify if resource exist, return 404 if failed
-    AuthorizationService.verifyExistance(result);
+    VerificationHelper.verifyExistance(result);
     return result;
   }
 
@@ -37,8 +41,8 @@ class DevController {
    */
   async createTodo({ auth, request }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    return await DevService.createTodo(request.only('content'));
+    VerificationHelper.verifyRole(user, ['Developer']);
+    return await this.devService.createTodo(request.only('content'));
   }
 
   /**
@@ -46,7 +50,7 @@ class DevController {
    * @returns {devTodo}
    */
   async destroyTodo(data) {
-    return this._baseCrud(data, DevService.destroyTodo);
+    return this._baseCrud(data, this.devService.destroyTodo);
   }
 
   /**
@@ -54,7 +58,7 @@ class DevController {
    * @returns {devTodo}
    */
   async updateTodo(data) {
-    return this._baseCrud(data, DevService.updateTodo);
+    return this._baseCrud(data, this.devService.updateTodo);
   }
 
   /**----------------------Dev Task CRUD--------------------------
@@ -64,7 +68,7 @@ class DevController {
    * @returns {devTask}
    */
   async createTask(data) {
-    return this._baseCrud(data, DevService.createTask);
+    return this._baseCrud(data, this.devService.createTask);
   }
 
   /**
@@ -72,7 +76,7 @@ class DevController {
    * @returns {devTask}
    */
   async destroyTask(data) {
-    return this._baseCrud(data, DevService.destroyTask);
+    return this._baseCrud(data, this.devService.destroyTask);
   }
 
   /**
@@ -80,7 +84,7 @@ class DevController {
    * @returns {devTask}
    */
   async updateTask(data) {
-    return this._baseCrud(data, DevService.updateTask);
+    return this._baseCrud(data, this.devService.updateTask);
   }
 
   /**
@@ -88,7 +92,7 @@ class DevController {
    * @returns {devTask}
    */
   async updateTaskComplete(data) {
-    return this._baseCrud(data, DevService.updateTaskComplete);
+    return this._baseCrud(data, this.devService.updateTaskComplete);
   }
 
   /**----------------------Dev Tools--------------------------
@@ -97,8 +101,8 @@ class DevController {
    */
   async generateUsers({ auth, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    DevService.generateUsers(params.num);
+    VerificationHelper.verifyRole(user, ['Developer']);
+    this.devService.generateUsers(params.num);
   }
 
   /**
@@ -106,8 +110,8 @@ class DevController {
    */
   async generateChangeRequest({ auth, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    DevService.generateChangeRequest(params.num, user);
+    VerificationHelper.verifyRole(user, ['Developer']);
+    this.devService.generateChangeRequest(params.num, user);
   }
 
   /**
@@ -115,8 +119,8 @@ class DevController {
    */
   async adjustChangeRequest({ auth }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer']);
-    DevService.adjustChangeRequest();
+    VerificationHelper.verifyRole(user, ['Developer']);
+    this.devService.adjustChangeRequest();
   }
 }
 

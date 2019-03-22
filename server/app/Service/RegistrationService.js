@@ -14,6 +14,10 @@ const RegistCodeNotExistException = use(
 );
 
 class RegistrationService {
+  constructor() {
+    this.messageService = new MessageService();
+  }
+
   // Get registrationCode from data that match with input code
   async getMatchCode({ code }) {
     const RegistrationCodes = await RegistrationCode.findBy('code', code);
@@ -37,7 +41,7 @@ class RegistrationService {
     // send notification
     NotificationService.newRegisterCode(registrationCode);
     // send email message
-    MessageService.sendRegistrationCodeMessage(registrationCode);
+    this.messageService.sendRegistrationCodeMessage(registrationCode);
 
     return {
       code: registrationCode.code
@@ -70,7 +74,7 @@ class RegistrationService {
     //create user
     const user = await User.create(userInfo);
     //create welcome message
-    MessageService.sendWelcomeMessage(user);
+    this.messageService.sendWelcomeMessage(user);
     //remove used code
     this.removeCode(code.id);
     // notify new registerd user
@@ -79,4 +83,4 @@ class RegistrationService {
   }
 }
 
-module.exports = new RegistrationService();
+module.exports = RegistrationService;

@@ -14,9 +14,9 @@ const ChangeRequestHistory = use(
   'App/Models/ChangeRequest/ChangeRequestHistory'
 );
 
-const MyHelper = use('App/Helper/MyHelper');
+const MapHelper = use('App/Helper/MapHelper');
 
-const AuthorizationService = use('App/Service/AuthorizationService');
+const VerificationHelper = use('App/Helper/VerificationHelper');
 const FlagService = use('App/Service/FlagService');
 const CrudService = use('App/Service/CrudService');
 const Notification = use('App/Service/NotificationService');
@@ -32,7 +32,7 @@ class ChangeRequestController {
     const changeRequest = await ChangeRequest.find(params.id);
 
     //only allow dev, admin, and request submitter to receive the data
-    AuthorizationService.verifyPermission(
+    VerificationHelper.verifyPermission(
       changeRequest,
       user,
       ['Developer', 'Admin'],
@@ -75,7 +75,7 @@ class ChangeRequestController {
    */
   async getRequestList({ auth, request }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const filter = request.all();
     let requestList;
     //    console.log(filter);
@@ -145,7 +145,7 @@ class ChangeRequestController {
     }
 
     //map change request using helper
-    const changeRequest = MyHelper.mapChangeRequest(
+    const changeRequest = MapHelper.mapChangeRequest(
       new ChangeRequest(),
       data,
       client
@@ -171,7 +171,7 @@ class ChangeRequestController {
     }
 
     //create change request history
-    await MyHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
+    await MapHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
       type: 'Create',
       content: `Change Request ID ${changeRequest.id} has been posted by ${
         user.full_name
@@ -190,7 +190,7 @@ class ChangeRequestController {
   async destroy({ auth, params }) {
     return CrudService.destroy(auth, params, ChangeRequest, {
       verify: (user, changeRequest) =>
-        AuthorizationService.verifyPermission(changeRequest, user, [
+        VerificationHelper.verifyPermission(changeRequest, user, [
           'Developer',
           'Admin'
         ])
@@ -205,7 +205,7 @@ class ChangeRequestController {
     const requestData = request.only(['title', 'details', 'status']);
     return CrudService.update(auth, params, ChangeRequest, {
       verify: (user, changeRequest) =>
-        AuthorizationService.verifyPermission(
+        VerificationHelper.verifyPermission(
           changeRequest,
           user,
           ['Developer', 'Admin'],
@@ -213,9 +213,9 @@ class ChangeRequestController {
         ),
       work: changeRequest => changeRequest.merge(requestData),
       after: (changeRequest, user) => {
-        const changeData = MyHelper.mapCRHistory(requestData, user);
+        const changeData = MapHelper.mapCRHistory(requestData, user);
         //create change request history
-        MyHelper.createCRHistory(
+        MapHelper.createCRHistory(
           new ChangeRequestHistory(),
           changeRequest,
           changeData
@@ -236,9 +236,9 @@ class ChangeRequestController {
     const user = await auth.getUser();
     //if search every change request, verify if user is a admin or developer
     if (params.target === 'all') {
-      AuthorizationService.verifyRole(user, ['Admin', 'Developer']);
+      VerificationHelper.verifyRole(user, ['Admin', 'Developer']);
     } else {
-      AuthorizationService.verifyExistance(user, ' user');
+      VerificationHelper.verifyExistance(user, ' user');
     }
     const data = request.all();
 
@@ -279,7 +279,7 @@ class ChangeRequestController {
   async getCRMessage({ auth, params }) {
     const user = await auth.getUser();
     const changeRequest = await ChangeRequest.find(params.id);
-    AuthorizationService.verifyPermission(
+    VerificationHelper.verifyPermission(
       changeRequest,
       user,
       ['Developer', 'Admin'],
@@ -303,7 +303,7 @@ class ChangeRequestController {
 
     return await CrudService.create(auth, ChangeRequestMessage, {
       verify: user =>
-        AuthorizationService.verifyPermission(
+        VerificationHelper.verifyPermission(
           change_request,
           user,
           ['Developer', 'Admin'],
@@ -329,7 +329,7 @@ class ChangeRequestController {
   async destroyCRMessage({ auth, params }) {
     return CrudService.destroy(auth, params, ChangeRequestMessage, {
       verify: (user, message) =>
-        AuthorizationService.verifyPermission(
+        VerificationHelper.verifyPermission(
           message,
           user,
           ['Developer', 'Admin'],
@@ -345,7 +345,7 @@ class ChangeRequestController {
   async updateCRMessage({ auth, request, params }) {
     return CrudService.update(auth, params, ChangeRequestMessage, {
       verify: (user, message) =>
-        AuthorizationService.verifyPermission(
+        VerificationHelper.verifyPermission(
           message,
           user,
           ['Developer', 'Admin'],
@@ -362,7 +362,7 @@ class ChangeRequestController {
   async getCRHistory({ auth, params }) {
     const user = await auth.getUser();
     const changeRequest = await ChangeRequest.find(params.id);
-    AuthorizationService.verifyPermission(
+    VerificationHelper.verifyPermission(
       changeRequest,
       user,
       ['Developer', 'Admin'],
@@ -381,7 +381,7 @@ class ChangeRequestController {
    */
   async getChartData({ auth, params }) {
     const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
+    VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const dateRange = params.range.split('~');
 
     //retrieve change request between required date
@@ -394,7 +394,7 @@ class ChangeRequestController {
       .fetch();
 
     // return mapped chart data
-    return MyHelper.mapChartDataFrom(CRList);
+    return MapHelper.mapChartDataFrom(CRList);
   }
 
   /**
@@ -403,7 +403,7 @@ class ChangeRequestController {
   async flagChangeRequest({ auth, request }) {
     const user = await auth.getUser();
     const changeRequest = request.all();
-    AuthorizationService.verifyPermission(changeRequest, user, false, true);
+    VerificationHelper.verifyPermission(changeRequest, user, false, true);
     return await FlagService.flagChangeRequest(changeRequest, user);
   }
 
@@ -431,7 +431,7 @@ class ChangeRequestController {
     }
 
     //map change request using helper
-    const changeRequest = MyHelper.mapChangeRequest(
+    const changeRequest = MapHelper.mapChangeRequest(
       new ChangeRequest(),
       {
         title: mailJSON['subject'],
@@ -445,7 +445,7 @@ class ChangeRequestController {
     await client.change_requests().save(changeRequest);
 
     //create change request history
-    await MyHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
+    await MapHelper.createCRHistory(new ChangeRequestHistory(), changeRequest, {
       type: 'Create',
       content: `Change Request ID ${changeRequest.id} has been posted by ${
         client.full_name

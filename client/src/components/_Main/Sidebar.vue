@@ -61,7 +61,7 @@
         </li>
 
         <li class="treeview">
-          <a href="#">
+          <a>
             <i class="fa fa-question-circle"></i>
             <span>Information</span>
             <span class="pull-right-container">
@@ -83,7 +83,7 @@
         </li>
 
         <li class="treeview">
-          <a href="#">
+          <a>
             <i class="fa fa-book"></i>
             <span>Document</span>
             <span class="pull-right-container">

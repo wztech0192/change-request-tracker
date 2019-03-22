@@ -8,12 +8,8 @@
 const RegistrationCode = use('App/Models/RegistrationCode');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationService = use('App/Service/RegistrationService');
-const NotificationService = use('App/Service/NotificationService');
-const CrudService = use('App/Service/CrudService');
 const User = use('App/Models/User');
 const MyHelper = use('App/Helper/MyHelper');
-const MessageService = use('App/Service/MessageService');
-const Database = use('Database');
 
 class RegistrationController {
   /**
@@ -68,42 +64,6 @@ class RegistrationController {
    */
   async verifyRegistrationCode({ request }) {
     return RegistrationService.getMatchCode(request.only('code'));
-  }
-
-  /**
-   * Get registrationCode list belongs to the user
-   */
-  async getRegistrationCode({ auth }) {
-    const user = await auth.getUser();
-    AuthorizationService.verifyRole(user, ['Developer', 'Admin']);
-    const RegistrationCodes = await Database.table('registration_codes')
-      .where('creator_email', user.email)
-      .orderBy('created_at', 'asc');
-    return RegistrationCodes;
-  }
-
-  /**
-   * delete target
-   * @returns {registrationCode}
-   */
-  async deleteRegistrationCode({ auth, params }) {
-    return CrudService.destroy(auth, params, RegistrationCode, {
-      verify: user =>
-        AuthorizationService.verifyRole(user, ['Developer', 'Admin'])
-    });
-  }
-
-  /**
-   * update target
-   * @returns {registrationCode}
-   */
-  async updateRegistrationCode({ auth, request, params }) {
-    return CrudService.update(auth, params, RegistrationCode, {
-      verify: user =>
-        AuthorizationService.verifyRole(user, ['Developer', 'Admin']),
-      work: registrationCode =>
-        registrationCode.merge(request.only(['isRead', 'isArchived']))
-    });
   }
 }
 

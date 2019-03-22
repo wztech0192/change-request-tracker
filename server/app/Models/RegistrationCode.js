@@ -24,7 +24,7 @@ class RegistrationCode extends Model {
   }
 
   /**
-   * validate new register account information
+   * validate registration code information
    */
   static async isValidate(data) {
     //if allowEdit is false, validate registor information input
@@ -46,22 +46,6 @@ class RegistrationCode extends Model {
     }
 
     return 'pass';
-  }
-
-  /**
-   * validate new register account information
-   */
-  static async isEmailValidate(userInfo) {
-    const validation = await Validator.validateAll(
-      userInfo,
-      this.registerRules
-    );
-
-    if (validation.fails()) {
-      return validation.messages();
-    } else {
-      return 'pass';
-    }
   }
 }
 

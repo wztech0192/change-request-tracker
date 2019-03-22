@@ -63,16 +63,7 @@ Route.group(() => {
   Route.patch('user/:id', 'UserController.update');
 
   //Registration code
-  Route.get('regist-code', 'RegistrationController.getRegistrationCode');
   Route.post('regist-code', 'RegistrationController.createRegistrationCode');
-  Route.delete(
-    'regist-code/:id',
-    'RegistrationController.deleteRegistrationCode'
-  );
-  Route.patch(
-    'regist-code/:id',
-    'RegistrationController.updateRegistrationCode'
-  );
 
   //Developer Tool Route
   Route.get('test/generate/user/:num', 'DevController.generateUsers');

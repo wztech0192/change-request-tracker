@@ -67,7 +67,7 @@ class MessageController {
   async getMessageList({ auth, request }) {
     const user = await auth.getUser();
     const { type, page, limit, search } = request.all();
-
+    const searchData = search || '';
     // const search = `%${table.search.value}%`;
     const messages = await Message.query()
       .where(function() {
@@ -90,18 +90,22 @@ class MessageController {
         }
       })
       .where(function() {
-        this.where('id', 'like', `%${search}%`)
-          .orWhere('senderEmail', 'like', `%${search || ''}%`)
-          .orWhere('senderName', 'like', `%${search || ''}%`)
-          .orWhere('receiverEmail', 'like', `%${search || ''}%`)
-          .orWhere('title', 'like', `%${search || ''}%`)
-          .orWhere('created_at', 'like', `%${search || ''}%`)
+        this.where('senderEmail', 'like', `%${searchData}%`)
+          .orWhere(function() {
+            const splitSearch = searchData.split(' ');
+            for (let split of splitSearch) {
+              // split the string and search each splitted item
+              this.where('senderName', 'like', `%${split || 'N/A'}%`);
+            }
+          })
+          .orWhere('receiverEmail', 'like', `%${searchData}%`)
+          .orWhere('title', 'like', `%${searchData}%`)
+          .orWhere('created_at', 'like', `%${searchData}%`)
           .orWhere(
             'isBookmark',
-            'like',
-            `%${
-              search ? (search.toLowerCase().includes('star') ? 1 : -1) : ''
-            }%`
+            `${
+              searchData ? (search.toLowerCase().includes('mark') ? 1 : -1) : ''
+            }`
           );
       })
       .orderBy('created_at', 'desc')

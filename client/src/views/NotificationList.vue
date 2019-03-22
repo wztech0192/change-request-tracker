@@ -38,12 +38,27 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
 import HTTP from '@/http';
 import rowEvent from '@/mixin/rowEvent.js';
+import sharedList from '@/mixin/sharedList.js';
+import { mapActions } from 'vuex';
 
 export default {
-  mixins: [rowEvent],
+  mixins: [rowEvent, sharedList],
+
+  watch: {
+    notifyList(newData, oldData) {
+      //update the table if the new data length if different than the old length
+      if (
+        newData &&
+        oldData &&
+        (oldData.old.length !== newData.old.length ||
+          oldData.new.length !== newData.new.length)
+      ) {
+        this.table.ajax.reload();
+      }
+    }
+  },
 
   mounted() {
     this.initiateTable();
@@ -51,7 +66,6 @@ export default {
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
-    ...mapActions('userStore', ['clearNewNotification']),
 
     //initialize data table
     initiateTable() {
@@ -138,50 +152,6 @@ export default {
       var notify = this.table.row($('#notify-table .selected').index()).data();
       //use open select row from selectRow event mixin
       this.openSelectedRow(this.notifyDetail, notify);
-    },
-
-    notifyDetail(notify) {
-      if (notify.isNew) {
-        // remove new status
-        this.clearNewNotification(notify.id);
-        $('#notify-table .selected')
-          .find('td')
-          .eq(1)
-          .html('');
-      }
-      //display notify detail modal
-      this.$modal.show('dialog', {
-        title:
-          "<span class='text-blue'><i class='fa fa-info'></i> Notification</span>",
-        template: `
-        <label>Create Date</label>
-        <p>${notify.created_at}</p>
-        <label>Content</label>
-        <p>${notify.content}</p>
-        `,
-        maxWidth: 300,
-        buttons: notify.link
-          ? [
-              {
-                title: 'Direct Me',
-                handler: () => {
-                  this.$router.push(notify.link);
-                  this.table.ajax.reload();
-                  this.$modal.hide('dialog');
-                }
-              },
-              {
-                title: 'Hide',
-                default: true
-              }
-            ]
-          : [
-              {
-                title: 'Ok',
-                default: true
-              }
-            ]
-      });
     }
   }
 };

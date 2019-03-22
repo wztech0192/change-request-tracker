@@ -294,6 +294,7 @@ export default {
       }
       //set new timer
       this.delayTimer = setTimeout(() => {
+        this.filter.page = 1;
         this.fetchMessageList();
       }, 200);
     },
@@ -352,7 +353,6 @@ export default {
 
     //toggle message bookmark
     toggleBookmark(msg) {
-      console.log(msg);
       msg.isBookmark = msg.isBookmark === 0 ? 1 : 0;
       //update the server
       HTTP()

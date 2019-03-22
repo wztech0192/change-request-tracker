@@ -181,10 +181,10 @@ class NotificationService {
         Notification.query()
           .where('user_id', user.id)
           .andWhere(function() {
-            this.where('created_at', 'like', search).orWhere(
+            this.where('created_at', 'like', `%${search}%`).orWhere(
               'content',
               'like',
-              search
+              `%${search}%`
             );
           })
           .orderBy(

@@ -158,7 +158,7 @@ class UserController {
       // callback function to perform custom query
       (table, page, search) =>
         User.query()
-          .where('id', 'like', search)
+          .where('id', search)
           .orWhere(function() {
             const splitSearch = search.split(' ');
             for (let split of splitSearch) {
@@ -166,9 +166,9 @@ class UserController {
               this.where('full_name', 'like', `%${split || 'N/A'}%`);
             }
           })
-          .orWhere('email', 'like', search)
-          .orWhere('role', 'like', search)
-          .orWhere('created_at', 'like', search)
+          .orWhere('email', 'like', `%${search}%`)
+          .orWhere('role', 'like', `%${search}%`)
+          .orWhere('created_at', 'like', `%${search}%`)
           .orderBy(
             table.columns[table.order[0].column].data,
             table.order[0].dir

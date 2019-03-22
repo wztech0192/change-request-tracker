@@ -32,7 +32,7 @@
                 <i v-else class="fa fa-exchange" key="2"></i>
               </transition>
             </button>
-            
+
             <select
               id="nav-search"
               type="text"
@@ -306,7 +306,7 @@ export default {
 
     //open selected item.
     openItem() {
-      if (this.searchItem) {
+      if (this.searchItem && this.searchItem.length > 0) {
         if (this.searchByUser) {
           this.$modal.show('user-modal', this.searchItem);
         } else {

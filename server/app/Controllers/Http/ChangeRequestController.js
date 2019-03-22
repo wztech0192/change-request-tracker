@@ -245,9 +245,15 @@ class ChangeRequestController {
     const term = data.term || '';
     const list = await ChangeRequest.query()
       .where(function() {
-        this.where('clientName', 'like', `%${term}%`)
-          .orWhere('status', 'like', `%${term}%`)
-          .orWhere('id', 'like', `%${term}%`);
+        this.where('status', 'like', `%${term}%`)
+          .orWhere('id', term)
+          .orWhere(function() {
+            const splitSearch = term.split(' ');
+            for (let split of splitSearch) {
+              // split the string and search each splitted item
+              this.where('clientName', 'like', `%${split || 'N/A'}%`);
+            }
+          });
       })
       .andWhere(
         'user_id',

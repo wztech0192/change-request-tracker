@@ -16,7 +16,7 @@ class MyHelper {
     const page = table.start / table.length + 1;
 
     // filter search
-    const search = `%${table.search.value}%`;
+    const search = table.search.value;
 
     //callback query function
     const queryList = await queryCB(table, page, search);

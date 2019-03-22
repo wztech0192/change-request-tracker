@@ -99,7 +99,8 @@ export default {
               email: email.trim(),
               allowEdit: true,
               content:
-                'This is not a spam. This is from CS Capstone project of Wei Zheng.'
+                'This is not a spam. This is from CS Capstone project of Wei Zheng.' +
+                'If you are using PacerStudent network, use this domain instead <a href="http://129.252.199.132/~weiZ/crt/public/">http://129.252.199.132/~weiZ/crt/public/</a> '
             })
             .then(({ data }) => {
               console.log(data);

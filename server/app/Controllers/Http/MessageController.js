@@ -163,29 +163,10 @@ class MessageController {
       throw Exception('Empty List');
     }
 
-    const mail = await Message.query()
+    await Message.query()
       .where('receiverEmail', user.email)
       .whereIn('id', list)
       .update({ isArchived });
-  }
-
-  /**
-   * retrieve change request submission from mailgun store
-   */
-  async _retrieveMailRequest({ request }) {
-    const content = request.only(['title', 'detail']);
-    const { sender } = request.only('from');
-    // validate title and detial is not empty
-    if (!content.title || !content.detail) {
-      throw new Exception('Title and Detail must no be empty');
-    }
-
-    //get user and verify
-    sender = await User.findBy('email', sender);
-    AuthorizationService.verifyExistance(sender, ' user.');
-
-    //create change request
-    MessageService.createRequestFromMail(content, sender);
   }
 }
 

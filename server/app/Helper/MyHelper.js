@@ -155,6 +155,16 @@ class MyHelper {
       chartData
     };
   }
+
+  /**
+   * Sanitize string
+   */
+  static sanitize(string) {
+    //replace < and > with unique character
+    string = string.replace(/([\<])/g, '&#60;');
+    string = string.replace(/([\>])/g, '&#62;');
+    return string;
+  }
 }
 
 module.exports = MyHelper;

@@ -2,13 +2,11 @@
 
 /**
  * @author Wei Zheng
- * @description create, read, upload, and delete RegistrationCode
+ * @description Create / validate registration code and register new user
  */
 
-const RegistrationCode = use('App/Models/RegistrationCode');
 const AuthorizationService = use('App/Service/AuthorizationService');
 const RegistrationService = use('App/Service/RegistrationService');
-const User = use('App/Models/User');
 const MyHelper = use('App/Helper/MyHelper');
 
 class RegistrationController {
@@ -27,7 +25,7 @@ class RegistrationController {
     );
 
     //validate, return message if fails
-    const validation = await User.isValidate(userInfo);
+    const validation = await RegistrationService.isUserValidate(userInfo);
     if (validation !== 'pass') {
       return validation;
     } else {
@@ -46,7 +44,7 @@ class RegistrationController {
     let data = request.all();
 
     //validate data
-    const validation = await RegistrationCode.isValidate(data);
+    const validation = await RegistrationService.isCodeValidate(data);
     if (validation !== 'pass') {
       return validation;
     }

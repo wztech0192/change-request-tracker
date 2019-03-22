@@ -82,12 +82,6 @@ Route.group(() => {
   Route.patch('dev/task/:id', 'DevController.updateTask');
   Route.patch('dev/task/complete/:id', 'DevController.updateTaskComplete');
 
-  //Developer Reference Route
-  Route.get('dev/ref', 'DevController.getRef');
-  Route.post('dev/ref', 'DevController.createRef');
-  Route.delete('dev/ref/:id', 'DevController.destroyRef');
-  Route.patch('dev/ref/:id', 'DevController.updateRef');
-
   //Message Route
   Route.get('message/:id', 'MessageController.getMessage');
 

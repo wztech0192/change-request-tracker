@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description registration code method used across multiple controller
+ * @description Any methods that involved in registration process
  */
 
 const RegistrationCode = use('App/Models/RegistrationCode');
@@ -44,11 +44,25 @@ class RegistrationService {
     };
   }
 
+  /**
+   * Validate registration code
+   */
+  async isCodeValidate(data) {
+    return await RegistrationCode.isValidate(data);
+  }
+
   //remove used code
   async removeCode(id) {
     const code = await RegistrationCode.find(id);
     await code.delete();
     return code;
+  }
+
+  /**
+   * Validate user information
+   */
+  async isUserValidate(userInfo) {
+    return await User.isValidate(userInfo);
   }
 
   //create new user from register information

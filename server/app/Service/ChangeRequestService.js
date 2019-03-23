@@ -14,8 +14,124 @@ const ChangeRequestMessage = use(
 );
 const MapHelper = use('App/Helper/MapHelper');
 const NotificationService = use('App/Service/NotificationService');
+const User = use('App/Models/User');
 
 class ChangeRequestService {
+  constructor(flagService) {
+    this.flagService = flagService;
+  }
+
+  /**
+   * display change request detail
+   * @returns {ChangeRequest}
+   */
+  async getDetail(user, id) {
+    const changeRequest = await ChangeRequest.find(id);
+    changeRequest.isFlag = await this.flagService.isFlag(
+      changeRequest,
+      user.id
+    );
+    return changeRequest;
+  }
+
+  /**
+   * Get all change request belongs to this user
+   * @returns {ChangeRequest[]}
+   */
+  async index({ id }, request) {
+    const { tab } = request.only('tab');
+    switch (tab) {
+      case 'all':
+        return ChangeRequest.queryForOwned(id);
+      case 'active':
+        //return all change request except the one with cancelled or complete status
+        return ChangeRequest.queryForActive(id);
+      default:
+        return ChangeRequest.queryByStatus(tab, id);
+    }
+  }
+
+  /**
+   * Get change request list by filter
+   * @returns {ChangeRequest[]}
+   */
+  async getRequestList(request) {
+    const filter = request.all();
+    let requestList;
+    //    console.log(filter);
+    //filter by type
+    if (filter.method === 'tab') {
+      switch (filter.tab) {
+        case 'all':
+          requestList = await ChangeRequest.all();
+          break;
+        case 'active':
+          //return all change request except the one with cancelled or complete status
+          requestList = await ChangeRequest.queryForActive();
+          break;
+        default:
+          requestList = await ChangeRequest.queryByStatus(filter.tab);
+          break;
+      }
+    } else {
+      if (filter.id) {
+        requestList = await ChangeRequest.find(filter.id);
+      } else {
+        requestList = await ChangeRequest.queryForSearch(filter);
+      }
+    }
+    //if requestList is not a array, arraylize it.
+    return requestList.rows ? requestList : [requestList];
+  }
+
+  /**
+   * get client from submitted request data
+   */
+  getClientFrom(user, client) {
+    //get client if current user is a admin. Else client is current user.
+    if (user.role === 'Admin' || user.role === 'Developer') {
+      return User.findBy('email', client);
+    } else {
+      return user;
+    }
+  }
+
+  /**
+   * delete target change request
+   * @returns {ChangeRequest}
+   */
+  async update(id, request, user) {
+    const changeRequest = await ChangeRequest.find(id);
+    if (!changeRequest) return null;
+
+    const requestData = request.only(['title', 'details', 'status']);
+    changeRequest.merge(requestData);
+    //map history data
+    const hist = MapHelper.mapCRHistory(requestData, user);
+    //create change request history
+    await this.createCRHistory(changeRequest, hist);
+    //create notification
+    NotificationService.updateChangeRequest(changeRequest, hist.type, user.id);
+    await changeRequest.save();
+    return changeRequest;
+  }
+
+  /**
+   * search change request
+   */
+  async search(request, target) {
+    const data = request.all();
+    const term = data.term || '';
+    const list = await ChangeRequest.queryForPaginate(term, target, data.page);
+    return {
+      results: list.rows,
+      pagination: {
+        more: list.pages.page < list.pages.lastPage
+      },
+      totals: list.rows.length
+    };
+  }
+
   /**
    * Create a change request
    * @returns {ChangeRequest}
@@ -36,7 +152,7 @@ class ChangeRequestService {
     await this.createCRHistory(changeRequest, {
       type: 'Create',
       content: `Change Request ID ${changeRequest.id} has been posted by ${
-        issuer.full_name
+        issuer ? issuer.full_name : client.full_name
       } in ${changeRequest.created_at}`
     });
 
@@ -46,7 +162,7 @@ class ChangeRequestService {
     if (message) {
       // replace < and > to html code &#60; and &#62 for security
       message = MapHelper.sanitize(message);
-      await this.createCRMessage(changeRequest, `<p>${message}</p>`);
+      await this.createCRMessage(issuer, changeRequest, message, true);
     }
 
     return changeRequest;
@@ -55,9 +171,11 @@ class ChangeRequestService {
   /**
    * create message of change request
    */
-  async createCRMessage(changeRequest, content) {
-    // replace < and > to html code &#60; and &#62 for security
-    content = MapHelper.sanitize(content);
+  async createCRMessage(user, changeRequest, content, sanitize) {
+    if (sanitize) {
+      // replace < and > to html code &#60; and &#62 for security
+      content = `<p>${MapHelper.sanitize(content)}</p>`;
+    }
     await ChangeRequestMessage.create({
       change_request_id: changeRequest.id,
       content: content,
@@ -65,8 +183,8 @@ class ChangeRequestService {
       senderEmail: user.email,
       senderName: user.full_name
     });
-    change_request.totalMessage++;
-    await change_request.save();
+    changeRequest.totalMessage++;
+    await changeRequest.save();
   }
 
   /**
@@ -91,6 +209,63 @@ class ChangeRequestService {
       cr.clientName = `${client.full_name}`;
       cr.save();
     }
+  }
+
+  /**
+   * Get change request
+   * @returns {ChangeRequestMessage[]}
+   */
+  getChangeRequest(id) {
+    return ChangeRequest.find(id);
+  }
+
+  /**
+   * Get all messages belongs to this change request
+   * @returns {ChangeRequestMessage[]}
+   */
+  getCRMessage(changeRequest, limit) {
+    return ChangeRequestMessage.queryForList(changeRequest.id, limit);
+  }
+
+  /**
+   * Get all histories belongs to this change request
+   * @returns {ChangeRequestMessage[]}
+   */
+  getCRHistory(changeRequest) {
+    return ChangeRequestHistory.queryForList(changeRequest.id);
+  }
+
+  /**
+   * delete target change request message
+   * @returns {ChartJS JSON}
+   */
+  async getChartData(params) {
+    const dateRange = params.range.split('~');
+    //retrieve change request between required date
+    const CRList = await ChangeRequest.queryByDateRange(dateRange);
+    // return mapped chart data
+    return MapHelper.mapChartDataFrom(CRList);
+  }
+
+  /**
+   * create change request from mail content
+   */
+  createFromMail(mailJSON, client) {
+    return this.create(
+      {
+        title: mailJSON['subject'],
+        details: mailJSON['body-html'] || mailJSON['body-plain']
+      },
+      client
+    );
+  }
+
+  /**
+   * return change request content for email
+   */
+  emailTrack(user, subject) {
+    //change request query
+    return ChangeRequest.queryForEmail(user, subject);
   }
 }
 

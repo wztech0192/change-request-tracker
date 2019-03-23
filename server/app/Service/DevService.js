@@ -36,8 +36,8 @@ class DevService {
    * Create a dev Todo
    * @returns { devTodo }
    */
-  async createTodo(content) {
-    return await DevTodo.create(content);
+  createTodo(content) {
+    return DevTodo.create(content);
   }
 
   /**
@@ -47,7 +47,7 @@ class DevService {
   async destroyTodo(id) {
     const devTodo = await DevTodo.find(id);
     if (!devTodo) return null;
-    return await devTodo.delete();
+    return devTodo.delete();
   }
 
   /**
@@ -58,7 +58,7 @@ class DevService {
     const devTodo = await DevTodo.find(id);
     if (!devTodo) return null;
     devTodo.merge(request.only(['content', 'percentage', 'isFlagged']));
-    return await devTodo.save();
+    return devTodo.save();
   }
   /**----------------------Dev Task CRUD--------------------------
    *
@@ -81,7 +81,7 @@ class DevService {
 
     const data = request.only('content');
     data.dev_todo_id = devTodo.id;
-    return await DevTask.create(data);
+    return DevTask.create(data);
   }
 
   /**
@@ -122,7 +122,7 @@ class DevService {
     const devTask = await DevTask.find(id);
     if (!devTask) return null;
     devTask.merge(request.only(['content']));
-    return await devTask.save();
+    return devTask.save();
   }
 
   /**
@@ -148,7 +148,7 @@ class DevService {
       parentTodo.percentage = 0;
     }
 
-    return await parentTodo.save();
+    return parentTodo.save();
   }
 
   /* ------------------Dev Tool Method---------------

@@ -12,7 +12,7 @@ class FlagService {
   /**
    *
    */
-  static async isFlag(changeRequest, user_id) {
+  async isFlag(changeRequest, user_id) {
     // make sure user has not flag this request yet
     const checkFlag = await FlagItem.query()
       .where('user_id', user_id)
@@ -28,7 +28,7 @@ class FlagService {
   /**
    * add change request into flag list
    */
-  static async flagChangeRequest(changeRequest, user) {
+  async flagChangeRequest(changeRequest, user) {
     // make sure user has not flag this request yet
     const isFlag = await this.isFlag(changeRequest, user.id);
     if (isFlag > 1) {
@@ -48,7 +48,7 @@ class FlagService {
   /**
    * delete change request from flag list
    */
-  static async unflagChangeRequest(id, user) {
+  async unflagChangeRequest(id, user) {
     await FlagItem.query()
       .where('change_request_id', id)
       .andWhere('user_id', user.id)
@@ -59,7 +59,7 @@ class FlagService {
   /**
    * get flagged change request
    */
-  static async getFlaggedCR(user) {
+  async getFlaggedCR(user) {
     return await Database.table('flag_items')
       .select(
         'change_requests.status',
@@ -79,7 +79,7 @@ class FlagService {
   /**
    * get flagged task
    */
-  static async getFlaggedTask(user) {
+  async getFlaggedTask(user) {
     if (user.role === 'Developer') {
       return await Database.table('dev_todos')
         .where('isFlagged', '1')
@@ -91,7 +91,7 @@ class FlagService {
   /**
    * get flagged list
    */
-  static async getFlaggedList(user) {
+  async getFlaggedList(user) {
     //get task
     const flagTask = await this.getFlaggedTask(user);
     //get change request

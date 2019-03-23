@@ -7,7 +7,7 @@
 
 const RegistrationCode = use('App/Models/RegistrationCode');
 const User = use('App/Models/User');
-const MessageService = use('App/Service/MessageService');
+const MailService = use('App/Service/MailService');
 const NotificationService = use('App/Service/NotificationService');
 const RegistCodeNotExistException = use(
   'App/Exceptions/RegistCodeNotExistException'
@@ -15,7 +15,7 @@ const RegistCodeNotExistException = use(
 
 class RegistrationService {
   constructor() {
-    this.messageService = new MessageService();
+    this.mailService = new MailService();
   }
 
   // Get registrationCode from data that match with input code
@@ -41,7 +41,7 @@ class RegistrationService {
     // send notification
     NotificationService.newRegisterCode(registrationCode);
     // send email message
-    this.messageService.sendRegistrationCodeMessage(registrationCode);
+    this.mailService.sendRegistrationCodeMail(registrationCode);
 
     return {
       code: registrationCode.code
@@ -51,22 +51,22 @@ class RegistrationService {
   /**
    * Validate registration code
    */
-  async isCodeValidate(data) {
-    return await RegistrationCode.isValidate(data);
+  isCodeValidate(data) {
+    return RegistrationCode.isValidate(data);
   }
 
   //remove used code
   async removeCode(id) {
     const code = await RegistrationCode.find(id);
-    await code.delete();
+    code.delete();
     return code;
   }
 
   /**
    * Validate user information
    */
-  async isUserValidate(userInfo) {
-    return await User.isValidate(userInfo);
+  isUserValidate(userInfo) {
+    return User.isValidate(userInfo);
   }
 
   //create new user from register information
@@ -74,7 +74,7 @@ class RegistrationService {
     //create user
     const user = await User.create(userInfo);
     //create welcome message
-    this.messageService.sendWelcomeMessage(user);
+    this.mailService.sendWelcomeMail(user);
     //remove used code
     this.removeCode(code.id);
     // notify new registerd user

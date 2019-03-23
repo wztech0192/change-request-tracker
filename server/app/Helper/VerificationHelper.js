@@ -103,6 +103,13 @@ class VerificationHelper {
       throw new ResourceNotExistException(message);
     }
   }
+
+  //verify request data
+  static verifyRequest({ title, details }) {
+    if (!title || !details) {
+      throw new InvalidAccessException();
+    }
+  }
 }
 
 module.exports = VerificationHelper;

@@ -24,6 +24,9 @@ class DevController {
     return await this.devService.getList();
   }
 
+  /**
+   * verify and perform callback action
+   */
   async _baseCrud({ auth, request, params }, callback) {
     const user = await auth.getUser();
     //verify user role, return 404 if failed

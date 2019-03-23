@@ -15,6 +15,7 @@ const MapHelper = use('App/Helper/MapHelper');
 class UserController {
   constructor() {
     this.messageService = new MessageService();
+    this.flagService = new FlagService();
   }
 
   /**
@@ -195,7 +196,7 @@ class UserController {
   async getFlaggedList({ auth }) {
     const user = await auth.getUser();
 
-    return await FlagService.getFlaggedList(user);
+    return await this.flagService.getFlaggedList(user);
   }
 
   /**

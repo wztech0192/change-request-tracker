@@ -5,8 +5,9 @@
  * @description message service used to send email and handle insite messages
  */
 
-const Message = use('App/Models/Message');
 const Mail = use('Mail');
+const User = use('App/Models/User');
+const Message = use('App/Models/Message');
 
 // if production, use public url in env file
 const url =
@@ -22,71 +23,16 @@ const submitEmail = `${process.env.SUBMIT_REC}@${process.env.MAILGUN_DOMAIN}`;
 const infoEmail = `${process.env.INFO_REC}@${process.env.MAILGUN_DOMAIN}`;
 
 class MessageService {
-  /**
-   * return notification list
-   * @return {String}
-   */
-  static async clearNewMessages(user) {
-    await Message.query()
-      .where('receiverEmail', user.email)
-      .andWhere('isRead', false)
-      .update({ isRead: true });
-
-    return 'ok';
+  async getClientFromMail(mailJSON) {
+    return await User.queryFromMail(mailJSON['sender'].toLowerCase());
   }
 
-  /**
-   * get unread and bookmarked messages
-   * @returns {array}
-   */
-  static async getMenuMsgList(user) {
-    const unread = await Message.query()
-      .where('receiverEmail', user.email)
-      .andWhere('isRead', false)
-      .orderBy('created_at', 'desc')
-      .fetch();
-    const bookmark = await Message.query()
-      .where('receiverEmail', user.email)
-      .andWhere('isBookmark', true)
-      .orderBy('created_at', 'desc')
-      .fetch();
-
-    const totalMsg = await Message.query()
-      .where('receiverEmail', user.email)
-      .where('isArchived', false)
-      .getCount();
-
-    return {
-      unread,
-      bookmark,
-      totalMsg
-    };
-  }
-
-  /**
-   * Create new message
-   * @returns {message}
-   */
-  static async createMessage(msgData) {
-    var message = new Message();
-    message.fill(msgData);
-    await message.save();
-    return message;
-  }
-
-  /**
-   * Create reply message
-   * @returns {message}
-   */
-  static async createReplyMessage(msgData) {
-    var message = new Message();
-    message.fill(msgData);
-    await message.save();
-    return message;
+  async getUserFromMail(sender) {
+    return await User.findBy('email', sender.toLowerCase());
   }
 
   // check if the request email, user, and api key is valid. Return denied message if fails.
-  static requestMailDenied(client, mailJSON, key) {
+  requestMailDenied(client, mailJSON, key) {
     if (
       key !== process.env.MAILGUN_API_KEY ||
       !client ||
@@ -96,7 +42,7 @@ class MessageService {
       this._sendEmail(
         mailJSON['sender'],
         'Submission Denied',
-        '<p>You do not have a client account in our system. Please contact the admin to register a client account.</p>'
+        '<p>Missing contet or you do not have a client account in our system. Please contact the admin to register a client account.</p>'
       );
       return true;
     }
@@ -104,7 +50,7 @@ class MessageService {
   }
 
   // return submission approved message
-  static requestMailApproved(receiver, crID) {
+  requestMailApproved(receiver, crID) {
     //send a success message
     this._sendEmail(
       receiver,
@@ -134,7 +80,7 @@ class MessageService {
   }
 
   // send change request list to requester by email
-  static trackCRList(receiver, crList) {
+  trackCRList(receiver, crList) {
     let table =
       '<table style="font-size:115%" border="1"><thead><tr><th>ID</th><th>Client</th><th>Status</th>' +
       '<th>Creation</th><th>Messages</th><th>Histories</th></tr></thead><tbody>';
@@ -153,7 +99,7 @@ class MessageService {
   }
 
   // send change request to requester by email
-  static trackCRID(receiver, cr) {
+  trackCRID(receiver, cr) {
     if (cr) {
       //send a success message
       this._sendEmail(
@@ -202,13 +148,13 @@ class MessageService {
   }
 
   // valid if api key, receiver, and subject is valid
-  static trackCRDenied(receiver, subject, key) {
+  trackCRDenied(receiver, subject, key) {
     if (key !== process.env.MAILGUN_API_KEY || !receiver || !subject) {
       //send a denied message
       this._sendEmail(
-        mailJSON['sender'],
+        receiver,
         'Action Denied',
-        '<p>You are not listed in our system. Please register first.</p>'
+        '<p>Wrong formatting or you are not listed in our system. Please register first.</p>'
       );
       return true;
     }
@@ -216,7 +162,7 @@ class MessageService {
   }
 
   //send email
-  static async _sendEmail(receiver, subject, content) {
+  async _sendEmail(receiver, subject, content) {
     //send returning email
     await Mail.raw(`<p>${content}</p>`, message => {
       message.subject(subject);
@@ -226,7 +172,7 @@ class MessageService {
   }
 
   //create a message for Registration code
-  static async sendRegistrationCodeMessage(code) {
+  async sendRegistrationCodeMail(code) {
     const senderMessage =
       code.content && code.content != '<p>&nbsp;</p>'
         ? `
@@ -261,7 +207,7 @@ class MessageService {
   }
 
   //create a welcome message when user register
-  static async sendWelcomeMessage(user) {
+  async sendWelcomeMail(user) {
     if (user) {
       const title = 'Welcome to CRTracker!';
       const content = `
@@ -298,7 +244,7 @@ class MessageService {
       );
 
       //create insite message
-      return await this.createMessage({
+      return await Message.create({
         receiverEmail: user.email,
         senderEmail: 'no-reply@rsicrt.com',
         senderName: '~ CRTracker ~',

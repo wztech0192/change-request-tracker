@@ -93,6 +93,16 @@ class User extends Model {
   notifications() {
     return this.hasMany('App/Models/Notification');
   }
+
+  /**
+   * return all notifications belongs to this user
+   */
+  static queryFromMail(sender) {
+    return this.query()
+      .where('email', sender)
+      .andWhere('role', 'Client')
+      .first();
+  }
 }
 
 module.exports = User;

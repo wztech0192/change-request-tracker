@@ -17,6 +17,17 @@ class ChangeRequestMessage extends Model {
   change_request() {
     return this.belongsTo('App/Models/ChangeRequest/ChangeRequest');
   }
+
+  /**
+   * return change message list
+   */
+  static queryForList(id, limit) {
+    return this.query()
+      .where('change_request_id', id)
+      .orderBy('created_at', 'desc')
+      .limit(limit)
+      .fetch();
+  }
 }
 
 module.exports = ChangeRequestMessage;

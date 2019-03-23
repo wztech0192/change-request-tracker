@@ -10,7 +10,7 @@
     style="box-shadow:0px 0px 5px grey; background-color:white !important;"
   >
     <div id="cr-msg">
-      <div v-if="!msgList || msgList.length<=0">
+      <div v-if="msgList && msgList.length<=0">
         <h2 style="text-align:center; padding:10%;">Empty...</h2>
       </div>
       <transition-group name="slide-down" tag="div">
@@ -37,7 +37,7 @@
     </div>
     <div>
       <textarea id="editor" name="editor" style="width: 100%;"></textarea>
-      
+
       <button class="btn btn-primary btn-lg" style="width:100%;" @click="sendMsg">
         <i class="fa fa-share-square"></i> Send
       </button>

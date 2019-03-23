@@ -102,7 +102,6 @@ Route.group(() => {
   );
   Route.get('change-request/:id', 'ChangeRequestController.detail');
   Route.post('change-request', 'ChangeRequestController.create');
-  Route.delete('change-request/:id', 'ChangeRequestController.destroy');
   Route.patch('change-request/:id', 'ChangeRequestController.update');
   Route.post('change-request/search/:target', 'ChangeRequestController.search');
 
@@ -124,14 +123,6 @@ Route.group(() => {
   Route.post(
     'change-request/:id/msg',
     'ChangeRequestController.createCRMessage'
-  );
-  Route.delete(
-    'change-request/msg/:id',
-    'ChangeRequestController.destroyCRMessage'
-  );
-  Route.patch(
-    'change-request/msg/:id',
-    'ChangeRequestController.updateCRMessage'
   );
 
   //Change Request History Route

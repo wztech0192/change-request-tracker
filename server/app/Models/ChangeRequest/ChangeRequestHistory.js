@@ -10,6 +10,16 @@ class ChangeRequestHistory extends Model {
   change_request() {
     return this.belongsTo('App/Models/ChangeRequest/ChangeRequest');
   }
+
+  /**
+   * return change request history list
+   */
+  static queryForList(id) {
+    return this.query()
+      .where('change_request_id', id)
+      .orderBy('created_at', 'desc')
+      .fetch();
+  }
 }
 
 module.exports = ChangeRequestHistory;

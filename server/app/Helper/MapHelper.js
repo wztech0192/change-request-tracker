@@ -85,16 +85,6 @@ class MapHelper {
   }
 
   /**
-   * save history of change request
-   */
-  static async createCRHistory(crHistory, changeRequest, data) {
-    crHistory.fill(data);
-    changeRequest.histories().save(crHistory);
-    changeRequest.totalHistory++;
-    await changeRequest.save();
-  }
-
-  /**
    * map change request history type and content
    */
   static mapCRHistory(requestData, user) {

@@ -30,8 +30,8 @@ class Message extends Model {
   }
 
   //query for the first matching message
-  static async queryFirst() {
-    return await this.queryFirst({ email }, id)
+  static queryForFirst() {
+    return this.queryFirst({ email }, id)
       .where('senderEmail', email)
       .andWhere('id', id)
       .first()
@@ -39,9 +39,9 @@ class Message extends Model {
   }
 
   //query message list by type: Inbox, sent, search, page, or archived
-  static async queryList(user, { type, page, limit, search }) {
+  static queryForList(user, { type, page, limit, search }) {
     const searchData = search || '';
-    return await this.query()
+    return this.query()
       .where(function() {
         switch (type) {
           case 'sent':
@@ -85,24 +85,24 @@ class Message extends Model {
   }
 
   //clear all new message of the target
-  static async queryClearNew({ email }) {
-    return await this.query()
+  static queryToClearNew({ email }) {
+    return this.query()
       .where('receiverEmail', email)
       .andWhere('isRead', false)
       .update({ isRead: true });
   }
 
   //archive or un-archive the selected list
-  static async queryArchive(user, { list, isArchived }) {
-    return await this.query()
+  static queryToArchive(user, { list, isArchived }) {
+    return this.query()
       .where('receiverEmail', user.email)
       .whereIn('id', list)
       .update({ isArchived });
   }
 
   //get unread message list of the user
-  static async queryUnreadList(user) {
-    return await this.query()
+  static queryForUnreadList(user) {
+    return this.query()
       .where('receiverEmail', user.email)
       .andWhere('isRead', false)
       .orderBy('created_at', 'desc')
@@ -110,8 +110,8 @@ class Message extends Model {
   }
 
   //get bookmarked message list of the user
-  static async queryBookMarkList(user) {
-    return await this.query()
+  static queryForBookMarkList(user) {
+    return this.query()
       .where('receiverEmail', user.email)
       .andWhere('isBookmark', true)
       .orderBy('created_at', 'desc')
@@ -119,8 +119,8 @@ class Message extends Model {
   }
 
   //get total number of active message
-  static async queryTotalActive(user) {
-    return await this.query()
+  static queryForTotalActive(user) {
+    return this.query()
       .where('receiverEmail', user.email)
       .where('isArchived', false)
       .getCount();

@@ -28,14 +28,14 @@ class MessageService {
     if (!message) return null;
     var data = request.only(['isRead', 'isArchived', 'isBookmark']);
     message.merge(data);
-    return await message.save();
+    return message.save();
   }
 
   /**
    * Get message detail
    */
-  async getMessage(user, id) {
-    return await Message.queryFirst(user, id);
+  getMessage(user, id) {
+    return Message.queryForFirst(user, id);
   }
 
   /**
@@ -43,7 +43,7 @@ class MessageService {
    */
   async getMessageList(user, request) {
     const filter = request.all();
-    const list = await Message.queryList(user, filter);
+    const list = await Message.queryForList(user, filter);
 
     //calculate page start and page end
     const pageMax = filter.page * filter.limit;
@@ -55,20 +55,20 @@ class MessageService {
   /**
    * clear new messages
    */
-  async clearNewMessages(user) {
-    return await Message.queryClearNew(user);
+  clearNewMessages(user) {
+    return Message.queryToClearNew(user);
   }
 
   /**
    * archive message
    */
-  async archiveMessage(user, request) {
+  archiveMessage(user, request) {
     const data = request.only(['list', 'isArchived']);
     if (!data.list || data.list.length <= 0) {
       return null;
     }
 
-    return await Message.queryArchive(user, data);
+    return Message.queryToArchive(user, data);
   }
 
   /**
@@ -76,9 +76,9 @@ class MessageService {
    * @returns {array}
    */
   async getMenuMsgList(user) {
-    const unread = await Message.queryUnreadList(user);
-    const bookmark = await Message.queryBookMarkList(user);
-    const totalMsg = await Message.queryTotalActive(user);
+    const unread = await Message.queryForUnreadList(user);
+    const bookmark = await Message.queryForBookMarkList(user);
+    const totalMsg = await Message.queryForTotalActive(user);
     return {
       unread,
       bookmark,

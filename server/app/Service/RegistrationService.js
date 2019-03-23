@@ -16,6 +16,7 @@ const RegistCodeNotExistException = use(
 class RegistrationService {
   constructor() {
     this.mailService = new MailService();
+    this.notificationService = new NotificationService();
   }
 
   // Get registrationCode from data that match with input code
@@ -39,7 +40,7 @@ class RegistrationService {
     const registrationCode = await RegistrationCode.create(data);
 
     // send notification
-    NotificationService.newRegisterCode(registrationCode);
+    this.notificationService.newRegisterCode(registrationCode);
     // send email message
     this.mailService.sendRegistrationCodeMail(registrationCode);
 
@@ -78,7 +79,7 @@ class RegistrationService {
     //remove used code
     this.removeCode(code.id);
     // notify new registerd user
-    NotificationService.newUser(user);
+    this.notificationService.newUser(user);
     return user;
   }
 }

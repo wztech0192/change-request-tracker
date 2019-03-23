@@ -23,7 +23,6 @@ class RegistrationController {
     const code = await this.registrationService.getMatchCode(
       request.only('code')
     );
-
     //map user information
     const userInfo = MapHelper.mapUserInfo(
       request.except(['code', 'password_retype']),
@@ -37,7 +36,6 @@ class RegistrationController {
     } else {
       //create new user
       await this.registrationService.createNewUser(userInfo, code);
-
       //pass arguments from this method to login
       return await auth.attempt(userInfo.email, userInfo.password);
     }
@@ -48,17 +46,14 @@ class RegistrationController {
    */
   async createRegistrationCode({ auth, request }) {
     let data = request.all();
-
     //validate data
     const validation = await this.registrationService.isCodeValidate(data);
     if (validation !== 'pass') {
       return validation;
     }
-
     //authenticate user
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
-
     // create code and return code
     return await this.registrationService.createRegistrationCode(user, data);
   }
@@ -67,7 +62,7 @@ class RegistrationController {
    * Get registrationCode from data that match with input code
    */
   async verifyRegistrationCode({ request }) {
-    return this.registrationService.getMatchCode(request.only('code'));
+    return await this.registrationService.getMatchCode(request.only('code'));
   }
 }
 

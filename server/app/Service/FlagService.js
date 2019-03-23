@@ -6,19 +6,15 @@
  */
 
 const FlagItem = use('App/Models/FlagItem');
-const Database = use('Database');
+const DevTodo = use('App/Models/Dev/DevTodo');
+const ChangeRequest = use('App/Models/ChangeRequest/ChangeRequest');
 
 class FlagService {
   /**
-   *
+   * check if the change request is flagged by the user
    */
   async isFlag(changeRequest, user_id) {
-    // make sure user has not flag this request yet
-    const checkFlag = await FlagItem.query()
-      .where('user_id', user_id)
-      .andWhere('change_request_id', changeRequest.id)
-      .getCount();
-
+    const checkFlag = await FlagItem.queryForFlag(user_id, changeRequest.id);
     if (checkFlag > 0) {
       return true;
     }
@@ -49,10 +45,7 @@ class FlagService {
    * delete change request from flag list
    */
   async unflagChangeRequest(id, user) {
-    await FlagItem.query()
-      .where('change_request_id', id)
-      .andWhere('user_id', user.id)
-      .delete();
+    await FlagItem.queryToDelete(user.id, id);
     return 'ok';
   }
 
@@ -60,32 +53,19 @@ class FlagService {
    * get flagged change request
    */
   async getFlaggedCR(user) {
-    return await Database.table('flag_items')
-      .select(
-        'change_requests.status',
-        'change_requests.id',
-        'change_requests.title',
-        'change_requests.clientName',
-        'change_requests.created_at'
-      )
-      .innerJoin(
-        'change_requests',
-        'flag_items.change_request_id',
-        'change_requests.id'
-      )
-      .where('flag_items.user_id', user.id);
+    const result = await FlagItem.queryForCR(user.id);
+    return result;
   }
 
   /**
    * get flagged task
    */
   async getFlaggedTask(user) {
+    let result = [];
     if (user.role === 'Developer') {
-      return await Database.table('dev_todos')
-        .where('isFlagged', '1')
-        .orderBy('created_at', 'desc');
+      result = await DevTodo.queryForFlag();
     }
-    return [];
+    return result;
   }
 
   /**
@@ -99,12 +79,12 @@ class FlagService {
     //get total change request if user is admin or devloper, else get total submited
     const totalCR =
       user.role === 'Admin' || user.role === 'Developer'
-        ? await Database.from('change_requests').getCount()
+        ? await ChangeRequest.getCount()
         : await user.change_requests().getCount();
     return {
-      flagTask,
-      flagCR,
-      length: flagTask.length + flagCR.length,
+      flagTask: flagTask.rows,
+      flagCR: flagCR.rows,
+      length: flagTask.rows.length + flagCR.rows.length,
       totalCR
     };
   }

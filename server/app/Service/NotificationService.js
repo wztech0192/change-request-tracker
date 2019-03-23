@@ -6,19 +6,16 @@
  */
 
 const Notification = use('App/Models/Notification');
-const Database = use('Database');
 const MapHelper = use('App/Helper/MapHelper');
+const User = use('App/Models/User');
 
 class NotificationService {
   /**
    * notify every admin
    */
-  static async _notifyAdmin(computeList) {
+  async _notifyAdmin(computeList) {
     //get all admins
-    const adminList = await Database.table('users')
-      .select('id')
-      .where('role', 'Admin')
-      .orWhere('role', 'Developer');
+    const adminList = await User.queryForAdminID();
 
     // fill change request data
     const notifyList = computeList(adminList.length);
@@ -35,7 +32,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  static async newRegisterCode({ role, creator_name }) {
+  newRegisterCode({ role, creator_name }) {
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
@@ -50,7 +47,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  static async newUser({ id, full_name, role, email }) {
+  newUser({ id, full_name, role, email }) {
     //notify all admin
     this._notifyAdmin(length => {
       if (role !== 'Admin' && role !== 'Developer') {
@@ -70,7 +67,7 @@ class NotificationService {
   /**
    * notify a new change request was created
    */
-  static async newChangeRequest({ user_id, id, clientName }) {
+  newChangeRequest({ user_id, id, clientName }) {
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
@@ -87,8 +84,9 @@ class NotificationService {
 
   /**
    * notify admin and user when his role got changed
+  
    */
-  static async roleChange(target, issuer, role) {
+  roleChange(target, issuer, role) {
     var oldRole = target.role;
     //notify all admin
     this._notifyAdmin(length => {
@@ -108,7 +106,7 @@ class NotificationService {
   /**
    * notify admin when a user was deleted
    */
-  static async userDelete(target, issuer) {
+  userDelete(target, issuer) {
     //notify all admin
     this._notifyAdmin(length => {
       // call back function to fill array with resource data
@@ -124,7 +122,7 @@ class NotificationService {
   /**
    * notify owner when change request got adjusted
    */
-  static async updateChangeRequest({ user_id, id }, type, issuerID) {
+  updateChangeRequest({ user_id, id }, type, issuerID) {
     let icon = '';
     let detail = 'content was modified';
     let link = 'history';
@@ -173,47 +171,24 @@ class NotificationService {
    * return datatable json for notification list
    * @return {Datatable JSON}
    */
-  static async notificationPaginate(user, request) {
-    return await MapHelper.mapDatatableFrom(
+  async notificationPaginate(user, request) {
+    const result = await MapHelper.mapDatatableFrom(
       request,
       // callback function to perform custom query
       (table, page, search) =>
-        Notification.query()
-          .where('user_id', user.id)
-          .andWhere(function() {
-            this.where('created_at', 'like', `%${search}%`).orWhere(
-              'content',
-              'like',
-              `%${search}%`
-            );
-          })
-          .orderBy(
-            table.columns[table.order[0].column].data,
-            table.order[0].dir
-          )
-          .paginate(page, table.length)
+        Notification.queryForDatatable(table, page, search, user.id)
     );
+    return result;
   }
 
   /**
    * @return {notification list object}
    */
-  static async getNotification(user) {
-    const notifyList_old = await user
-      .notifications()
-      .where('isNew', '0')
-      .orderBy('created_at', 'desc')
-      .limit(10)
-      .fetch();
-    const notifyList_new = await user
-      .notifications()
-      .where('isNew', '1')
-      .orderBy('created_at', 'desc')
-      .fetch();
-
+  async getNotification(user) {
+    const notifyList_old = await Notification.queryForLastTen(user);
+    const notifyList_new = await Notification.queryForNew(user);
     //get total change request
     const totalNotifications = await user.notifications().getCount();
-
     return {
       new: notifyList_new,
       old: notifyList_old,
@@ -224,19 +199,13 @@ class NotificationService {
   /**
    * @return {notification list object}
    */
-  static async updateNotification(user, target) {
+  async updateNotification(user, target) {
     if (target === 'all') {
       // set isNew to false for every new notification.
-      await Database.table('notifications')
-        .where('user_id', user.id)
-        .where('isNew', true)
-        .update('isNew', false);
+      await Notification.queryToClearAllNew(user);
     } else {
       //set isNew to false for single notification
-      await Database.table('notifications')
-        .where('user_id', user.id)
-        .where('id', target)
-        .update('isNew', false);
+      await Notification.queryToClearNew(user, target);
     }
   }
 }

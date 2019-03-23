@@ -2,18 +2,19 @@
 
 /**
  * @author Wei Zheng
- * @description dev tools
+ * @description dev service
  */
 
 const User = use('App/Models/User');
 const DevTodo = use('App/Models/Dev/DevTodo');
 const DevTask = use('App/Models/Dev/DevTask');
 const ChangeRequestService = use('App/Service/ChangeRequestService');
-const ltr = 'abcdefghijklmnopqrstuvwxyz';
+
 
 class DevService {
   constructor() {
     this.changeRequestService = new ChangeRequestService();
+    this.ltr = 'abcdefghijklmnopqrstuvwxyz';
   }
 
   /**----------------------Dev Todo CRUD--------------------------
@@ -159,7 +160,7 @@ class DevService {
   _getLTR(length) {
     let str = '';
     for (let i = 0; i < length; i++) {
-      str += ltr.charAt(Math.round(Math.random() * (ltr.length - 1)));
+      str += this.ltr.charAt(Math.round(Math.random() * (this.ltr.length - 1)));
     }
     return str;
   }

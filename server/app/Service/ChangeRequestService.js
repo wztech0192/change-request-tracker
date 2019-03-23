@@ -19,6 +19,7 @@ const User = use('App/Models/User');
 class ChangeRequestService {
   constructor(flagService) {
     this.flagService = flagService;
+    this.notificationService = new NotificationService();
   }
 
   /**
@@ -111,7 +112,11 @@ class ChangeRequestService {
     //create change request history
     await this.createCRHistory(changeRequest, hist);
     //create notification
-    NotificationService.updateChangeRequest(changeRequest, hist.type, user.id);
+    this.notificationService.updateChangeRequest(
+      changeRequest,
+      hist.type,
+      user.id
+    );
     await changeRequest.save();
     return changeRequest;
   }
@@ -156,7 +161,7 @@ class ChangeRequestService {
       } in ${changeRequest.created_at}`
     });
 
-    await NotificationService.newChangeRequest(changeRequest);
+    await this.notificationService.newChangeRequest(changeRequest);
 
     //save change request message is message exist
     if (message) {

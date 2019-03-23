@@ -43,20 +43,18 @@ Route.group(() => {
 Route.group(() => {
   //User Route
   Route.get('user', 'UserController.self');
-  Route.get('user/all', 'UserController.getAll');
-  Route.get('user/flag', 'UserController.getFlaggedList');
-  Route.get('user/notification', 'UserController.getNotificationList');
-  Route.get('user/msg', 'MessageController.getMenuMsgList');
+  Route.get('user/flag', 'UtilityController.getFlaggedList');
+  Route.get('user/notification', 'UtilityController.getNotificationList');
+  Route.get('user/msg', 'UtilityController.getMenuMsgList');
   Route.post(
     'user/notification/paginate',
-    'UserController.notificationPaginate'
+    'UtilityController.notificationPaginate'
   );
   Route.patch(
     'user/notification/clear-new/:target',
-    'UserController.updateNotification'
+    'UtilityController.updateNotification'
   );
   Route.get('user/:email', 'UserController.get');
-  Route.get('user/by-role/:role', 'UserController.getRoleList');
   Route.post('user/search/:role', 'UserController.search');
   Route.post('user/datatable', 'UserController.datatable');
   Route.delete('user/:id', 'UserController.destroy');

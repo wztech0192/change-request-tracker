@@ -95,13 +95,64 @@ class User extends Model {
   }
 
   /**
-   * return all notifications belongs to this user
+   * return user id of admins
+   */
+  static queryForAdminID() {
+    return this.query()
+      .select('id')
+      .where('role', 'Admin')
+      .orWhere('role', 'Developer');
+  }
+
+  /**
+   * return sender information
    */
   static queryFromMail(sender) {
     return this.query()
       .where('email', sender)
       .andWhere('role', 'Client')
       .first();
+  }
+
+  /**
+   * return user filtered by search input
+   */
+  static queryForSearch(searchData, page, role) {
+    return this.query()
+      .where(function() {
+        this.where('email', 'like', `%${searchData}%`)
+          .orWhere('role', 'like', `%${searchData}%`)
+          .orWhere(function() {
+            const splitSearch = searchData.split(' ');
+            for (let split of splitSearch) {
+              // split the string and search each splitted item
+              this.where('full_name', 'like', `%${split || 'N/A'}%`);
+            }
+          });
+      })
+      .andWhere('role', 'like', role === 'all' ? '%%' : role)
+      .paginate(page, 10);
+  }
+
+  /**
+   * return list for datatabse
+   */
+  static queryForDatatable(table, page, search) {
+    // used in callback, this will not return User
+    return User.query()
+      .where('id', search)
+      .orWhere(function() {
+        const splitSearch = search.split(' ');
+        for (let split of splitSearch) {
+          // split the string and search each splitted item
+          this.where('full_name', 'like', `%${split || 'N/A'}%`);
+        }
+      })
+      .orWhere('email', 'like', `%${search}%`)
+      .orWhere('role', 'like', `%${search}%`)
+      .orWhere('created_at', 'like', `%${search}%`)
+      .orderBy(table.columns[table.order[0].column].data, table.order[0].dir)
+      .paginate(page, table.length);
   }
 }
 

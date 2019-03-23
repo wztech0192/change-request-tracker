@@ -10,6 +10,16 @@ class DevTodo extends Model {
   devTask() {
     return this.hasMany('App/Models/Dev/DevTask');
   }
+
+  /**
+   * return flagged todos
+   */
+  static queryForFlag() {
+    return this.query()
+      .where('isFlagged', '1')
+      .orderBy('created_at', 'desc')
+      .fetch();
+  }
 }
 
 module.exports = DevTodo;

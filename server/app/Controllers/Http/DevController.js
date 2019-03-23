@@ -21,7 +21,8 @@ class DevController {
     //authorize
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer']);
-    return await this.devService.getList();
+    const list = await this.devService.getList();
+    return list;
   }
 
   /**
@@ -45,7 +46,8 @@ class DevController {
   async createTodo({ auth, request }) {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer']);
-    return await this.devService.createTodo(request.only('content'));
+    const result = await this.devService.createTodo(request.only('content'));
+    return result;
   }
 
   /**
@@ -53,7 +55,8 @@ class DevController {
    * @returns {devTodo}
    */
   async destroyTodo(data) {
-    return this._baseCrud(data, this.devService.destroyTodo);
+    const result = await this._baseCrud(data, this.devService.destroyTodo);
+    return result;
   }
 
   /**
@@ -61,7 +64,8 @@ class DevController {
    * @returns {devTodo}
    */
   async updateTodo(data) {
-    return this._baseCrud(data, this.devService.updateTodo);
+    const result = await this._baseCrud(data, this.devService.updateTodo);
+    return result;
   }
 
   /**----------------------Dev Task CRUD--------------------------
@@ -71,7 +75,8 @@ class DevController {
    * @returns {devTask}
    */
   async createTask(data) {
-    return this._baseCrud(data, this.devService.createTask);
+    const result = await this._baseCrud(data, this.devService.createTask);
+    return result;
   }
 
   /**
@@ -79,7 +84,8 @@ class DevController {
    * @returns {devTask}
    */
   async destroyTask(data) {
-    return this._baseCrud(data, this.devService.destroyTask);
+    const result = await this._baseCrud(data, this.devService.destroyTask);
+    return result;
   }
 
   /**
@@ -87,7 +93,8 @@ class DevController {
    * @returns {devTask}
    */
   async updateTask(data) {
-    return this._baseCrud(data, this.devService.updateTask);
+    const result = await this._baseCrud(data, this.devService.updateTask);
+    return result;
   }
 
   /**
@@ -95,7 +102,11 @@ class DevController {
    * @returns {devTask}
    */
   async updateTaskComplete(data) {
-    return this._baseCrud(data, this.devService.updateTaskComplete);
+    const result = await this._baseCrud(
+      data,
+      this.devService.updateTaskComplete
+    );
+    return result;
   }
 
   /**----------------------Dev Tools--------------------------

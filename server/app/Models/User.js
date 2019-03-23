@@ -101,7 +101,8 @@ class User extends Model {
     return this.query()
       .select('id')
       .where('role', 'Admin')
-      .orWhere('role', 'Developer');
+      .orWhere('role', 'Developer')
+      .fetch();
   }
 
   /**

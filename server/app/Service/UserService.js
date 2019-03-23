@@ -73,8 +73,8 @@ class UserService {
    * @return {user}
    */
   async deleteUser(targetUser, issuer) {
-    await this.notificationService.userDelete(targetUser, issuer);
     await targetUser.delete();
+    this.notificationService.userDelete(targetUser, issuer);
     return targetUser;
   }
 

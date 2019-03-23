@@ -14,7 +14,7 @@ class MessageService {
   async createMultiMessage(receiverList) {
     for (let receiveData of receiverList) {
       if ((await Message.isValidate(receiveData)) === 'pass') {
-        await Message.create(receiveData);
+        Message.create(receiveData);
       }
     }
     return receiverList;

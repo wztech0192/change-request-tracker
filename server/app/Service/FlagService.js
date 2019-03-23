@@ -54,7 +54,7 @@ class FlagService {
    */
   async getFlaggedCR(user) {
     const result = await FlagItem.queryForCR(user.id);
-    return result;
+    return result.rows;
   }
 
   /**
@@ -64,6 +64,7 @@ class FlagService {
     let result = [];
     if (user.role === 'Developer') {
       result = await DevTodo.queryForFlag();
+      return result.rows;
     }
     return result;
   }
@@ -76,15 +77,16 @@ class FlagService {
     const flagTask = await this.getFlaggedTask(user);
     //get change request
     const flagCR = await this.getFlaggedCR(user);
+
     //get total change request if user is admin or devloper, else get total submited
     const totalCR =
       user.role === 'Admin' || user.role === 'Developer'
         ? await ChangeRequest.getCount()
         : await user.change_requests().getCount();
     return {
-      flagTask: flagTask.rows,
-      flagCR: flagCR.rows,
-      length: flagTask.rows.length + flagCR.rows.length,
+      flagTask: flagTask,
+      flagCR: flagCR,
+      length: flagTask.length + flagCR.length,
       totalCR
     };
   }

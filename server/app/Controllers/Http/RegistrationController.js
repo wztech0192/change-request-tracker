@@ -37,7 +37,8 @@ class RegistrationController {
       //create new user
       await this.registrationService.createNewUser(userInfo, code);
       //pass arguments from this method to login
-      return await auth.attempt(userInfo.email, userInfo.password);
+      const result = await auth.attempt(userInfo.email, userInfo.password);
+      return result;
     }
   }
 
@@ -55,14 +56,21 @@ class RegistrationController {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     // create code and return code
-    return await this.registrationService.createRegistrationCode(user, data);
+    const result = await this.registrationService.createRegistrationCode(
+      user,
+      data
+    );
+    return result;
   }
 
   /**
    * Get registrationCode from data that match with input code
    */
   async verifyRegistrationCode({ request }) {
-    return await this.registrationService.getMatchCode(request.only('code'));
+    const result = await this.registrationService.getMatchCode(
+      request.only('code')
+    );
+    return result;
   }
 }
 

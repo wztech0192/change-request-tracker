@@ -18,11 +18,11 @@ class NotificationService {
     const adminList = await User.queryForAdminID();
 
     // fill change request data
-    const notifyList = computeList(adminList.length);
+    const notifyList = computeList(adminList.rows.length);
 
     //notify every admin
-    for (let i = 0; i < adminList.length; i++) {
-      notifyList[i].user_id = adminList[i].id;
+    for (let i = 0; i < adminList.rows.length; i++) {
+      notifyList[i].user_id = adminList.rows[i].id;
     }
 
     //save data to datatabse

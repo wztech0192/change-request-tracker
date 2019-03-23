@@ -21,7 +21,8 @@ class MessageController {
     const user = await auth.getUser();
     // map receive list data
     const receiverList = MapHelper.mapReceiveData(user, request);
-    return await this.messageService.createMultiMessage(receiverList);
+    const result = await this.messageService.createMultiMessage(receiverList);
+    return result;
   }
 
   /**
@@ -39,7 +40,8 @@ class MessageController {
    */
   async getMessageList({ auth, request }) {
     const user = await auth.getUser();
-    return await this.messageService.getMessageList(user, request);
+    const result = await this.messageService.getMessageList(user, request);
+    return result;
   }
 
   /**
@@ -48,7 +50,8 @@ class MessageController {
    */
   async clearNewMessages({ auth }) {
     const user = await auth.getUser();
-    return await this.messageService.clearNewMessages(user);
+    const result = await this.messageService.clearNewMessages(user);
+    return result;
   }
 
   /**
@@ -56,7 +59,8 @@ class MessageController {
    */
   async archiveMessage({ auth, request }) {
     const user = await auth.getUser();
-    return await this.messageService.archiveMessage(user, request);
+    const result = await this.messageService.archiveMessage(user, request);
+    return result;
   }
   /**
    * update target
@@ -74,7 +78,8 @@ class MessageController {
    */
   async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
-    return await this.messageService.getMenuMsgList(user);
+    const result = await this.messageService.getMenuMsgList(user);
+    return result;
   }
 }
 

@@ -10,7 +10,6 @@ const DevTodo = use('App/Models/Dev/DevTodo');
 const DevTask = use('App/Models/Dev/DevTask');
 const ChangeRequestService = use('App/Service/ChangeRequestService');
 
-
 class DevService {
   constructor() {
     this.changeRequestService = new ChangeRequestService();
@@ -112,7 +111,7 @@ class DevService {
     }
     await parent.save();
 
-    return await devTask.delete();
+    return devTask.delete();
   }
 
   /**
@@ -212,7 +211,7 @@ class DevService {
     for (let i = 0; i < num; i++) {
       randUser = users[Math.round(Math.random() * (users.length - 1))];
       //create new change request
-      this.changeRequestService.create(
+      this.changeRequestService.createRequest(
         {
           totalMessage: 0,
           totalHistory: 0,

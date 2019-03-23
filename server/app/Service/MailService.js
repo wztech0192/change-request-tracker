@@ -24,11 +24,11 @@ const infoEmail = `${process.env.INFO_REC}@${process.env.MAILGUN_DOMAIN}`;
 
 class MessageService {
   async getClientFromMail(mailJSON) {
-    return await User.queryFromMail(mailJSON['sender'].toLowerCase());
+    return User.queryFromMail(mailJSON['sender'].toLowerCase());
   }
 
   async getUserFromMail(sender) {
-    return await User.findBy('email', sender.toLowerCase());
+    return User.findBy('email', sender.toLowerCase());
   }
 
   // check if the request email, user, and api key is valid. Return denied message if fails.
@@ -244,13 +244,14 @@ class MessageService {
       );
 
       //create insite message
-      return await Message.create({
+      const message = await Message.create({
         receiverEmail: user.email,
         senderEmail: 'no-reply@rsicrt.com',
         senderName: '~ CRTracker ~',
         title,
         content
       });
+      return message;
     }
   }
 }

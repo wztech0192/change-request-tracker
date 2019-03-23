@@ -40,7 +40,8 @@ class ChangeRequestController {
    */
   async index({ auth, request }) {
     const user = await auth.getUser();
-    return await this.crService.index(user, request);
+    const list = await this.crService.getUserRequest(user, request);
+    return list;
   }
 
   /**
@@ -50,7 +51,8 @@ class ChangeRequestController {
   async getRequestList({ auth, request }) {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
-    return await this.crService.getRequestList(request);
+    const list = await this.crService.getRequestList(request);
+    return list;
   }
 
   /**
@@ -64,11 +66,15 @@ class ChangeRequestController {
 
     let { message, client } = request.only(['message', 'client']);
     const user = await auth.getUser();
-
     client = await this.crService.getClientFrom(user, client);
-
     VerificationHelper.verifyExistance(client);
-    return await this.crService.create(data, client, user, message);
+    const result = await this.crService.createRequest(
+      data,
+      client,
+      user,
+      message
+    );
+    return result;
   }
 
   /**
@@ -79,7 +85,7 @@ class ChangeRequestController {
     const user = await auth.getUser();
     //verify user role, return 404 if failed
     VerificationHelper.verifyRole(user, ['Admin', 'Developer']);
-    const result = await this.crService.update(params.id, request, user);
+    const result = await this.crService.updateRequest(params.id, request, user);
     //verify if resource exist, return 404 if failed
     VerificationHelper.verifyExistance(result);
     return result;
@@ -97,7 +103,8 @@ class ChangeRequestController {
     } else {
       VerificationHelper.verifyExistance(user, ' user');
     }
-    return await this.crService.search(request, target);
+    const list = await this.crService.searchRequest(request, target);
+    return list;
   }
 
   /**
@@ -114,8 +121,8 @@ class ChangeRequestController {
       ['Developer', 'Admin'],
       true
     );
-
-    return this.crService.getCRMessage(changeRequest, params.num);
+    const list = await this.crService.getCRMessage(changeRequest, params.num);
+    return list;
   }
 
   /**
@@ -132,7 +139,12 @@ class ChangeRequestController {
       true
     );
     const { content } = request.only('content');
-    return await this.crService.createCRMessage(user, changeRequest, content);
+    const result = await this.crService.createCRMessage(
+      user,
+      changeRequest,
+      content
+    );
+    return result;
   }
 
   /**
@@ -148,7 +160,8 @@ class ChangeRequestController {
       ['Developer', 'Admin'],
       true
     );
-    return await this.crService.getCRHistory(changeRequest);
+    const list = await this.crService.getCRHistory(changeRequest);
+    return list;
   }
 
   /**
@@ -158,7 +171,8 @@ class ChangeRequestController {
   async getChartData({ auth, params }) {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
-    return await this.crService.getChartData(params);
+    const result = await this.crService.getChartData(params);
+    return result;
   }
 
   /**
@@ -168,7 +182,11 @@ class ChangeRequestController {
     const user = await auth.getUser();
     const changeRequest = request.all();
     VerificationHelper.verifyPermission(changeRequest, user, false, true);
-    return await this.flagService.flagChangeRequest(changeRequest, user);
+    const result = await this.flagService.flagChangeRequest(
+      changeRequest,
+      user
+    );
+    return result;
   }
 
   /**
@@ -176,7 +194,8 @@ class ChangeRequestController {
    */
   async unflagChangeRequest({ auth, params }) {
     const user = await auth.getUser();
-    return await this.flagService.unflagChangeRequest(params.id, user);
+    const result = await this.flagService.unflagChangeRequest(params.id, user);
+    return result;
   }
 
   /**

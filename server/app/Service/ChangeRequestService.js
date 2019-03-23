@@ -39,7 +39,7 @@ class ChangeRequestService {
    * Get all change request belongs to this user
    * @returns {ChangeRequest[]}
    */
-  async index({ id }, request) {
+  getUserRequest({ id }, request) {
     const { tab } = request.only('tab');
     switch (tab) {
       case 'all':
@@ -101,7 +101,7 @@ class ChangeRequestService {
    * delete target change request
    * @returns {ChangeRequest}
    */
-  async update(id, request, user) {
+  async updateRequest(id, request, user) {
     const changeRequest = await ChangeRequest.find(id);
     if (!changeRequest) return null;
 
@@ -124,7 +124,7 @@ class ChangeRequestService {
   /**
    * search change request
    */
-  async search(request, target) {
+  async searchRequest(request, target) {
     const data = request.all();
     const term = data.term || '';
     const list = await ChangeRequest.queryForPaginate(term, target, data.page);
@@ -141,7 +141,7 @@ class ChangeRequestService {
    * Create a change request
    * @returns {ChangeRequest}
    */
-  async create(data, client, issuer, message) {
+  async createRequest(data, client, issuer, message) {
     //map change request using helper
     const changeRequest = MapHelper.mapChangeRequest(
       new ChangeRequest(),
@@ -161,7 +161,7 @@ class ChangeRequestService {
       } in ${changeRequest.created_at}`
     });
 
-    await this.notificationService.newChangeRequest(changeRequest);
+    this.notificationService.newChangeRequest(changeRequest);
 
     //save change request message is message exist
     if (message) {
@@ -256,7 +256,7 @@ class ChangeRequestService {
    * create change request from mail content
    */
   createFromMail(mailJSON, client) {
-    return this.create(
+    return this.createRequest(
       {
         title: mailJSON['subject'],
         details: mailJSON['body-html'] || mailJSON['body-plain']

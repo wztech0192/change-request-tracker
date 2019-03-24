@@ -1,6 +1,0 @@
-
-/* update user total request */
-UPDATE users
-SET totalRequest =
-(SELECT COUNT(*) FROM change_requests
-WHERE change_requests.user_id = users.id);

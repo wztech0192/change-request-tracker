@@ -13,8 +13,11 @@
       <div class="pull-right" style="margin-top:-30px">
         <div class="btn-group">
           <button type="button" class="btn btn-primary" @click="beforeOpenSelectedRow">
-            <span class="mobile-hide">View &nbsp;</span>
+            <span class="not-mobile-ex">View &nbsp;</span>
             <i class="fa fa-eye"></i>
+          </button>
+          <button type="button" class="btn btn-secondary" @click="table.ajax.reload();">
+            <i class="fa fa-refresh"></i>
           </button>
         </div>
       </div>
@@ -141,7 +144,10 @@ export default {
           initComplete: function() {
             //click select event
             self.addRowSelectEvent('#notify-table', target => {
-              self.notifyDetail(self.table.row($(target).index()).data());
+              const data = self.table.row($(target).index()).data();
+              if (data) {
+                self.notifyDetail(data);
+              }
             });
           }
         });

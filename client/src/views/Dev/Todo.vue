@@ -19,10 +19,11 @@
           </li>
           <!-- Add New ToDo Button  -->
           <a
-            class="pull-right btn btn-app addTodoBtn"
+            class="pull-right btn btn-app tab-btn"
             @click="showPromptModal(false, 'Create New Todo')"
           >
-            <i class="fa fa-calendar-plus-o"></i> New Todo
+            <i class="fa fa-calendar-plus-o"></i>
+            <span>New Todo</span>
           </a>
           <li class="pull-left header">
             <h1 style="padding:0; margin:0;">
@@ -543,11 +544,7 @@ export default {
 .devtask-completed {
   box-shadow: -2px 2px 2px 2px rgba(15, 190, 44, 0.637);
 }
-.addTodoBtn {
-  padding: 0;
-  margin: 0;
-  height: auto;
-}
+
 .modalbtn {
   width: 25%;
 }

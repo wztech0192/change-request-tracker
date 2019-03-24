@@ -46,13 +46,18 @@
           <li :class="isTab('active')" @click="setListTab('active')">
             <a to="active">Active</a>
           </li>
-
+          <a class="pull-right btn btn-app tab-btn" @click="fetchCR()">
+            <i class="fa fa-refresh"></i>
+            <span>Refresh</span>
+          </a>
           <a
-            class="pull-right btn btn-app addTodoBtn bg-blue"
+            class="pull-right btn btn-app tab-btn bg-blue"
             @click="$refs.table.beforeOpenSelectedRow()"
           >
-            <i class="fa fa-eye"></i>Review
+            <i class="fa fa-eye"></i>
+            <span>Review</span>
           </a>
+
           <li class="pull-left header">
             <h1 style="padding:0; margin:0; font-size:24px; ">
               <i class="fa fa-exchange"></i>
@@ -114,7 +119,7 @@ export default {
     listTab() {
       //display spinner when request start, hide spinner when table finish initializing
       this.spinner.loading = true;
-      this.fetchChangeRequestList({ method: 'tab', tab: this.listTab });
+      this.fetchCR();
     }
   },
 
@@ -126,13 +131,17 @@ export default {
   created() {
     //display spinner when request start, hide spinner when table finish initializing
     this.spinner.loading = true;
-    this.fetchChangeRequestList({ method: 'tab', tab: this.listTab });
+    this.fetchCR();
   },
 
   methods: {
     ...mapActions('errorStore', ['setGlobalError']),
     ...mapMutations('crStore', ['setListTab']),
     ...mapActions('crStore', ['fetchChangeRequestList']),
+
+    fetchCR() {
+      this.fetchChangeRequestList({ method: 'tab', tab: this.listTab });
+    },
 
     isTab(tab) {
       if (tab === this.listTab) {
@@ -145,24 +154,6 @@ export default {
         return 'active';
       }
     },
-
-    /* // fetch change request list, filter by tab
-    fetchChangeRequestList() {
-      //display spinner when request start, hide spinner when table finish initializing
-      this.spinner.loading = true;
-
-      let url = this.isAdmin
-        ? '/change-request/admin/list'
-        : '/change-request/list';
-      HTTP()
-        .post(url, { method: 'tab', tab: this.listTab })
-        .then(({ data }) => {
-          this.ChangeRequestList = data;
-        })
-        .catch(e => {
-          this.setGlobalError(e);
-        });
-    },*/
 
     //get table header
     getTableHeader() {

@@ -126,6 +126,11 @@ body {
   text-transform: capitalize;
 }
 
+.tab-btn {
+  padding: 0;
+  margin: 0;
+  height: auto;
+}
 .bold {
   font-weight: bold;
 }
@@ -235,6 +240,16 @@ h1 {
 }
 
 @media (max-width: 480px) {
+  .tab-btn span {
+    display: none;
+  }
+  .tab-btn i {
+    padding: 10px;
+  }
+  .tab-btn {
+    min-width: 40px !important;
+  }
+
   .not-mobile-ex {
     display: none;
   }

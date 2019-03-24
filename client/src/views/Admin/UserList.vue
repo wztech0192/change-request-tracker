@@ -17,7 +17,7 @@
             class="btn btn-primary"
             @click="beforeOpenSelectedRow(showChangeRoleDialog)"
           >
-            <span class="mobile-hide">Role &nbsp;</span>
+            <span class="not-mobile-ex">Role &nbsp;</span>
             <i class="fa fa-edit"></i>
           </button>
           <button
@@ -25,8 +25,11 @@
             class="btn btn-secondary"
             @click="beforeOpenSelectedRow(showDeleteDialog)"
           >
-            <span class="mobile-hide">Delete &nbsp;</span>
+            <span class="not-mobile-ex">Delete &nbsp;</span>
             <i class="fa fa-trash"></i>
+          </button>
+          <button type="button" class="btn btn-default" @click="table.ajax.reload();">
+            <i class="fa fa-refresh"></i>
           </button>
         </div>
       </div>
@@ -90,6 +93,7 @@ export default {
           deferRender: false,
           serverSide: true,
           data: [],
+
           columns: [
             { data: 'id', title: 'ID', class: 'all' },
             { data: 'full_name', title: 'User Name', class: 'all' },
@@ -115,6 +119,7 @@ export default {
               self.$router.push('/');
             }
           },
+
           createdRow: function(row, data, dataIndex) {
             //bold id
             $(row)
@@ -132,9 +137,10 @@ export default {
           initComplete: function() {
             //click select event
             self.addRowSelectEvent('#user-table', target => {
-              self.showChangeRoleDialog(
-                self.table.row($(target).index()).data()
-              );
+              const data = self.table.row($(target).index()).data();
+              if (data) {
+                self.showChangeRoleDialog(data);
+              }
             });
 
             // display user profile when click name

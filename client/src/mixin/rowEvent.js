@@ -66,7 +66,9 @@ export default {
             }, 200);
           } else {
             e.preventDefault();
-            afterClick(this);
+            if (!$(this).hasClass('dataTables_empty')) {
+              afterClick(this);
+            }
           }
         }
       });

@@ -111,12 +111,11 @@ export default {
           }
           //add row event
           self.addRowSelectEvent('#change-request-table', target => {
-            //show request detail after click
-            self.showRequestDetail(
-              $(target)
-                .find('td:eq(0)')
-                .text()
-            );
+            const row = $(target).find('td:eq(0)');
+            if (!$(row).hasClass('dataTables_empty')) {
+              //show request detail after click
+              self.showRequestDetail(row.text());
+            }
           });
 
           self.spinner.loading = false;

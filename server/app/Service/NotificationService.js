@@ -189,9 +189,10 @@ class NotificationService {
     const notifyList_new = await Notification.queryForNew(user);
     //get total change request
     const totalNotifications = await user.notifications().getCount();
+
     return {
-      new: notifyList_new,
-      old: notifyList_old,
+      new: notifyList_new.rows,
+      old: notifyList_old.rows,
       totalNotifications
     };
   }

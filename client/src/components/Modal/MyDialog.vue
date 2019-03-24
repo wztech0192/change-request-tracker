@@ -9,6 +9,7 @@
     :pivot-y="0.3"
     transition="slide-down"
     @before-open="beforeOpened"
+    @before-close="beforeClosed"
     @opened="$emit('opened', $event)"
     @closed="$emit('closed', $event)"
   >
@@ -109,7 +110,6 @@ export default {
           this.buttons.length === 1
             ? 0
             : this.buttons.findIndex(button => button.default);
-
         if (buttonIndex !== -1) {
           this.click(this.spinner, buttonIndex, event, 'keypress');
         }

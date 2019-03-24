@@ -84,19 +84,19 @@
               :class="{'label-danger':requestData.status==='Cancelled'}"
               @click="changeStatus('Cancelled')"
             >CANCEL</label>
-            
+
             <label
               class="cr-status label clickable"
               :class="{'label-warning':requestData.status==='To Do'}"
               @click="changeStatus('To Do')"
             >TO DO</label>
-            
+
             <label
               class="cr-status label clickable"
               :class="{'label-primary':requestData.status==='In Progress'}"
               @click="changeStatus('In Progress')"
             >In PROGRESS</label>
-            
+
             <label
               class="cr-status label clickable"
               :class="{'label-success':requestData.status==='Complete'}"

@@ -28,6 +28,7 @@ class ChangeRequestService {
    */
   async getDetail(user, id) {
     const changeRequest = await ChangeRequest.find(id);
+    if (!changeRequest) return null;
     changeRequest.isFlag = await this.flagService.isFlag(
       changeRequest,
       user.id

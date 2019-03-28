@@ -12,7 +12,7 @@ class ResourceNotExistException extends LogicalException {
 
   handle(error, { response }) {
     return response.status(403).json({
-      error: error.message + ' do not exist'
+      error: (error.message || 'target') + ' do not exist'
     });
   }
 }

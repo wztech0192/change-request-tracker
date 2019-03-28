@@ -28,6 +28,7 @@
     "@adonisjs/session": "^1.0.28",
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/validator": "^5.0.6",
+    "@adonisjs/vow": "^1.0.17",
     "adonis-validation-provider": "^3.0.5",
     "mysql": "^2.16.0",
     "session": "^0.1.0"

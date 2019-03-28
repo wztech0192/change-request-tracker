@@ -52,7 +52,7 @@
 
               <!-- Message Input -->
               <label>Optional Message to Receiver</label>
-              
+
               <textarea id="editor" name="editor" style="width: 100%"></textarea>
 
               <br>
@@ -73,7 +73,7 @@
                     <i class="fa fa-user"></i>
                     &nbsp;&nbsp;Receiver Info - {{codeData.allowEdit?'Optional':'Must!'}}
                   </a>
-                  
+
                   <a class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" @click="allowEditClick">
                       User Editable&nbsp;&nbsp;
@@ -86,7 +86,7 @@
                 <div class="box-body">
                   <div class="form-group" :class="{'has-error':error.first_name_error}">
                     <label>First Name</label>
-                    
+
                     <input
                       v-model="codeData.first_name"
                       class="form-control"
@@ -114,7 +114,7 @@
                     <select class="form-control" id="code-role" @change="changeRole">
                       <option>Client</option>
                       <option>Admin</option>
-                      <option>Developer</option>
+                      <option v-if="isDev">Developer</option>
                     </select>
                   </div>
                 </div>
@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import HTTP from '@/http';
 import router from '@/router';
 
@@ -201,7 +201,8 @@ export default {
   },
 
   computed: {
-    ...mapState('userStore', ['user'])
+    ...mapState('userStore', ['user']),
+    ...mapGetters('userStore', ['isDev'])
   },
 
   data() {

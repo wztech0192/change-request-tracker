@@ -30,12 +30,12 @@ class Message extends Model {
   }
 
   //query for the first matching message
-  static queryForFirst() {
-    return this.queryFirst({ email }, id)
+  static queryForFirst({ email }, id) {
+    return this.query()
       .where('senderEmail', email)
+      .orWhere('receiverEmail', email)
       .andWhere('id', id)
-      .first()
-      .fetch();
+      .first();
   }
 
   //query message list by type: Inbox, sent, search, page, or archived

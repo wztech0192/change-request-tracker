@@ -24,29 +24,26 @@ class FlagService {
   /**
    * add change request into flag list
    */
-  async flagChangeRequest(changeRequest, user) {
+  flagChangeRequest(changeRequest, user) {
     // make sure user has not flag this request yet
-    const isFlag = await this.isFlag(changeRequest, user.id);
-    if (isFlag > 1) {
+    if (changeRequest.isFlag > 1) {
       return 'Already exist';
     }
 
     //create flag item
-    await FlagItem.create({
+    return FlagItem.create({
       user_id: user.id,
       change_request_id: changeRequest.id,
       content: changeRequest.title,
       status: changeRequest.status
     });
-    return 'ok';
   }
 
   /**
    * delete change request from flag list
    */
-  async unflagChangeRequest(id, user) {
-    await FlagItem.queryToDelete(user.id, id);
-    return 'ok';
+  unflagChangeRequest(id, user) {
+    return FlagItem.queryToDelete(user.id, id);
   }
 
   /**

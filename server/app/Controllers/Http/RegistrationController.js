@@ -47,6 +47,7 @@ class RegistrationController {
    */
   async createRegistrationCode({ auth, request }) {
     let data = request.all();
+
     //validate data
     const validation = await this.registrationService.isCodeValidate(data);
     if (validation !== 'pass') {

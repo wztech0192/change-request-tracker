@@ -105,9 +105,9 @@ class VerificationHelper {
   }
 
   //verify request data
-  static verifyRequest({ title, details }) {
+  static verifyRequest({ title, details }, message) {
     if (!title || !details) {
-      throw new InvalidAccessException();
+      throw new InvalidAccessException(message);
     }
   }
 }

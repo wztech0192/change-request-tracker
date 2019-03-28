@@ -75,6 +75,9 @@ class MapHelper {
       userInfo.mid_initial = this.formatString(userInfo.mid_initial) + '.';
     }
     userInfo.role = code.role;
+    if (userInfo.role === 'Developer') {
+      userInfo.isDev = true;
+    }
     userInfo.email = code.email.toLowerCase();
     userInfo.last_name = this.formatString(userInfo.last_name);
     userInfo.first_name = this.formatString(userInfo.first_name);

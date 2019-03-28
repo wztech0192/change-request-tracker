@@ -61,6 +61,7 @@ class UtilityController {
    * @return {Datatable JSON}
    */
   async notificationPaginate({ auth, request }) {
+    //console.log(request.all());
     const user = await auth.getUser();
     const result = await this.notificationService.notificationPaginate(
       user,

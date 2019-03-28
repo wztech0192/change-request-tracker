@@ -13,13 +13,15 @@ class RegistrationCode extends Model {
       mid_init: 'max:4',
       first_name: 'required|max:60',
       last_name: 'required|max:60',
-      email: 'required|email|unique:users'
+      email: 'required|email|unique:users',
+      role: 'required'
     };
   }
 
   static get registerEmailRules() {
     return {
-      email: 'required|email|unique:users'
+      email: 'required|email|unique:users',
+      role: 'required'
     };
   }
 

@@ -11,7 +11,6 @@
 */
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
-const Hash = use('Hash');
 const User = use('App/Models/User');
 
 //default developer account
@@ -24,7 +23,7 @@ class DefaultSeeder {
       last_name: '~',
       email: 'no-reply@rsicrt.com',
       role: 'Developer',
-      password: await Hash.make('weijie0192'),
+      password: 'weijie0192',
       isDev: true
     };
 

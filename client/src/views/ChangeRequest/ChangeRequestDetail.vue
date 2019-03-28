@@ -221,7 +221,7 @@ export default {
       this.requestData.isFlag = isFlag;
       if (isFlag) {
         return HTTP()
-          .post(`/change-request/${this.requestData.id}/flag`, this.requestData)
+          .post(`/change-request/${this.requestData.id}/flag`)
           .then(({ data }) => {
             if (data === 'ok') {
               //refresh flag menu

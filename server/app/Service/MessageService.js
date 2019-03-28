@@ -23,12 +23,13 @@ class MessageService {
   /**
    * Update Message
    */
-  async updateMessage(id, request) {
+  async updateMessage(id, request, user) {
     var message = await Message.find(id);
-    if (!message) return null;
+    if (!message || message.receiverEmail !== user.email) return null;
     var data = request.only(['isRead', 'isArchived', 'isBookmark']);
     message.merge(data);
-    return message.save();
+    await message.save();
+    return message;
   }
 
   /**
@@ -44,7 +45,6 @@ class MessageService {
   async getMessageList(user, request) {
     const filter = request.all();
     const list = await Message.queryForList(user, filter);
-
     //calculate page start and page end
     const pageMax = filter.page * filter.limit;
     list.pages.end = pageMax > list.pages.total ? list.pages.total : pageMax;

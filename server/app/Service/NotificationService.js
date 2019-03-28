@@ -25,8 +25,11 @@ class NotificationService {
       notifyList[i].user_id = adminList.rows[i].id;
     }
 
-    //save data to datatabse
-    Notification.createMany(notifyList);
+    //catch a super unique case when one of admin was deleted during notification generation process, which is ~10ms
+    try {
+      //save data to datatabse
+      await Notification.createMany(notifyList);
+    } catch (e) {}
   }
 
   /**

@@ -62,7 +62,7 @@ class ChangeRequestController {
   async create({ auth, request }) {
     const data = request.only(['title', 'details']);
     //throw error if title or details is empty
-    VerificationHelper.verifyRequest(data);
+    VerificationHelper.verifyRequest(data, 'request');
 
     let { message, client } = request.only(['message', 'client']);
     const user = await auth.getUser();
@@ -139,12 +139,14 @@ class ChangeRequestController {
       true
     );
     const { content } = request.only('content');
+
     const result = await this.crService.createCRMessage(
       user,
       changeRequest,
       content
     );
-    return result;
+    VerificationHelper.verifyExistance(result);
+    return 'ok';
   }
 
   /**
@@ -178,15 +180,16 @@ class ChangeRequestController {
   /**
    * add change request into flag list
    */
-  async flagChangeRequest({ auth, request }) {
+  async flagChangeRequest({ auth, params }) {
     const user = await auth.getUser();
-    const changeRequest = request.all();
+    const changeRequest = await this.crService.getDetail(user, params.id);
     VerificationHelper.verifyPermission(changeRequest, user, false, true);
     const result = await this.flagService.flagChangeRequest(
       changeRequest,
       user
     );
-    return result;
+    VerificationHelper.verifyExistance(result);
+    return 'ok';
   }
 
   /**
@@ -194,8 +197,9 @@ class ChangeRequestController {
    */
   async unflagChangeRequest({ auth, params }) {
     const user = await auth.getUser();
-    const result = await this.flagService.unflagChangeRequest(params.id, user);
-    return result;
+    await this.flagService.unflagChangeRequest(params.id, user);
+
+    return 'ok';
   }
 
   /**

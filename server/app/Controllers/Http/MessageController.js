@@ -17,12 +17,19 @@ class MessageController {
   /**
    * Create new message
    */
-  async createMessage({ auth, request }) {
+  async createMessage({ auth, request, response }) {
     const user = await auth.getUser();
     // map receive list data
-    const receiverList = MapHelper.mapReceiveData(user, request);
-    const result = await this.messageService.createMultiMessage(receiverList);
-    return result;
+    try {
+      const receiverList = MapHelper.mapReceiveData(user, request);
+      if (receiverList.length > 0) {
+        const result = await this.messageService.createMultiMessage(
+          receiverList
+        );
+        return result;
+      }
+    } catch (e) {}
+    return response.status(406).send('Wrong Format');
   }
 
   /**
@@ -30,7 +37,9 @@ class MessageController {
    */
   async getMessage({ auth, params }) {
     const user = await auth.getUser();
+
     const message = await this.messageService.getMessage(user, params.id);
+
     VerificationHelper.verifyExistance(message, 'message');
     return message;
   }
@@ -41,6 +50,7 @@ class MessageController {
   async getMessageList({ auth, request }) {
     const user = await auth.getUser();
     const result = await this.messageService.getMessageList(user, request);
+
     return result;
   }
 
@@ -67,19 +77,14 @@ class MessageController {
    * @returns {message}
    */
   async updateMessage({ auth, request, params }) {
-    var message = await this.messageService.updateMessage(params.id, request);
-    VerificationHelper.verifyExistance(message);
-    return message;
-  }
-
-  /**
-   * get unread and bookmarked messages
-   * @returns {array}
-   */
-  async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
-    const result = await this.messageService.getMenuMsgList(user);
-    return result;
+    var message = await this.messageService.updateMessage(
+      params.id,
+      request,
+      user
+    );
+    VerificationHelper.verifyExistance(message, ' message');
+    return message;
   }
 }
 

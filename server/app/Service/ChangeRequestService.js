@@ -107,6 +107,17 @@ class ChangeRequestService {
     if (!changeRequest) return null;
 
     const requestData = request.only(['title', 'details', 'status']);
+
+    //validate request status format
+    if (
+      requestData.status &&
+      requestData.status !== 'Cancelled' &&
+      requestData.status !== 'To Do' &&
+      requestData.status !== 'In Progress' &&
+      requestData.status !== 'Complete'
+    ) {
+      return null;
+    }
     changeRequest.merge(requestData);
     //map history data
     const hist = MapHelper.mapCRHistory(requestData, user);
@@ -182,7 +193,7 @@ class ChangeRequestService {
       // replace < and > to html code &#60; and &#62 for security
       content = `<p>${MapHelper.sanitize(content)}</p>`;
     }
-    await ChangeRequestMessage.create({
+    const msg = await ChangeRequestMessage.create({
       change_request_id: changeRequest.id,
       content: content,
       user_id: user.id,
@@ -191,6 +202,7 @@ class ChangeRequestService {
     });
     changeRequest.totalMessage++;
     await changeRequest.save();
+    return msg;
   }
 
   /**

@@ -58,6 +58,7 @@ class UserController {
    * Userlist datatable server side processing
    */
   async datatable({ auth, request }) {
+    //console.log(request.all());
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const tableJSON = await this.userService.getDatatableJSON(request);

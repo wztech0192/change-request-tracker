@@ -19,10 +19,9 @@ class RegistrationController {
    * @return {token}
    */
   async register({ request, auth }) {
+    let { code } = request.only('code');
     //verify registration code, throw exceptions if failed
-    const code = await this.registrationService.getMatchCode(
-      request.only('code')
-    );
+    code = await this.registrationService.getMatchCode(code);
     //map user information
     const userInfo = MapHelper.mapUserInfo(
       request.except(['code', 'password_retype']),
@@ -67,10 +66,8 @@ class RegistrationController {
   /**
    * Get registrationCode from data that match with input code
    */
-  async verifyRegistrationCode({ request }) {
-    const result = await this.registrationService.getMatchCode(
-      request.only('code')
-    );
+  async verifyRegistrationCode({ params }) {
+    const result = await this.registrationService.getMatchCode(params.code);
     return result;
   }
 }

@@ -119,7 +119,7 @@ export default {
             handler: spinner => {
               spinner.loading = true;
               HTTP()
-                .post('/regist-code/verify', { code: $('.regist-code').val() })
+                .get(`/regist-code/verify/${$('.regist-code').val() || 'na'}`)
                 .then(({ data }) => {
                   //if data exist set registration code to state, then direct to register page
                   if (data) {
@@ -176,8 +176,9 @@ export default {
           }
         })
         .catch(e => {
-          var errorData = e.response.data;
-          if (errorData.length > 0) {
+          var errorData = e.response;
+
+          if (errorData.status !== 500) {
             this.showErrorAndClearPW('Wrong Password or Email!');
           } else {
             this.setGlobalError(e);

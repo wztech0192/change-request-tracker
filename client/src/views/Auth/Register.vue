@@ -165,7 +165,7 @@ export default {
       : this.registrationCode;
 
     HTTP()
-      .post('/regist-code/verify', { code })
+      .get(`/regist-code/verify/${code}`)
       .then(({ data }) => {
         if (data) {
           //fill in register data from the registration code

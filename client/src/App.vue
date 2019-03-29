@@ -110,7 +110,7 @@ body {
   z-index: 1000000;
   position: fixed;
   width: 100%;
-  background-color: #dd4b39ed !important;
+  background-color: #0073b7ed !important;
   border: none;
   top: 0;
   text-align: center;

@@ -20,13 +20,13 @@ class RegistrationService {
   }
 
   // Get registrationCode from data that match with input code
-  async getMatchCode({ code }) {
-    const RegistrationCodes = await RegistrationCode.findBy('code', code);
+  async getMatchCode(code) {
+    const registrationCodes = await RegistrationCode.findBy('code', code);
     //if code not exist throw registration code not exist exception
-    if (!RegistrationCodes) {
+    if (!registrationCodes) {
       throw new RegistCodeNotExistException();
     }
-    return RegistrationCodes;
+    return registrationCodes;
   }
 
   async createRegistrationCode(user, data) {

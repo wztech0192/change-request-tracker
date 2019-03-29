@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 /* Bootstrap 3.3.7 */
 import './assets/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css';
 /* Font Awesome */

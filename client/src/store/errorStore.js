@@ -29,7 +29,7 @@ export default {
       // set error message if msg is a string
       if (typeof msg === 'string') {
         commit('setGlobalError', msg);
-      } else if (msg.code === 'ECONNABORTED') {
+      } else if (msg.code === 'ECONNABORTED' || msg.response.status === 500) {
         commit(
           'setGlobalError',
           'Connection fail, please try again in another time.'
@@ -37,7 +37,6 @@ export default {
       } else {
         try {
           const errorData = msg.response.data;
-
           if (errorData.name === 'ExpiredJwtToken') {
             // if error is expired jwt token, redirect to login page
             commit(

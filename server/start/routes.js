@@ -25,8 +25,8 @@ Route.group(() => {
   //User Authenication
   Route.post('auth/register', 'RegistrationController.register');
   Route.post('auth/login', 'UserController.login');
-  Route.post(
-    'regist-code/verify',
+  Route.get(
+    'regist-code/verify/:code',
     'RegistrationController.verifyRegistrationCode'
   );
   Route.post(

@@ -122,24 +122,17 @@ test('create registration code  -> POST api/regist-code', async ({
 });
 
 // test verify registration code
-test('verify registration code -> POST regist-code/verify', async ({
+test('verify registration code -> POST regist-code/verify/:code', async ({
   client
 }) => {
   //test wrong code
-  let response = await client
-    .post('api/regist-code/verify')
-    .send({ code: '2139120' })
-    .end();
+  let response = await client.get(`api/regist-code/verify/${2139120}`).end();
   response.assertStatus(403);
 
   //test correct code
   response = await client
-    .post('api/regist-code/verify')
-    .send({
-      code: regist_code.code
-    })
+    .get(`api/regist-code/verify/${regist_code.code}`)
     .end();
-
   response.assertStatus(200);
   response.assertJSONSubset({
     code: '1234',

@@ -75,7 +75,7 @@
                 Request Detail
                 <span v-if="error.detail_error">-- Detail Cannot be empty</span>
               </label>
-              
+
               <textarea id="editor" name="editor" class="form-control" style="width: 100%"></textarea>
 
               <hr>
@@ -216,10 +216,6 @@ export default {
       .then(editor => {
         self.editor = editor;
         editor.setData(self.requestData.details);
-        console.log(Array.from(editor.ui.componentFactory.names()));
-        console.log(
-          ClassicEditor.builtinPlugins.map(plugin => plugin.pluginName)
-        );
         // clear detail error when blur
         editor.ui.focusTracker.on(
           'change:isFocused',

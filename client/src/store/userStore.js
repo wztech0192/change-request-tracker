@@ -122,6 +122,7 @@ export default {
       dispatch('fetchNavMenu', 'flag');
       dispatch('fetchNavMenu', 'notification');
       dispatch('fetchNavMenu', 'msg');
+      dispatch('setExceptionError', null);
       document.body.className = 'skin-black sidebar-mini';
       document.body.style.overflowY = 'auto';
       document.body.style.background = '#d2d6de';

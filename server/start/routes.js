@@ -38,6 +38,7 @@ Route.group(() => {
     'change-request/mail-request-info/:key',
     'ChangeRequestController.mailbackCRInfo'
   );
+  Route.get('download/CRViewer.zip', 'UtilityController.getCRViewer');
 }).prefix('api');
 
 Route.group(() => {
@@ -46,6 +47,7 @@ Route.group(() => {
   Route.get('user/flag', 'UtilityController.getFlaggedList');
   Route.get('user/notification', 'UtilityController.getNotificationList');
   Route.get('user/msg', 'UtilityController.getMenuMsgList');
+
   Route.post(
     'user/notification/paginate',
     'UtilityController.notificationPaginate'
@@ -54,11 +56,16 @@ Route.group(() => {
     'user/notification/clear-new/:target',
     'UtilityController.updateNotification'
   );
+  Route.patch(
+    'user/notification/clear-new/:target',
+    'UtilityController.updateNotification'
+  );
   Route.get('user/:email', 'UserController.get');
   Route.post('user/search/:role', 'UserController.search');
   Route.post('user/datatable', 'UserController.datatable');
   Route.delete('user/:id', 'UserController.destroy');
   Route.put('user/:id', 'UserController.update');
+  Route.patch('user/:id', 'UserController.update');
 
   //Registration code
   Route.post('regist-code', 'RegistrationController.createRegistrationCode');
@@ -73,12 +80,15 @@ Route.group(() => {
   Route.post('dev/todo', 'DevController.createTodo');
   Route.delete('dev/todo/:id', 'DevController.destroyTodo');
   Route.put('dev/todo/:id', 'DevController.updateTodo');
+  Route.patch('dev/todo/:id', 'DevController.updateTodo');
 
   //Developer Task Route
   Route.post('dev/todo/:id/task', 'DevController.createTask');
   Route.delete('dev/task/:id', 'DevController.destroyTask');
   Route.put('dev/task/:id', 'DevController.updateTask');
+  Route.patch('dev/task/:id', 'DevController.updateTask');
   Route.put('dev/task/complete/:id', 'DevController.updateTaskComplete');
+  Route.patch('dev/task/complete/:id', 'DevController.updateTaskComplete');
 
   //Message Route
   Route.get('message/:id', 'MessageController.getMessage');
@@ -87,6 +97,9 @@ Route.group(() => {
   Route.put('message/clear-new', 'MessageController.clearNewMessages');
   Route.put('message/archive', 'MessageController.archiveMessage');
   Route.put('message/:id', 'MessageController.updateMessage');
+  Route.patch('message/clear-new', 'MessageController.clearNewMessages');
+  Route.patch('message/archive', 'MessageController.archiveMessage');
+  Route.patch('message/:id', 'MessageController.updateMessage');
 
   //Change Request Route
   Route.post('change-request/list', 'ChangeRequestController.index');
@@ -101,6 +114,7 @@ Route.group(() => {
   Route.get('change-request/:id', 'ChangeRequestController.detail');
   Route.post('change-request', 'ChangeRequestController.create');
   Route.put('change-request/:id', 'ChangeRequestController.update');
+  Route.patch('change-request/:id', 'ChangeRequestController.update');
   Route.post('change-request/search/:target', 'ChangeRequestController.search');
 
   //Flag and UnFlag Change Request

@@ -732,7 +732,6 @@ test('get change request list of a user -> POST change-request/list', async ({
     {
       status: change_request.status,
       title: change_request.title,
-      details: change_request.details,
       clientName: 'Client Auto Test'
     }
   ]);
@@ -761,7 +760,6 @@ test('get all change request list as admin -> POST change-request/admin/list', a
       id: change_request.id,
       status: change_request.status,
       title: change_request.title,
-      details: change_request.details,
       clientName: 'Client Auto Test'
     }
   ]);

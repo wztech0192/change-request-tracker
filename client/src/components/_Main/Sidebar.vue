@@ -101,6 +101,11 @@
                 <i class="fa fa-arrow-circle-right"></i> Page Routes
               </router-link>
             </li>
+            <li>
+              <router-link to="/document/crviewer" download>
+                <i class="fa fa-download"></i>Download CRViewer
+              </router-link>
+            </li>
           </ul>
         </li>
       </ul>

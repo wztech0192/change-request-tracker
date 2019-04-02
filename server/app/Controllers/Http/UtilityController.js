@@ -8,12 +8,27 @@
 const MessageService = use('App/Service/MessageService');
 const NotificationService = use('App/Service/NotificationService');
 const FlagService = use('App/Service/FlagService');
+const Helpers = use('Helpers');
 
 class UtilityController {
   constructor() {
     this.messageService = new MessageService();
     this.flagService = new FlagService();
     this.notificationService = new NotificationService();
+  }
+
+  /**
+   * return CRViewer Zip
+   */
+  async getCRViewer({ response }) {
+    return response.getMenuMsgList(Helpers.publicPath('/CRViewer.rar'));
+  }
+
+  /**
+   * return CRViewer Zip
+   */
+  async getCRViewer({ response }) {
+    return response.download(Helpers.publicPath('/CRViewer.rar'));
   }
 
   /**

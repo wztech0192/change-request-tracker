@@ -73,7 +73,7 @@ export default {
 
     clearNewNotification({ dispatch }, target) {
       HTTP()
-        .patch(`/user/notification/clear-new/${target}`)
+        .put(`/user/notification/clear-new/${target}`)
         .then(() => {
           // refresh notification menu
           dispatch('fetchNavMenu', 'notification');
@@ -86,7 +86,7 @@ export default {
     // clear all new messages
     clearNewMsg({ dispatch, commit }) {
       HTTP()
-        .patch('message/clear-new')
+        .put('message/clear-new')
         .then(() => {
           // refresh msg menu
           dispatch('fetchNavMenu', 'msg');

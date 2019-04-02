@@ -239,6 +239,13 @@ h1 {
   display: none;
 }
 
+@media (max-width: 670px) {
+  body {
+    /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+    font-size: 13px !important;
+  }
+}
+
 @media (max-width: 480px) {
   .tab-btn span {
     display: none;
@@ -256,10 +263,6 @@ h1 {
   h1 {
     margin: 0;
     font-size: 20px !important;
-  }
-  body {
-    /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-    font-size: 13px !important;
   }
 }
 

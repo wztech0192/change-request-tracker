@@ -30,12 +30,24 @@ class ChangeRequest extends Model {
    */
   static queryForActive(id) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .whereNotIn('status', ['Cancelled', 'Complete'])
       .where(function() {
         if (id) {
           this.where('user_id', id);
         }
       })
+      .orderBy('created_at', 'desc')
       .fetch();
   }
 
@@ -44,12 +56,24 @@ class ChangeRequest extends Model {
    */
   static queryByStatus(tab, id) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .where('status', tab)
       .where(function() {
         if (id) {
           this.where('user_id', id);
         }
       })
+      .orderBy('created_at', 'desc')
       .fetch();
   }
 
@@ -58,7 +82,19 @@ class ChangeRequest extends Model {
    */
   static queryForOwned(id) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .where('user_id', id)
+      .orderBy('created_at', 'desc')
       .fetch();
   }
 
@@ -67,6 +103,17 @@ class ChangeRequest extends Model {
    */
   static queryForSearch({ status, clientsName, date }) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .where(function() {
         if (clientsName) {
           //if data has clients name, query all clients
@@ -78,6 +125,7 @@ class ChangeRequest extends Model {
         }
       })
       .where('status', 'like', `%${status || ''}%`)
+      .orderBy('created_at', 'desc')
       .fetch();
   }
 
@@ -86,6 +134,17 @@ class ChangeRequest extends Model {
    */
   static queryForPaginate(term, target, page) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .where(function() {
         this.where('status', 'like', `%${term}%`)
           .orWhere('id', term)
@@ -107,6 +166,17 @@ class ChangeRequest extends Model {
    */
   static queryByDateRange(dateRange) {
     return this.query()
+      .select(
+        'id',
+        'user_id',
+        'title',
+        'status',
+        'created_at',
+        'updated_at',
+        'totalMessage',
+        'totalHistory',
+        'clientName'
+      )
       .whereBetween('created_at', [
         `${dateRange[0]} 00:00:01`,
         `${dateRange[1]} 23:59:59`

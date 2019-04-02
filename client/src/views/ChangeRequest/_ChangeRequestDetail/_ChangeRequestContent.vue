@@ -127,7 +127,7 @@ export default {
     saveEdit() {
       if (this.isAdmin) {
         HTTP()
-          .patch(`/change-request/${this.$route.params.id}`, this.newContent)
+          .put(`/change-request/${this.$route.params.id}`, this.newContent)
           .then(({ data }) => {
             this.requestData.details = data.details;
             this.requestData.title = data.title;

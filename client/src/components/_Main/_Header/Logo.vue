@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 export default {
   computed: {
-    ...mapState('userStore', ['refresh'])
+    ...mapGetters('userStore', ['isLoggedIn'])
   },
 
   data() {
@@ -38,6 +38,12 @@ export default {
     this.$el.addEventListener(
       'animationiteration',
       e => {
+        if (!this.isLoggedIn) {
+          // stop if user logout
+          this.auto = false;
+          this.spin = false;
+        }
+
         // if spinner make two full circle active auto
         if (e.elapsedTime === 1) {
           this.auto = true;

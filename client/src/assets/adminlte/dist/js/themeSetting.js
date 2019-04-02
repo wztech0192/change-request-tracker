@@ -177,7 +177,6 @@ $(() => {
       if (!$('body').hasClass('sidebar-collapse')) $('[data-layout="sidebar-collapse"]').click();
     });
 
-    console.log(get('fixed'));
     if (get('fixed') === 'fixed') {
       $('body').toggleClass('fixed');
     }

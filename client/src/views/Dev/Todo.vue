@@ -320,7 +320,7 @@ export default {
       //reverse boolean
       todo.isFlagged = !(todo.isFlagged || todo.isFlagged === 1);
       HTTP()
-        .patch(`/dev/todo/${todo.id}`, todo)
+        .put(`/dev/todo/${todo.id}`, todo)
         .then(() => {
           //update header task menu
           this.fetchNavMenu('flag');
@@ -349,7 +349,7 @@ export default {
       }
 
       HTTP()
-        .patch(`/dev/task/complete/${task.id}`, task)
+        .put(`/dev/task/complete/${task.id}`, task)
         .then(() => {
           //update header task menu
           this.fetchNavMenu('flag');
@@ -497,7 +497,7 @@ export default {
         var { item, link } = this.modalInfo;
         item.content = this.modalInfo.content;
         HTTP()
-          .patch(link, this.modalInfo)
+          .put(link, this.modalInfo)
           .then(() => {
             this.fetchNavMenu('flag');
           })

@@ -228,7 +228,7 @@ export default {
               } else {
                 spinner.loading = true;
                 HTTP()
-                  .patch(`/user/${user.id}`, { role: newRole })
+                  .put(`/user/${user.id}`, { role: newRole })
                   .then(({ data }) => {
                     //if return data not exist, push for error
                     if (!data) {

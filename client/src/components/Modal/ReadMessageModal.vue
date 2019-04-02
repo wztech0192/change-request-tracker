@@ -89,7 +89,7 @@ export default {
         //mark read if msg is not read
         if (this.isReceiver && !this.params.isRead) {
           HTTP()
-            .patch(`message/${this.params.id}`, { isRead: true })
+            .put(`message/${this.params.id}`, { isRead: true })
             .then(() => {
               // update user message menu
               this.$store.dispatch('userStore/fetchNavMenu', 'msg');
@@ -112,7 +112,7 @@ export default {
         this.isBookmark = this.isBookmark === 0 ? 1 : 0;
         // update the server
         HTTP()
-          .patch(`message/${this.params.id}`, { isBookmark: this.isBookmark })
+          .put(`message/${this.params.id}`, { isBookmark: this.isBookmark })
           .then(() => {
             this.$store.dispatch('userStore/fetchNavMenu', 'msg');
             //update mailbox

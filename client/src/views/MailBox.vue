@@ -356,7 +356,7 @@ export default {
       msg.isBookmark = msg.isBookmark === 0 ? 1 : 0;
       //update the server
       HTTP()
-        .patch(`message/${msg.id}`, { isBookmark: msg.isBookmark })
+        .put(`message/${msg.id}`, { isBookmark: msg.isBookmark })
         .then(() => {
           this.$store.dispatch('userStore/fetchNavMenu', 'msg');
         })
@@ -383,7 +383,7 @@ export default {
 
         //send http request to the server and refresh list
         HTTP()
-          .patch('message/archive', {
+          .put('message/archive', {
             list,
             isArchived: this.filter.type === 'inbox'
           })

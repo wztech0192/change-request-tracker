@@ -44,8 +44,10 @@ class ChangeRequestService {
     const { tab } = request.only('tab');
     switch (tab) {
       case 'all':
+      case 'All':
         return ChangeRequest.queryForOwned(id);
       case 'active':
+      case 'Active':
         //return all change request except the one with cancelled or complete status
         return ChangeRequest.queryForActive(id);
       default:
@@ -65,9 +67,11 @@ class ChangeRequestService {
     if (filter.method === 'tab') {
       switch (filter.tab) {
         case 'all':
+        case 'All':
           requestList = await ChangeRequest.all();
           break;
         case 'active':
+        case 'Active':
           //return all change request except the one with cancelled or complete status
           requestList = await ChangeRequest.queryForActive();
           break;

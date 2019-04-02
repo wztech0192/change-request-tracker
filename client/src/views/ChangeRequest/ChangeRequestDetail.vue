@@ -269,7 +269,7 @@ export default {
               handler: spinner => {
                 spinner.loading = true;
                 HTTP()
-                  .patch(this.baseURL, { status })
+                  .put(this.baseURL, { status })
                   .then(({ data }) => {
                     this.requestData.status = data.status;
                     this.$modal.hide('dialog');

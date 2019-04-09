@@ -2,14 +2,16 @@
 
 /**
  * @author Wei Zheng
- * @description message service used to send email and handle insite messages
+ * @description service used to send and handle all insite messages
  */
 
 const Message = use('App/Models/Message');
 
 class MessageService {
   /**
-   * Create new message
+   * Create new message for all receivers
+   * @return {Message[]}
+   * @param {String[]} receiverList array of receiver email
    */
   async createMultiMessage(receiverList) {
     for (let receiveData of receiverList) {
@@ -22,11 +24,14 @@ class MessageService {
 
   /**
    * Update Message
+   * @return {Message}
+   * @param {int} id  message id
+   * @param {Object} data {'isRead', 'isArchived', 'isBookmark'}
+   * @param {User} user current user
    */
-  async updateMessage(id, request, user) {
+  async updateMessage(id, data, user) {
     var message = await Message.find(id);
     if (!message || message.receiverEmail !== user.email) return null;
-    var data = request.only(['isRead', 'isArchived', 'isBookmark']);
     message.merge(data);
     await message.save();
     return message;
@@ -34,6 +39,9 @@ class MessageService {
 
   /**
    * Get message detail
+   * @return {Message}
+   * @param {User} user Current User
+   * @param {int} id Message id
    */
   getMessage(user, id) {
     return Message.queryForFirst(user, id);
@@ -41,9 +49,11 @@ class MessageService {
 
   /**
    * Get message list by type. Inbox, sent, or archived
+   * @return {Message[]}
+   * @param {User} user current user
+   * @param {Object} filter filter data
    */
-  async getMessageList(user, request) {
-    const filter = request.all();
+  async getMessageList(user, filter) {
     const list = await Message.queryForList(user, filter);
     //calculate page start and page end
     const pageMax = filter.page * filter.limit;
@@ -54,6 +64,8 @@ class MessageService {
 
   /**
    * clear new messages
+   * @return {Message[]}
+   * @param {User} user current user
    */
   clearNewMessages(user) {
     return Message.queryToClearNew(user);
@@ -61,8 +73,11 @@ class MessageService {
 
   /**
    * archive message
+   * @return {Message[]}
+   * @param {User} user current user
+   * @param {Objecct} data {'list', 'isArchived'}
    */
-  archiveMessage(user, request) {
+  archiveMessage(user, data) {
     const data = request.only(['list', 'isArchived']);
     if (!data.list || data.list.length <= 0) {
       return null;
@@ -73,7 +88,8 @@ class MessageService {
 
   /**
    * get unread and bookmarked messages
-   * @returns {array}
+   * @returns {Message[], Message[], int}
+   * @param {User} user current user
    */
   async getMenuMsgList(user) {
     const unread = await Message.queryForUnreadList(user);

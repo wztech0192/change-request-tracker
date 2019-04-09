@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description dev service
+ * @description  handle all developing related function
  */
 
 const User = use('App/Models/User');
@@ -12,13 +12,16 @@ const ChangeRequestService = use('App/Service/ChangeRequestService');
 
 class DevService {
   constructor() {
+    /**
+     * declare global variable
+     */
     this.changeRequestService = new ChangeRequestService();
     this.ltr = 'abcdefghijklmnopqrstuvwxyz';
   }
 
   /**----------------------Dev Todo CRUD--------------------------
    * Get all dev ToDo and its task
-   * @returns {Object}
+   * @return {DevTodo[]}
    */
   async getList() {
     //get all todoList from database
@@ -34,7 +37,8 @@ class DevService {
 
   /**
    * Create a dev Todo
-   * @returns { devTodo }
+   * @return { DevTodo }
+   * @param {Object} content devTodo object
    */
   createTodo(content) {
     return DevTodo.create(content);
@@ -42,7 +46,8 @@ class DevService {
 
   /**
    * delete target
-   * @returns {devTodo}
+   * @return {DevTodo}
+   * @param {int} id DevTodo id
    */
   async destroyTodo(id) {
     const devTodo = await DevTodo.find(id);
@@ -52,7 +57,8 @@ class DevService {
 
   /**
    * update target
-   * @returns {devTodo}
+   * @return {DevTodo}
+   * @param {int} id DevTodo id
    */
   async updateTodo(id, request) {
     const devTodo = await DevTodo.find(id);
@@ -60,11 +66,13 @@ class DevService {
     devTodo.merge(request.only(['content', 'percentage', 'isFlagged']));
     return devTodo.save();
   }
+
   /**----------------------Dev Task CRUD--------------------------
    *
    *
    * Create a dev task own by devTodo
-   * @returns {devTask}
+   * @return {DevTask}
+   * @param {int} id DevTodo id
    */
   async createTask(id, request) {
     const devTodo = await DevTodo.find(id);
@@ -86,7 +94,8 @@ class DevService {
 
   /**
    * delete target
-   * @returns {devTask}
+   * @return {DevTask}
+   * @param {id} id DevTask id
    */
   async destroyTask(id) {
     const devTask = await DevTask.find(id);
@@ -116,7 +125,8 @@ class DevService {
 
   /**
    * update target
-   * @returns {devTask}
+   * @return {DevTask}
+   * @param {int} id DevTask id
    */
   async updateTask(id, request) {
     const devTask = await DevTask.find(id);
@@ -127,7 +137,8 @@ class DevService {
 
   /**
    * update task completion
-   * @returns {devTask}
+   * @return {DevTask}
+   * @param {int} id DevTask id
    */
   async updateTaskComplete(id, request) {
     const devTask = await DevTask.find(id);

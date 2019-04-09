@@ -2,7 +2,8 @@
 
 /**
  * @author Wei Zheng
- * @description handles all verification
+ * @description Helper class that provide all type of verification, authorization, and validation methods
+ *              All method will throw exception and return respond 404 if failed
  */
 
 const InvalidAccessException = use('App/Exceptions/InvalidAccessException');
@@ -12,7 +13,11 @@ const ResourceNotExistException = use(
 
 class VerificationHelper {
   /**
-   * verify if user has permission to handle this resource
+   * verify if the user has permission to handle this resource
+   * @param {Object} resource
+   * @param {User} user
+   * @param {String[]} allowRoles
+   * @param {Boolean} allowSelf
    */
   static verifyPermission(resource, user, allowRoles, allowSelf) {
     //throw a ResourceNotExistException if resource do not exist
@@ -33,6 +38,8 @@ class VerificationHelper {
 
   /**
    * verify if user is the owner of the message
+   * @param {String} message
+   * @param {User} owner
    */
   static verifyMessageOwnership(message, owner) {
     //throw a ResourceNotExistException if resource do not exist
@@ -44,6 +51,8 @@ class VerificationHelper {
 
   /**
    * verify if user has permission to view the entire list
+   * @param {User} user
+   * @param {String[]} allowRoles
    */
   static verifyRole(user, allowRoles) {
     //if role was defined, throw a InvalidAccessException if the current user's role is not contained in allowed roles list
@@ -56,6 +65,13 @@ class VerificationHelper {
     }
   }
 
+  /**
+   * verify if the user has permission to handle data of the target user
+   * @param {User} targetUser
+   * @param {User} user
+   * @param {String[]} allowRoles
+   * @param {Boolean} allowSelf
+   */
   static verifyPermissionForUser(targetUser, user, allowRoles, allowSelf) {
     //throw a ResourceNotExistException if targetUser do not exist
     this.verifyExistance(targetUser, 'user');
@@ -77,6 +93,12 @@ class VerificationHelper {
     }
   }
 
+  /**
+   * Verify if the user has the permission to delete target user
+   * @param {User} targetUser
+   * @param {User} user
+   * @param {String[]} allowRoles
+   */
   static verifyPermissionForDeleteUser(targetUser, user, allowRoles) {
     //throw a ResourceNotExistException if targetUser do not exist
     this.verifyExistance(targetUser, 'user');
@@ -97,14 +119,22 @@ class VerificationHelper {
     }
   }
 
-  //verify if resource exists
+  /**
+   * verify if resource exists
+   * @param {Object} resource
+   * @param {String} message
+   */
   static verifyExistance(resource, message) {
     if (!resource) {
       throw new ResourceNotExistException(message);
     }
   }
 
-  //verify request data
+  /**
+   * verify change request data
+   * @param {ChangeRequest} param0
+   * @param {String} message
+   */
   static verifyRequest({ title, details }, message) {
     if (!title || !details) {
       throw new InvalidAccessException(message);

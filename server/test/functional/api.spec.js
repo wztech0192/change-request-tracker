@@ -573,7 +573,7 @@ test('set isRead to true when a message is read by a user -> PATCH api/message/:
  ********************************/
 
 // test get menu message list
-test('user get menu message list -> GET api/user/msg', async ({
+test('user get menu message list -> GET api/util/msg', async ({
   client,
   assert
 }) => {
@@ -590,7 +590,7 @@ test('user get menu message list -> GET api/user/msg', async ({
 
   //test http request
   const response = await client
-    .get(`api/user/msg`)
+    .get(`api/util/msg`)
     .loginVia(client_user, 'jwt')
     .end();
   response.assertStatus(200);
@@ -598,7 +598,7 @@ test('user get menu message list -> GET api/user/msg', async ({
 });
 
 // test get menu notification list
-test('user get menu notification list -> GET api/user/notification', async ({
+test('user get menu notification list -> GET api/util/notification', async ({
   client
 }) => {
   //mock data
@@ -612,7 +612,7 @@ test('user get menu notification list -> GET api/user/notification', async ({
 
   //test http request
   const response = await client
-    .get(`api/user/notification`)
+    .get(`api/util/notification`)
     .loginVia(admin_user, 'jwt')
     .end();
   response.assertStatus(200);
@@ -620,7 +620,7 @@ test('user get menu notification list -> GET api/user/notification', async ({
 });
 
 // test get flag item list
-test('user get menu flag item list -> GET api/user/flag', async ({
+test('user get menu flag item list -> GET api/util/flag', async ({
   client
 }) => {
   //mock data
@@ -634,7 +634,7 @@ test('user get menu flag item list -> GET api/user/flag', async ({
 
   //test http request
   const response = await client
-    .get(`api/user/flag`)
+    .get(`api/util/flag`)
     .loginVia(client_user, 'jwt')
     .end();
 
@@ -652,7 +652,7 @@ test('user get menu flag item list -> GET api/user/flag', async ({
 });
 
 // get datatable notification list
-test('get datatable notification list -> POST api/user/notification/paginate', async ({
+test('get datatable notification list -> POST api/util/notification/paginate', async ({
   client
 }) => {
   //mock data
@@ -665,7 +665,7 @@ test('get datatable notification list -> POST api/user/notification/paginate', a
   await Notification.create(data);
 
   const response = await client
-    .post(`api/user/notification/paginate`)
+    .post(`api/util/notification/paginate`)
     .send({
       draw: '1',
       columns: [

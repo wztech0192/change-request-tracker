@@ -53,12 +53,9 @@
             <span class="label label-warning">PHP</span>
             <span class="label label-danger">HTML/CSS</span>
             <span class="label label-success">C#</span>
-            
-            <span class="label label-primary">.NET</span>
-            <span class="label label-info">C/C++</span>
-            
+            <span class="label label-primary">ASP.NET Core</span>
             <span class="label label-warning">OpenGL</span>
-            <span class="label label-danger">PYTHON</span>
+            <span class="label label-danger">Java</span>
             <span class="label label-success">SQL</span>
           </p>
 

@@ -14,10 +14,12 @@ class UserService {
   }
 
   /**
-   * search user
+   * search user, used for select2 server process
+   * @return {User[]}
+   * @param {Object} param0
+   * @param {Object} param1
    */
-  async searchUser(request, { role }) {
-    const { term, page } = request.all();
+  async searchUser({ term, page }, { role }) {
     const searchData = term || '';
     const userList = await User.queryForSearch(searchData, page, role);
     return {
@@ -31,7 +33,8 @@ class UserService {
 
   /**
    * update user's last visit time and return the total number of user
-   * @return {total number of user}
+   * @return {int} total number of users
+   * @param {User} user current user
    */
   enterUser(user) {
     user.updated_at = new Date();
@@ -42,7 +45,8 @@ class UserService {
 
   /**
    * Get User by email
-   * @return {user}
+   * @return {User}
+   * @param {String} email
    */
   getUserByEmail(email) {
     return User.findBy('email', email);
@@ -56,12 +60,14 @@ class UserService {
     return User.find(id);
   }
 
-  /*
-   * Userlist datatable server side processing
+  /**
+   * return json for datatable server side processing
+   * @return {Object} datatable result json
+   * @param {Object} data datatable filter json
    */
-  getDatatableJSON(request) {
+  getDatatableJSON(data) {
     return MapHelper.mapDatatableFrom(
-      request,
+      data,
       // callback function to perform custom query
 
       User.queryForDatatable
@@ -69,8 +75,10 @@ class UserService {
   }
 
   /**
-   * Remove User
+   * Remove User from database
    * @return {user}
+   * @param {User} targetUser target user
+   * @param {User} issuer current user
    */
   async deleteUser(targetUser, issuer) {
     await this.notificationService.userDelete(targetUser, issuer);
@@ -80,10 +88,12 @@ class UserService {
 
   /**
    * Update user's information
-   * @return {user}
+   * @return {User}
+   * @param {User} targetUser target user
+   * @param {User} issuer current user
+   * @param {String} role new role
    */
-  async updateRole(targetUser, issuer, request) {
-    const { role } = request.only('role');
+  async updateRole(targetUser, issuer, role) {
     //notify role change
     this.notificationService.roleChange(targetUser, issuer, role);
 

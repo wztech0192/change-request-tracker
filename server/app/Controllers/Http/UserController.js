@@ -2,19 +2,25 @@
 
 /**
  * @author Wei Zheng
- * @description register, login, search user, retrieve user list, and retrieve user menu
+ * @description This controller serves as the entry & exit point to all user related data.
+ *              The controller uses UserService to provide read and update, as well as
+ *              other user related features.
  */
 
 const VerificationHelper = use('App/Helper/VerificationHelper');
 const UserService = use('App/Service/UserService');
 
 class UserController {
+  /**
+   * declare services that used in this controller
+   */
   constructor() {
     this.userService = new UserService();
   }
 
   /**
-   * Take email and password then attempt to login
+   * attempt to login with user email and password
+   * @return {Token Object}
    */
   async login({ request, auth }) {
     const { email, password } = request.all();
@@ -23,18 +29,20 @@ class UserController {
   }
 
   /**
-   * search user
+   * search user, used for select2 server process
+   * @return {User[]}
    */
   async search({ auth, request, params }) {
     const user = await auth.getUser();
     VerificationHelper.verifyExistance(user, ' user');
-    const result = await this.userService.searchUser(request, params);
+    const data = request.all();
+    const result = await this.userService.searchUser(data, params);
     return result;
   }
 
   /**
-   * Get Self Information
-   * @return {user}
+   * Get current user information
+   * @return {User}
    */
   async self({ auth }) {
     const user = await auth.getUser();
@@ -44,7 +52,7 @@ class UserController {
 
   /**
    * Get User by email
-   * @return {user}
+   * @return {User}
    */
   async get({ auth, params }) {
     const user = await auth.getUser();
@@ -54,20 +62,22 @@ class UserController {
     return targetUser;
   }
 
-  /*
-   * Userlist datatable server side processing
+  /**
+   * return json for datatable server side processing
+   * @return {Object} datatable result json
    */
   async datatable({ auth, request }) {
     //console.log(request.all());
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
-    const tableJSON = await this.userService.getDatatableJSON(request);
+    const data = request.all();
+    const tableJSON = await this.userService.getDatatableJSON(data);
     return tableJSON;
   }
 
   /**
-   * Remove User
-   * @return {user}
+   * Remove User from database
+   * @return {User}
    */
   async destroy({ auth, params }) {
     const user = await auth.getUser();
@@ -82,8 +92,8 @@ class UserController {
   }
 
   /**
-   * Update user's information
-   * @return {user}
+   * Update target user's role
+   * @return {User}
    */
   async update({ auth, request, params }) {
     const user = await auth.getUser();
@@ -95,7 +105,8 @@ class UserController {
       ['Developer', 'Admin'],
       false
     );
-    await this.userService.updateRole(targetUser, user, request);
+    const { role } = request.only('role');
+    await this.userService.updateRole(targetUser, user, role);
     return targetUser;
   }
 }

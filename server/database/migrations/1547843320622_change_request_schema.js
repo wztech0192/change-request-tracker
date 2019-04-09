@@ -4,7 +4,7 @@
 const Schema = use('Schema');
 
 /**
- * Create change request table inside database
+ * Create change request database table
  */
 class ChangeRequestSchema extends Schema {
   up() {

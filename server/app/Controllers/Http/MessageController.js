@@ -2,7 +2,9 @@
 
 /**
  * @author Wei Zheng
- * @description create, read, upload, and delete messages
+ * @description This controller serves as the entry & exist point to all message related data.
+ *              The controller uses MessageService to provide read, add, update, as well as
+ *              other message related features.
  */
 
 const VerificationHelper = use('App/Helper/VerificationHelper');
@@ -10,12 +12,16 @@ const MessageService = use('App/Service/MessageService');
 const MapHelper = use('App/Helper/MapHelper');
 
 class MessageController {
+  /**
+   * Delclare service used in this controller
+   */
   constructor() {
     this.messageService = new MessageService();
   }
 
   /**
-   * Create new message
+   * Create new message to all receivers
+   * @return {Message[]}
    */
   async createMessage({ auth, request, response }) {
     const user = await auth.getUser();
@@ -34,6 +40,7 @@ class MessageController {
 
   /**
    * Get message detail
+   * @return {Message}
    */
   async getMessage({ auth, params }) {
     const user = await auth.getUser();
@@ -46,17 +53,19 @@ class MessageController {
 
   /**
    * Get message list by type. Inbox, sent, or archived
+   * @return {Message[]}
    */
   async getMessageList({ auth, request }) {
     const user = await auth.getUser();
-    const result = await this.messageService.getMessageList(user, request);
+    const filter = request.all();
+    const result = await this.messageService.getMessageList(user, filter);
 
     return result;
   }
 
   /**
    * clear new messages
-   * @returns {String}
+   * @returns {Message[]}
    */
   async clearNewMessages({ auth }) {
     const user = await auth.getUser();
@@ -66,21 +75,24 @@ class MessageController {
 
   /**
    * archive message
+   * @returns {Message[]}
    */
   async archiveMessage({ auth, request }) {
     const user = await auth.getUser();
-    const result = await this.messageService.archiveMessage(user, request);
+    const data = request.only(['list', 'isArchived']);
+    const result = await this.messageService.archiveMessage(user, data);
     return result;
   }
   /**
    * update target
-   * @returns {message}
+   * @returns {Message}
    */
   async updateMessage({ auth, request, params }) {
     const user = await auth.getUser();
+    var data = request.only(['isRead', 'isArchived', 'isBookmark']);
     var message = await this.messageService.updateMessage(
       params.id,
-      request,
+      data,
       user
     );
     VerificationHelper.verifyExistance(message, ' message');

@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description notification method used across multiple controllers
+ * @description Service used to provide any notification data related function
  */
 
 const Notification = use('App/Models/Notification');
@@ -11,7 +11,8 @@ const User = use('App/Models/User');
 
 class NotificationService {
   /**
-   * notify every admin
+   * receive all admins from database and create a notification for each of them
+   * @param {Func} computeList call back function to create array of notify object
    */
   async _notifyAdmin(computeList) {
     //get all admins
@@ -33,7 +34,8 @@ class NotificationService {
   }
 
   /**
-   * notify a new change request was created
+   * notify a new registration code was created
+   * @param {RegistrationCode} param0
    */
   newRegisterCode({ role, creator_name }) {
     //notify all admin
@@ -48,7 +50,8 @@ class NotificationService {
   }
 
   /**
-   * notify a new change request was created
+   * notify a new user was created
+   * @param {User} param0
    */
   newUser({ id, full_name, role, email }) {
     //notify all admin
@@ -69,6 +72,7 @@ class NotificationService {
 
   /**
    * notify a new change request was created
+   * @param {ChangeRequest} param0
    */
   newChangeRequest({ user_id, id, clientName }) {
     //notify all admin
@@ -86,8 +90,10 @@ class NotificationService {
   }
 
   /**
-   * notify admin and user when his role got changed
-  
+   * notify admin and user when target role has changed
+   * @param {User} target target user
+   * @param {User} issuer Current user
+   * @param {String} role new role
    */
   roleChange(target, issuer, role) {
     var oldRole = target.role;
@@ -108,6 +114,8 @@ class NotificationService {
 
   /**
    * notify admin when a user was deleted
+   * @param {User} target target user
+   * @param {User} issuer Current user
    */
   userDelete(target, issuer) {
     //notify all admin
@@ -123,7 +131,10 @@ class NotificationService {
   }
 
   /**
-   * notify owner when change request got adjusted
+   * notify owner when change request was adjusted
+   * @param {User} param0
+   * @param {String} type adjust type
+   * @param {int} issuerID current user id
    */
   updateChangeRequest({ user_id, id }, type, issuerID) {
     let icon = '';
@@ -173,10 +184,12 @@ class NotificationService {
   /**
    * return datatable json for notification list
    * @return {Datatable JSON}
+   * @param {User} user current user
+   * @param {Object} data datatable filter json
    */
-  async notificationPaginate(user, request) {
+  async notificationPaginate(user, data) {
     const result = await MapHelper.mapDatatableFrom(
-      request,
+      data,
       // callback function to perform custom query
       (table, page, search) =>
         Notification.queryForDatatable(table, page, search, user.id)
@@ -185,7 +198,9 @@ class NotificationService {
   }
 
   /**
-   * @return {notification list object}
+   * return notifications separated into list of new and list of old
+   * @return {Notification[], Notification[], int}
+   * @param {User} user current user
    */
   async getNotification(user) {
     const notifyList_old = await Notification.queryForLastTen(user);
@@ -201,7 +216,9 @@ class NotificationService {
   }
 
   /**
-   * @return {notification list object}
+   * update notification from unread to read
+   * @param {User} user current user
+   * @param {Notification || String} target
    */
   async updateNotification(user, target) {
     if (target === 'all') {

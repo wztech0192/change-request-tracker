@@ -2,16 +2,17 @@
 
 /**
  * @author Wei Zheng
- * @description reusable method used to map object
+ * @description reusable method used to map data
  */
 
 class MapHelper {
   /**
    * map datatabse json
+   * @return {Object}
+   * @param {Object} table
+   * @param {Func} queryCB call back function to retrieve query
    */
-  static async mapDatatableFrom(request, queryCB) {
-    const table = request.all();
-
+  static async mapDatatableFrom(table, queryCB) {
     //table page
     const page = table.start / table.length + 1;
 
@@ -31,6 +32,7 @@ class MapHelper {
   /**
    *  capitalize the first letter of the word and lowercase the rest
    *  remove all special character or number
+   * @param {String} string
    */
   static formatString(string) {
     if (string) {
@@ -43,7 +45,9 @@ class MapHelper {
 
   /**
    * map receiver list into data
-   * @return {Array}
+   * @return {Object[]}
+   * @param {User} user
+   * @param {Object} request
    */
   static mapReceiveData(user, request) {
     const { receiver, title, content } = request.all();
@@ -61,6 +65,9 @@ class MapHelper {
 
   /**
    * map user information
+   * @return {Object}
+   * @param {Object} userInfo
+   * @param {RegistrationCode} code
    */
   static mapUserInfo(userInfo, code) {
     // if not allow edit, map user info from code
@@ -89,6 +96,9 @@ class MapHelper {
 
   /**
    * map change request history type and content
+   * @return {Object} change request data
+   * @param {Object} requestData change request data
+   * @param {User} user client user
    */
   static mapCRHistory(requestData, user) {
     let type, content;
@@ -111,6 +121,10 @@ class MapHelper {
 
   /**
    * map change request
+   * @return {ChangeRequest}
+   * @param {ChangeRequest} changeRequest
+   * @param {Object} data
+   * @param {User} client
    */
   static mapChangeRequest(changeRequest, data, client) {
     data.totalMessage = 0;
@@ -122,7 +136,9 @@ class MapHelper {
   }
 
   /**
-   * Convert crlist into chart data
+   * filter change requests by status ratio
+   * @return {Object} JSON for ChartJS
+   * @param {ChangeRequest[]}
    */
   static mapChartDataFrom(CRList) {
     //chart data JSON format
@@ -169,6 +185,8 @@ class MapHelper {
 
   /**
    * Sanitize string
+   * @return {String}
+   * @param {String} string
    */
   static sanitize(string) {
     //replace < and > with unique character

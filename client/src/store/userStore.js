@@ -61,7 +61,7 @@ export default {
     // request type: notification, flag, and unread message.
     fetchNavMenu({ commit }, request) {
       HTTP()
-        .get(`/user/${request}`)
+        .get(`/util/${request}`)
         .then(({ data }) => {
           commit(`${request}Commit`, data);
         })
@@ -73,7 +73,7 @@ export default {
 
     clearNewNotification({ dispatch }, target) {
       HTTP()
-        .put(`/user/notification/clear-new/${target}`)
+        .put(`/util/notification/clear-new/${target}`)
         .then(() => {
           // refresh notification menu
           dispatch('fetchNavMenu', 'notification');

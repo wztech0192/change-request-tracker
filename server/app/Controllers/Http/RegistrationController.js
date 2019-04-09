@@ -2,7 +2,8 @@
 
 /**
  * @author Wei Zheng
- * @description Create / validate registration code and register new user
+ * @description This controller serves as the entry & exist point to all registration related data. The controller
+ *              uses RegistrationService to create and validate registration code and register a new user.
  */
 
 const VerificationHelper = use('App/Helper/VerificationHelper');
@@ -10,13 +11,16 @@ const RegistrationService = use('App/Service/RegistrationService');
 const MapHelper = use('App/Helper/MapHelper');
 
 class RegistrationController {
+  /**
+   * Delcare service used in the controller
+   */
   constructor() {
     this.registrationService = new RegistrationService();
   }
 
   /**
    * Take email and password then create a user and save into database. If success call return user token
-   * @return {token}
+   * @return {Token} jwt token
    */
   async register({ request, auth }) {
     let { code } = request.only('code');
@@ -43,6 +47,7 @@ class RegistrationController {
 
   /**
    * Create new registrationCode
+   * @return {String} registration code
    */
   async createRegistrationCode({ auth, request }) {
     let data = request.all();
@@ -65,6 +70,7 @@ class RegistrationController {
 
   /**
    * Get registrationCode from data that match with input code
+   * @return {Boolean}
    */
   async verifyRegistrationCode({ params }) {
     const result = await this.registrationService.getMatchCode(params.code);

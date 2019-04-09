@@ -5,11 +5,10 @@
 | Routes
 |--------------------------------------------------------------------------
 |
-| Http routes are entry points to your web application. You can create
-| routes for different URLs and bind Controller actions to them.
+| Http routes are entry points to the web application. Each route is binded to a Controller method.
 |
-| A complete guide on routing is available here.
-| http://adonisjs.com/docs/4.0/routing
+| Please see CRT API Documentation for more information about what each route does
+| Visit CRT Web App and go to /document/web-api
 |
 */
 
@@ -18,48 +17,56 @@ const Route = use('Route');
 const Helpers = use('Helpers');
 
 /**
- * API Route
+ * Un-Authenticated Routes
  */
-
 Route.group(() => {
-  //User Authenication
-  Route.post('auth/register', 'RegistrationController.register');
+  /****** User Controller ******/
   Route.post('auth/login', 'UserController.login');
+
+  /****** Registration Controller ******/
+  Route.post('auth/register', 'RegistrationController.register');
   Route.get(
     'regist-code/verify/:code',
     'RegistrationController.verifyRegistrationCode'
   );
+
+  /******  Change Request Controller ******/
   Route.post(
     'change-request/mail-submit/:key',
     'ChangeRequestController.createFromMail'
   );
-
   Route.post(
     'change-request/mail-request-info/:key',
     'ChangeRequestController.mailbackCRInfo'
   );
+
+  /******  Utility Controller ******/
   Route.get('download/CRViewer.zip', 'UtilityController.getCRViewer');
 }).prefix('api');
 
+/**
+ * Authenticated routes that requires JWT Token
+ */
 Route.group(() => {
-  //User Route
-  Route.get('user', 'UserController.self');
-  Route.get('user/flag', 'UtilityController.getFlaggedList');
-  Route.get('user/notification', 'UtilityController.getNotificationList');
-  Route.get('user/msg', 'UtilityController.getMenuMsgList');
-
+  /****** Utility Controller ******/
+  Route.get('util/flag', 'UtilityController.getFlaggedList');
+  Route.get('util/notification', 'UtilityController.getNotificationList');
+  Route.get('util/msg', 'UtilityController.getMenuMsgList');
   Route.post(
-    'user/notification/paginate',
+    'util/notification/paginate',
     'UtilityController.notificationPaginate'
   );
   Route.put(
-    'user/notification/clear-new/:target',
+    'util/notification/clear-new/:target',
     'UtilityController.updateNotification'
   );
   Route.patch(
-    'user/notification/clear-new/:target',
+    'util/notification/clear-new/:target',
     'UtilityController.updateNotification'
   );
+
+  /****** User Controller ******/
+  Route.get('user', 'UserController.self');
   Route.get('user/:email', 'UserController.get');
   Route.post('user/search/:role', 'UserController.search');
   Route.post('user/datatable', 'UserController.datatable');
@@ -67,9 +74,10 @@ Route.group(() => {
   Route.put('user/:id', 'UserController.update');
   Route.patch('user/:id', 'UserController.update');
 
-  //Registration code
+  /****** Registration Controller ******/
   Route.post('regist-code', 'RegistrationController.createRegistrationCode');
 
+  /****** Dev Controller ******/
   //Developer Tool Route
   Route.get('test/generate/user/:num', 'DevController.generateUsers');
   Route.get('test/correctCR', 'DevController.adjustChangeRequest');
@@ -90,7 +98,7 @@ Route.group(() => {
   Route.put('dev/task/complete/:id', 'DevController.updateTaskComplete');
   Route.patch('dev/task/complete/:id', 'DevController.updateTaskComplete');
 
-  //Message Route
+  /****** Message Controller ******/
   Route.get('message/:id', 'MessageController.getMessage');
   Route.post('message/list', 'MessageController.getMessageList');
   Route.post('message', 'MessageController.createMessage');
@@ -101,7 +109,7 @@ Route.group(() => {
   Route.patch('message/archive', 'MessageController.archiveMessage');
   Route.patch('message/:id', 'MessageController.updateMessage');
 
-  //Change Request Route
+  /****** Change Request Controller ******/
   Route.post('change-request/list', 'ChangeRequestController.index');
   Route.post(
     'change-request/admin/list',

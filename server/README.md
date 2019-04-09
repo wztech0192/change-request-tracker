@@ -18,11 +18,28 @@ adonis new yardstick --api-only
 
 or manually clone the repo and then run `npm install`.
 
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
+## Migrations
+```migrate database table
 adonis migration:run
+```
+
+## Data Seeding
+generate default developer account 
+```
+adonis seed --files='DefaultSeeder.js'
+```
+
+generate 20 mock users  
+```
+adonis seed --files='UserSeeder.js'
+```
+
+generate 10 mock change requests from random user
+```
+adonis seed --files='ChangeRequestSeeder.js'
+```
+
+## Functional API Testing
+```functional api testing with 31 test items
+adonis test
 ```

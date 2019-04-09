@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description handle change request method
+ * @description handle all change request related function
  */
 
 const ChangeRequest = use('App/Models/ChangeRequest/ChangeRequest');
@@ -17,6 +17,9 @@ const NotificationService = use('App/Service/NotificationService');
 const User = use('App/Models/User');
 
 class ChangeRequestService {
+  /**
+   * declare services that used in this service
+   */
   constructor(flagService) {
     this.flagService = flagService;
     this.notificationService = new NotificationService();
@@ -24,50 +27,55 @@ class ChangeRequestService {
 
   /**
    * display change request detail
-   * @returns {ChangeRequest}
+   * @return {ChangeRequest}
+   * @param {int} userID the current user id
+   * @param {int} id target change request id
    */
-  async getDetail(user, id) {
+  async getDetail(userID, id) {
+    //get change request from database, return null if not exist
     const changeRequest = await ChangeRequest.find(id);
     if (!changeRequest) return null;
-    changeRequest.isFlag = await this.flagService.isFlag(
-      changeRequest,
-      user.id
-    );
+    //check if this change request is flagged
+    changeRequest.isFlag = await this.flagService.isFlag(changeRequest, userID);
     return changeRequest;
   }
 
   /**
    * Get all change request belongs to this user
-   * @returns {ChangeRequest[]}
+   * @return {ChangeRequest[]}
+   * @param {int} id current user id
+   * @param {String} tab used to filter change request
    */
-  getUserRequest({ id }, request) {
-    const { tab } = request.only('tab');
+  getUserRequest(id, tab) {
     switch (tab) {
       case 'all':
       case 'All':
+        //return all change request owned by this id
         return ChangeRequest.queryForOwned(id);
       case 'active':
       case 'Active':
         //return all change request except the one with cancelled or complete status
         return ChangeRequest.queryForActive(id);
       default:
+        //return change requests with status matching the tab string
         return ChangeRequest.queryByStatus(tab, id);
     }
   }
 
   /**
    * Get change request list by filter
-   * @returns {ChangeRequest[]}
+   * @return {ChangeRequest[]}
+   * @param {Object} filter { tab, method, id, status, clientsName, date }
    */
-  async getRequestList(request) {
-    const filter = request.all();
+  async getRequestList(filter) {
     let requestList;
-    //    console.log(filter);
     //filter by type
     if (filter.method === 'tab') {
+      // if filter by tab
       switch (filter.tab) {
         case 'all':
         case 'All':
+          //return all change requests
           requestList = await ChangeRequest.all();
           break;
         case 'active':
@@ -76,22 +84,34 @@ class ChangeRequestService {
           requestList = await ChangeRequest.queryForActive();
           break;
         default:
+          //return all change request with status matching the tab string
           requestList = await ChangeRequest.queryByStatus(filter.tab);
           break;
       }
     } else {
+      // filter by input search data
       if (filter.id) {
+        // if there is a id return change request by id
         requestList = await ChangeRequest.find(filter.id);
       } else {
+        // return filtered change request list
         requestList = await ChangeRequest.queryForSearch(filter);
       }
     }
-    //if requestList is not a array, arraylize it.
-    return requestList.rows ? requestList : [requestList];
+    // if result list is null, return empty array
+    if (requestList === null) {
+      return [];
+    } else {
+      //else if requestList is not a array, arraylize it.
+      return requestList.rows ? requestList : [requestList];
+    }
   }
 
   /**
-   * get client from submitted request data
+   * get client from request data
+   * @return {User}
+   * @param {User} user
+   * @param {String} client client email
    */
   getClientFrom(user, client) {
     //get client if current user is a admin. Else client is current user.
@@ -103,16 +123,18 @@ class ChangeRequestService {
   }
 
   /**
-   * delete target change request
-   * @returns {ChangeRequest}
+   * update target change request
+   * @return {ChangeRequest}
+   * @param {int} id
+   * @param {Object} requestData { title, details, status }
+   * @param {User} user
    */
-  async updateRequest(id, request, user) {
+  async updateRequest(id, requestData, user) {
+    // find change requet, if null return null
     const changeRequest = await ChangeRequest.find(id);
     if (!changeRequest) return null;
 
-    const requestData = request.only(['title', 'details', 'status']);
-
-    //validate request status format
+    //validate request status format, return null if failed
     if (
       requestData.status &&
       requestData.status !== 'Cancelled' &&
@@ -122,6 +144,7 @@ class ChangeRequestService {
     ) {
       return null;
     }
+    //update change request data
     changeRequest.merge(requestData);
     //map history data
     const hist = MapHelper.mapCRHistory(requestData, user);
@@ -133,15 +156,18 @@ class ChangeRequestService {
       hist.type,
       user.id
     );
+    // save change request changes
     await changeRequest.save();
     return changeRequest;
   }
 
   /**
    * search change request
+   * @return {Object}
+   * @param {Object} data { term, page }
+   * @param {String} target
    */
-  async searchRequest(request, target) {
-    const data = request.all();
+  async searchRequest(data, target) {
     const term = data.term || '';
     const list = await ChangeRequest.queryForPaginate(term, target, data.page);
     return {
@@ -155,7 +181,11 @@ class ChangeRequestService {
 
   /**
    * Create a change request
-   * @returns {ChangeRequest}
+   * @return {ChangeRequest}
+   * @param {Object} data change request data
+   * @param {User} client the user who owns this change request
+   * @param {User} issuer the user who submit this change request
+   * @param {String} message change request message
    */
   async createRequest(data, client, issuer, message) {
     //map change request using helper
@@ -168,7 +198,6 @@ class ChangeRequestService {
     client.totalRequest++;
     client.save();
     await client.change_requests().save(changeRequest);
-
     //create change request history
     await this.createCRHistory(changeRequest, {
       type: 'Create',
@@ -176,25 +205,26 @@ class ChangeRequestService {
         issuer ? issuer.full_name : client.full_name
       } in ${changeRequest.created_at}`
     });
-
+    //notify all admins for a new change request created
     this.notificationService.newChangeRequest(changeRequest);
-
     //save change request message is message exist
     if (message) {
-      // replace < and > to html code &#60; and &#62 for security
-      message = MapHelper.sanitize(message);
       await this.createCRMessage(issuer, changeRequest, message, true);
     }
-
     return changeRequest;
   }
 
   /**
-   * create message of change request
+   * create message for target change request
+   * @return {ChangeRequestMessage}
+   * @param {User} user current user
+   * @param {ChangeRequest} changeRequest target change request
+   * @param {String} content message content
+   * @param {Boolean} sanitize boolean value to deside if sanitize the content
    */
   async createCRMessage(user, changeRequest, content, sanitize) {
     if (sanitize) {
-      // replace < and > to html code &#60; and &#62 for security
+      // replace < and > to html code &#60; and &#62 to prevent html script attack
       content = `<p>${MapHelper.sanitize(content)}</p>`;
     }
     const msg = await ChangeRequestMessage.create({
@@ -204,65 +234,61 @@ class ChangeRequestService {
       senderEmail: user.email,
       senderName: user.full_name
     });
+    //increase total message by one and save changes
     changeRequest.totalMessage++;
     await changeRequest.save();
     return msg;
   }
 
   /**
-   * create history of change request
+   * create a history for target change request
+   * @return {ChangeRequest}
+   * @param {ChangeRequest} changeRequest
+   * @param {Object} data { type, content } change request history data
    */
   async createCRHistory(changeRequest, data) {
+    //set fk id
     data.change_request_id = changeRequest.id;
     await ChangeRequestHistory.create(data);
+    //increase total history by one and save changes
     changeRequest.totalHistory++;
     await changeRequest.save();
   }
 
   /**
-   * Adjust change request data, for dev
-   */
-  async adjustChangeRequest() {
-    const CRList = await ChangeRequest.all();
-    for (let cr of CRList.rows) {
-      cr.totalHistory = await cr.histories().getCount();
-      cr.totalMessage = await cr.messages().getCount();
-      let client = await cr.user().fetch();
-      cr.clientName = `${client.full_name}`;
-      cr.save();
-    }
-  }
-
-  /**
-   * Get change request
-   * @returns {ChangeRequestMessage[]}
+   * Get change request by id
+   * @return {ChangeRequest}
+   * @param {int} id change request id
    */
   getChangeRequest(id) {
     return ChangeRequest.find(id);
   }
 
   /**
-   * Get all messages belongs to this change request
-   * @returns {ChangeRequestMessage[]}
+   * Get all messages belongs to target change request
+   * @return {ChangeRequestMessage[]}
+   * @param {ChangeRequest} changeRequest
+   * @param {int} limit
    */
   getCRMessage(changeRequest, limit) {
     return ChangeRequestMessage.queryForList(changeRequest.id, limit);
   }
 
   /**
-   * Get all histories belongs to this change request
-   * @returns {ChangeRequestMessage[]}
+   * Get all histories belongs to target change request
+   * @return {ChangeRequestHistory[]}
+   * @param {ChangeRequest} changeRequest
    */
   getCRHistory(changeRequest) {
     return ChangeRequestHistory.queryForList(changeRequest.id);
   }
 
   /**
-   * delete target change request message
-   * @returns {ChartJS JSON}
+   * get change request status ratio of selected week
+   * @return {ChartJS JSON}
+   * @param {String[]} dateRange [ startDate, endDate ]
    */
-  async getChartData(params) {
-    const dateRange = params.range.split('~');
+  async getChartData(dateRange) {
     //retrieve change request between required date
     const CRList = await ChangeRequest.queryByDateRange(dateRange);
     // return mapped chart data
@@ -270,7 +296,10 @@ class ChangeRequestService {
   }
 
   /**
-   * create change request from mail content
+   * create change request from email
+   * @return {ChangeRequest}
+   * @param {JSON} mailJSON
+   * @param {User} client
    */
   createFromMail(mailJSON, client) {
     return this.createRequest(
@@ -284,10 +313,27 @@ class ChangeRequestService {
 
   /**
    * return change request content for email
+   * @return {ChangeRequest || ChangeRequest[]}
+   * @param {User} user
+   * @param {String} subject type of request
    */
   emailTrack(user, subject) {
     //change request query
     return ChangeRequest.queryForEmail(user, subject);
+  }
+
+  /**
+   * Adjust all change request data, for testing purpose only
+   */
+  async adjustChangeRequest() {
+    const CRList = await ChangeRequest.all();
+    for (let cr of CRList.rows) {
+      cr.totalHistory = await cr.histories().getCount();
+      cr.totalMessage = await cr.messages().getCount();
+      let client = await cr.user().fetch();
+      cr.clientName = `${client.full_name}`;
+      cr.save();
+    }
   }
 }
 

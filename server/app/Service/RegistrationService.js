@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description Any methods that involved in registration process
+ * @description Service used to handle data used in registration process
  */
 
 const RegistrationCode = use('App/Models/RegistrationCode');
@@ -14,12 +14,19 @@ const RegistCodeNotExistException = use(
 );
 
 class RegistrationService {
+  /**
+   * declare services used in this class
+   */
   constructor() {
     this.mailService = new MailService();
     this.notificationService = new NotificationService();
   }
 
-  // Get registrationCode from data that match with input code
+  /**
+   * Get registrationCode from data that match with input code
+   * @return {RegistrationCode}
+   * @param {String} code
+   */
   async getMatchCode(code) {
     const registrationCodes = await RegistrationCode.findBy('code', code);
     //if code not exist throw registration code not exist exception
@@ -29,6 +36,11 @@ class RegistrationService {
     return registrationCodes;
   }
 
+  /**
+   * Create registration code
+   * @param {User} user current user
+   * @param {Object} data {code, creator_email, creator_name}
+   */
   async createRegistrationCode(user, data) {
     //genreate random number
     data.code = Math.round(
@@ -51,12 +63,18 @@ class RegistrationService {
 
   /**
    * Validate registration code
+   * @return {Object || String} error message or "pass" string
+   * @param {Object} data code data
    */
   isCodeValidate(data) {
     return RegistrationCode.isValidate(data);
   }
 
-  //remove used code
+  /**
+   * remove used code
+   * @param {int} id registration code id
+   * @return {RegistrationCode}
+   */
   async removeCode(id) {
     const code = await RegistrationCode.find(id);
     code.delete();
@@ -65,12 +83,19 @@ class RegistrationService {
 
   /**
    * Validate user information
+   * @param {Object} userInfo user data object
+   * @return {Object || String} error message or "pass" string
    */
   isUserValidate(userInfo) {
     return User.isValidate(userInfo);
   }
 
-  //create new user from register information
+  /**
+   * create new user from register information
+   * @return {User}
+   * @param {Object} userInfo user data object
+   * @param {RegistrationCode} code registration code used to create user
+   */
   async createNewUser(userInfo, code) {
     //create user
     const user = await User.create(userInfo);

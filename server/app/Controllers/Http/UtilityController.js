@@ -2,7 +2,8 @@
 
 /**
  * @author Wei Zheng
- * @description register, login, search user, retrieve user list, and retrieve user menu
+ * @description This controller serves as the entry & exit point to all utility features, for example, download files.
+ *              The controller uses MessageService, FlagService, and NotificationService
  */
 
 const MessageService = use('App/Service/MessageService');
@@ -11,6 +12,9 @@ const FlagService = use('App/Service/FlagService');
 const Helpers = use('Helpers');
 
 class UtilityController {
+  /**
+   * Delcare services used in this controller
+   */
   constructor() {
     this.messageService = new MessageService();
     this.flagService = new FlagService();
@@ -18,22 +22,16 @@ class UtilityController {
   }
 
   /**
-   * return CRViewer Zip
+   * Download CRViewer
+   * @return {File}
    */
   async getCRViewer({ response }) {
     return response.getMenuMsgList(Helpers.publicPath('/CRViewer.rar'));
   }
 
   /**
-   * return CRViewer Zip
-   */
-  async getCRViewer({ response }) {
-    return response.download(Helpers.publicPath('/CRViewer.rar'));
-  }
-
-  /**
-   * return flagged list
-   * @return {array}
+   * return list of flagged change request and devtask, and total number of change requests
+   * @returns {ChangeRequest[], DevTask[], int, int}
    */
   async getFlaggedList({ auth }) {
     const user = await auth.getUser();
@@ -42,8 +40,8 @@ class UtilityController {
   }
 
   /**
-   * get unread message
-   * @return {array}
+   * return message separated into list of new and list of archived
+   * @return {Message[], Message[], int}
    */
   async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
@@ -52,8 +50,8 @@ class UtilityController {
   }
 
   /**
-   * return notification list
-   * @return {Object}
+   * return notifications separated into list of new and list of old
+   * @return {Notification[], Notification[], int}
    */
   async getNotificationList({ auth }) {
     const user = await auth.getUser();
@@ -62,8 +60,8 @@ class UtilityController {
   }
 
   /**
-   * return notification list
-   * @return {Object}
+   * update notification from unread to read
+   * @return {String}
    */
   async updateNotification({ auth, params }) {
     const user = await auth.getUser();
@@ -78,9 +76,10 @@ class UtilityController {
   async notificationPaginate({ auth, request }) {
     //console.log(request.all());
     const user = await auth.getUser();
+    const data = request.all();
     const result = await this.notificationService.notificationPaginate(
       user,
-      request
+      data
     );
     return result;
   }

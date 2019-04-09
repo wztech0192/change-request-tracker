@@ -4,7 +4,7 @@
 const Schema = use('Schema');
 
 /**
- * create user table in database
+ * Create user database table
  */
 class UserSchema extends Schema {
   up() {

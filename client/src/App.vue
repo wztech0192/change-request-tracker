@@ -239,7 +239,7 @@ h1 {
   display: none;
 }
 
-@media (max-width: 670px) {
+@media (max-width: 800px) {
   body {
     /*font-family:  "Helvetica Neue",Helvetica,Arial,sans-serif;*/
     font-size: 13px !important;

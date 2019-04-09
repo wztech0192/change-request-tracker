@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @author Wei Zheng
+ * @description Object relational model that handles all Message related queries and relation
+ */
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 const Validator = use('Validator');

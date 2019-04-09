@@ -2,36 +2,57 @@
 
 /**
  * @author Wei Zheng
- * @description message service used to send email and handle insite messages
+ * @description service that handle incoming and outgoing emails
  */
 
 const Mail = use('Mail');
 const User = use('App/Models/User');
 const Message = use('App/Models/Message');
 
-// if production, use public url in env file
+// if production, use public url in env file, else use local address
 const url =
   process.env.NODE_ENV === 'production'
     ? process.env.PUBLIC_URL
     : 'http://localhost:8080';
 
-// refers to the value in env
+/** refers to the value inside env */
+
+// no-reply service email address
 const noReplyEmail = `${process.env.NO_REPLY_REC}@${
   process.env.MAILGUN_DOMAIN
 }`;
+
+//submit change request email address
 const submitEmail = `${process.env.SUBMIT_REC}@${process.env.MAILGUN_DOMAIN}`;
+
+//track change request email address
 const infoEmail = `${process.env.INFO_REC}@${process.env.MAILGUN_DOMAIN}`;
 
 class MessageService {
+  /**
+   * retrieve client from mail json, return null if sender is not a client ordoes not exist
+   * @param {Object} mailJSON
+   */
   async getClientFromMail(mailJSON) {
     return User.queryFromMail(mailJSON['sender'].toLowerCase());
   }
 
+  /**
+   * get user from email address
+   * @return {User}
+   * @param {String} sender email adress
+   */
   async getUserFromMail(sender) {
     return User.findBy('email', sender.toLowerCase());
   }
 
-  // check if the request email, user, and api key is valid. Return denied message if fails.
+  /**
+   * verify if the request email, user, and api key is valid. Return a denied email if failed.
+   * @return {Boolean}
+   * @param {User} client
+   * @param {Object} mailJSON
+   * @param {String} key secret key from mailgun service
+   */
   requestMailDenied(client, mailJSON, key) {
     if (
       key !== process.env.MAILGUN_API_KEY ||
@@ -49,7 +70,11 @@ class MessageService {
     return false;
   }
 
-  // return submission approved message
+  /**
+   * return change request submission approved email to sender
+   * @param {User} receiver
+   * @param {int} crID
+   */
   requestMailApproved(receiver, crID) {
     //send a success message
     this._sendEmail(
@@ -79,7 +104,11 @@ class MessageService {
     );
   }
 
-  // send change request list to requester by email
+  /**
+   * email requested change request list table to the sender
+   * @param {User} receiver
+   * @param {ChangeRequest[]} crList
+   */
   trackCRList(receiver, crList) {
     let table =
       '<table style="font-size:115%" border="1"><thead><tr><th>ID</th><th>Client</th><th>Status</th>' +
@@ -98,7 +127,11 @@ class MessageService {
     this._sendEmail(receiver, 'Change Request Table - Newest 10', table);
   }
 
-  // send change request to requester by email
+  /**
+   * email requested change request to the sender
+   * @param {User} receiver
+   * @param {ChangeRequest} cr
+   */
   trackCRID(receiver, cr) {
     if (cr) {
       //send a success message
@@ -148,11 +181,19 @@ class MessageService {
   }
 
   // valid if api key, receiver, and subject is valid
-  trackCRDenied(receiver, subject, key) {
-    if (key !== process.env.MAILGUN_API_KEY || !receiver || !subject) {
+
+  /**
+   * verify if the sender, subject and api key is valid. Return a denied email if failed.
+   * @return {Boolean}
+   * @param {String} sender
+   * @param {String} subject
+   * @param {String} key secret key from mailgun service
+   */
+  trackCRDenied(sender, subject, key) {
+    if (key !== process.env.MAILGUN_API_KEY || !sender || !subject) {
       //send a denied message
       this._sendEmail(
-        receiver,
+        sender,
         'Action Denied',
         '<p>Wrong formatting or you are not listed in our system. Please register first.</p>'
       );
@@ -161,7 +202,12 @@ class MessageService {
     return false;
   }
 
-  //send email
+  /**
+   * send email from CRTracker
+   * @param {String} receiver email
+   * @param {String} subject
+   * @param {String} content
+   */
   async _sendEmail(receiver, subject, content) {
     //send returning email
     await Mail.raw(`<p>${content}</p>`, message => {
@@ -171,7 +217,10 @@ class MessageService {
     });
   }
 
-  //create a message for Registration code
+  /**
+   * email registration code to receiver
+   * @param {RegistrationCode} code
+   */
   async sendRegistrationCodeMail(code) {
     const senderMessage =
       code.content && code.content != '<p>&nbsp;</p>'
@@ -206,7 +255,11 @@ class MessageService {
     });
   }
 
-  //create a welcome message when user register
+  //
+  /**
+   * create a welcome message for new registered user
+   * @param {User} user
+   */
   async sendWelcomeMail(user) {
     if (user) {
       const title = 'Welcome to CRTracker!';

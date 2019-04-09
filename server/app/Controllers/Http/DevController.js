@@ -2,20 +2,24 @@
 
 /**
  * @author Wei Zheng
- * @description create, read, update, and delete for developer todo, developer task, and developer reference
+ * @description This controller serves as the entry & exist point to all developing related data.
+ *              The controller uses DevService to provide read, add, update, as well as other related features.
  */
 
 const VerificationHelper = use('App/Helper/VerificationHelper');
 const DevService = use('App/Service/DevService');
 
 class DevController {
+  /**
+   * declare services that used in this controller
+   */
   constructor() {
     this.devService = new DevService();
   }
 
   /**
    * Get all dev ToDo and its task
-   * @returns {Object}
+   * @return {DevTodo[]}
    */
   async index({ auth }) {
     //authorize
@@ -27,6 +31,8 @@ class DevController {
 
   /**
    * verify and perform callback action
+   * @return {Object}
+   * @param {Func} callback call back function
    */
   async _baseCrud({ auth, request, params }, callback) {
     const user = await auth.getUser();
@@ -41,7 +47,7 @@ class DevController {
   /**----------------------Dev Todo CRUD--------------------------
    *
    * Create a dev Todo
-   * @returns {devTodo}
+   * @return {DevTodo}
    */
   async createTodo({ auth, request }) {
     const user = await auth.getUser();
@@ -52,7 +58,7 @@ class DevController {
 
   /**
    * delete target
-   * @returns {devTodo}
+   * @return {DevTodo}
    */
   async destroyTodo(data) {
     const result = await this._baseCrud(data, this.devService.destroyTodo);
@@ -61,7 +67,7 @@ class DevController {
 
   /**
    * update target
-   * @returns {devTodo}
+   * @return {DevTodo}
    */
   async updateTodo(data) {
     const result = await this._baseCrud(data, this.devService.updateTodo);
@@ -72,7 +78,7 @@ class DevController {
    *
    *
    * Create a dev task own by devTodo
-   * @returns {devTask}
+   * @return {DevTask}
    */
   async createTask(data) {
     const result = await this._baseCrud(data, this.devService.createTask);
@@ -80,8 +86,8 @@ class DevController {
   }
 
   /**
-   * delete target
-   * @returns {devTask}
+   * delete dev task from devTodo group
+   * @return {DevTask}
    */
   async destroyTask(data) {
     const result = await this._baseCrud(data, this.devService.destroyTask);
@@ -89,8 +95,8 @@ class DevController {
   }
 
   /**
-   * update target
-   * @returns {devTask}
+   * update devTask
+   * @return {devTask}
    */
   async updateTask(data) {
     const result = await this._baseCrud(data, this.devService.updateTask);
@@ -99,7 +105,7 @@ class DevController {
 
   /**
    * update task completion
-   * @returns {devTask}
+   * @return {DevTask}
    */
   async updateTaskComplete(data) {
     const result = await this._baseCrud(

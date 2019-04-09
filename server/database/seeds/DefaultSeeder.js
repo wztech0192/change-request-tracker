@@ -13,7 +13,7 @@
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const User = use('App/Models/User');
 
-//default developer account
+// generate default developer account
 class DefaultSeeder {
   async run() {
     const data = {
@@ -27,7 +27,7 @@ class DefaultSeeder {
       isDev: true
     };
 
-    await User.create(data);
+    await RegistrationCode.create(data);
   }
 }
 

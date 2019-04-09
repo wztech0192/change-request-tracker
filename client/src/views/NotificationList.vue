@@ -115,7 +115,7 @@ export default {
           searchDelay: 600,
           ajax: {
             type: 'POST',
-            url: baseURL + '/user/notification/paginate',
+            url: baseURL + '/util/notification/paginate',
             headers: header,
 
             dataSrc: ({ data }) => {

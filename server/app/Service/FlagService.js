@@ -2,7 +2,7 @@
 
 /**
  * @author Wei Zheng
- * @description dev tools
+ * @description Service used to flag or unflag change request and DevTask
  */
 
 const FlagItem = use('App/Models/FlagItem');
@@ -11,7 +11,10 @@ const ChangeRequest = use('App/Models/ChangeRequest/ChangeRequest');
 
 class FlagService {
   /**
-   * check if the change request is flagged by the user
+   * verify if the change request is flagged by the user
+   * @return {Boolean}
+   * @param {ChangeRequest} changeRequest target request
+   * @param {int} user_id current user id
    */
   async isFlag(changeRequest, user_id) {
     const checkFlag = await FlagItem.queryForFlag(user_id, changeRequest.id);
@@ -22,7 +25,9 @@ class FlagService {
   }
 
   /**
-   * add change request into flag list
+   * add change request into flag table
+   * @param {ChangeRequest} changeRequest target request
+   * @param {User} user current user
    */
   flagChangeRequest(changeRequest, user) {
     // make sure user has not flag this request yet
@@ -40,7 +45,10 @@ class FlagService {
   }
 
   /**
-   * delete change request from flag list
+   * delete change request from flag table
+   * @return {FlagItem[]}
+   * @param {int} id FlagItem id
+   * @param {User} user current user
    */
   unflagChangeRequest(id, user) {
     return FlagItem.queryToDelete(user.id, id);
@@ -48,6 +56,8 @@ class FlagService {
 
   /**
    * get flagged change request
+   * @return {ChangeRequest[]}
+   * @param {User} user current user
    */
   async getFlaggedCR(user) {
     const result = await FlagItem.queryForCR(user.id);
@@ -56,6 +66,8 @@ class FlagService {
 
   /**
    * get flagged task
+   * @return {DevTodo[]}
+   * @param {User} user current user
    */
   async getFlaggedTask(user) {
     let result = [];
@@ -67,7 +79,8 @@ class FlagService {
   }
 
   /**
-   * get flagged list
+   * return list of flagged change request and devtask, and total number of change request
+   * @returns {ChangeRequest[], DevTask[], int, int}
    */
   async getFlaggedList(user) {
     //get task

@@ -7,16 +7,17 @@ These instructions will get you a copy of the project up and running on your loc
 
 1.	Install Git
 2.	Install Node.js, npm, and yarn
-3.	Install AdonisJS
+3.	Run `npm i -g @adonisjs/cli` command to install AdonisJS cli
 4.	Install XAMPP for local server
-5.	Pull the project from GitHub using the command `git clone https://github.com/weijie0192/change-request-tracker`
-6.	Open server directory, then run the command `npm install` to install dependencies. Perform same instruction again under client directory
-7.	Open XAMPP and click start button for Apache and MySQL module. Then click Admin button under MySQL row to browse phpMyAdmin
-8.	Under the phpMyAdmin site, create a new database and name it `crt_capstone`
-9.	Return to server directory and run the command `adonis migration:run` to generate database tables
-10.	After migration, run the command `adonis seed --files='DefaultSeeder.js'` to generate default Developer account.
-11.	Open server directory, then run the command line `adonis serve --dev` to deploy dev server
-12.	Open client directory located in main, then run the command line `npm run serve` to start local client-server
+5.	Clone the entire project directory from GitHub using the command `git clone https://github.com/weijie0192/change-request-tracker`
+6.  Create .env file
+7.	Open server directory, then run the command `npm install` to install dependencies. Perform same instruction again under client directory
+8.	Open XAMPP and click start button for Apache and MySQL module. Then click Admin button under MySQL row to browse phpMyAdmin
+9.	Under the phpMyAdmin site, create a new database for the project
+10.	Return to server directory and run the command `adonis migration:run` to generate database tables
+11.	After migration, run the command `adonis seed --files='DefaultSeeder.js'` to generate default Developer account
+12.	Open server directory, then run the command line `adonis serve --dev` to deploy dev server
+13.	Open client directory located in main, then run the command line `npm run serve` to start local client-server
 14.	To visit the project website, enter the URL `localhost:8080` in any modern browser.
 15. Login default account with the email `no-reply@rsicrt.com` and password `weijie0192`
 

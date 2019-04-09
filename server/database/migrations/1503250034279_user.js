@@ -21,6 +21,7 @@ class UserSchema extends Schema {
       table.string('last_name', 30).notNullable();
       table.string('mid_initial', 30);
       table.string('full_name', 90).notNullable();
+      table.integer('totalRequest').defaultTo(0);
       table.timestamps();
     });
   }

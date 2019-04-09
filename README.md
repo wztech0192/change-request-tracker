@@ -15,7 +15,7 @@ These instructions will get you a copy of the project up and running on your loc
 8.	Open XAMPP and click start button for Apache and MySQL module. Then click Admin button under MySQL row to browse phpMyAdmin
 9.	Under the phpMyAdmin site, create a new database for the project
 10.	Return to server directory and run the command `adonis migration:run` to generate database tables
-11.	After migration, run the command `adonis seed --files='DefaultSeeder.js'` to generate default Developer account
+11.	After migration, run the command `adonis seed` to generate default Developer account
 12.	Open server directory, then run the command line `adonis serve --dev` to deploy dev server
 13.	Open client directory located in main, then run the command line `npm run serve` to start local client-server
 14.	To visit the project website, enter the URL `localhost:8080` in any modern browser.

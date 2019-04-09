@@ -27,7 +27,6 @@ class ChangeRequestSchema extends Schema {
       table.string('clientName', 100).notNullable();
       table.integer('totalMessage').defaultTo(0);
       table.integer('totalHistory').defaultTo(0);
-      table.integer('totalRequest').defaultTo(0);
       table.timestamps();
     });
   }

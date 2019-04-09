@@ -27,7 +27,7 @@ class DefaultSeeder {
       isDev: true
     };
 
-    await RegistrationCode.create(data);
+    await User.create(data);
   }
 }
 

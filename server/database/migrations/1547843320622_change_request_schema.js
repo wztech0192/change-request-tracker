@@ -23,7 +23,6 @@ class ChangeRequestSchema extends Schema {
         .notNullable()
         .defaultTo('To Do');
       table.text('details', 'longtext');
-      table.boolean('isFlagged').defaultTo(false);
       table.string('clientName', 100).notNullable();
       table.integer('totalMessage').defaultTo(0);
       table.integer('totalHistory').defaultTo(0);

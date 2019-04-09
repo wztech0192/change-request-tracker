@@ -28,7 +28,7 @@ generate default developer account
 ```
 adonis seed --files='DefaultSeeder.js'
 ```
-
+### relocate mock seed files from database\seeds\mock_seeds to database\seeds to enable mock seeding
 generate 20 mock users  
 ```
 adonis seed --files='UserSeeder.js'

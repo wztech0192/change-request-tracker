@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 3.	Run `npm i -g @adonisjs/cli` command to install AdonisJS cli
 4.	Install XAMPP for local server
 5.	Clone the entire project directory from GitHub using the command `git clone https://github.com/weijie0192/change-request-tracker`
-6.  Create .env file
+6.  Create .env file, using .env-example as the reference
 7.	Open server directory, then run the command `npm install` to install dependencies. Perform same instruction again under client directory
 8.	Open XAMPP and click start button for Apache and MySQL module. Then click Admin button under MySQL row to browse phpMyAdmin
 9.	Under the phpMyAdmin site, create a new database for the project

@@ -26,7 +26,7 @@ class UtilityController {
    * @return {File}
    */
   async getCRViewer({ response }) {
-    return response.getMenuMsgList(Helpers.publicPath('/CRViewer.zip'));
+    return response.download(Helpers.publicPath('/CRViewer.zip'));
   }
 
   /**

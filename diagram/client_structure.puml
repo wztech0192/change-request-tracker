@@ -1,0 +1,41 @@
+@startuml client
+
+
+left to right direction
+hide stereotype
+hide circle
+hide methods
+hide attributes
+
+skinparam monochrome true
+
+
+
+folder "store_folder" {
+}
+  
+folder "mixin_folder"  {
+}
+
+folder "components_folder"  {
+}
+
+folder "views_folder"  {
+}
+
+node "server" {
+
+}
+
+HTTP <..> server
+App <..> HTTP
+App ..> router
+router ..> views_folder
+components_folder ..> mixin_folder
+components_folder ..> store_folder
+views_folder..>store_folder
+views_folder ..> components_folder
+views_folder ..> mixin_folder
+
+
+@enduml

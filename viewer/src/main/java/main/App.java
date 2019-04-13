@@ -3,7 +3,6 @@ package main;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

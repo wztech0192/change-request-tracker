@@ -1,0 +1,105 @@
+@startuml server
+
+hide stereotype
+hide circle
+hide methods
+hide attributes
+skinparam nodesep 50
+skinparam ranksep 50
+
+skinparam monochrome true
+skinparam linetype ortho
+
+package "Models"{
+    User "1" *-- "0..*" Notification
+    User "1" o-- "0..*" Message
+    User "1" *-- "0..*" FlagItem
+    User "1" *-- "0..*" ChangeRequest
+    ChangeRequest "1" *-- "0..*" ChangeRequestMessage
+    ChangeRequest "1" *-- "1..*" ChangeRequestHistory
+    User "1" o-- "0..*" ChangeRequestMessage
+    FlagItem "1" o-- "1" ChangeRequest
+    FlagItem "1" o-- "1" DevTask
+    DevTodo "1" *-- "0..*" DevTask
+}
+
+package "Services"{
+    class ChangeRequestService
+    class DevService
+    class FlagService
+    class MailService
+    class MessageService
+    class NotificationService
+    class RegistrationService
+    class UserService
+}
+
+package "Controllers"{
+    class ChangeRequestController
+    class DevController
+    class UtilityController
+    class MessageController
+    class RegistrationController
+    class UserController
+}
+
+Services ..> Models
+MapHelper <.. Services 
+Controllers ..>  MapHelper
+Controllers ..> VerificationHelper
+
+node "Client" {
+
+}
+
+Client <..> HTTP
+HTTP <..> Controllers
+
+Database "Database"{
+    
+}
+Models <..> Database 
+
+UserController ..> UserService
+
+
+
+UserService ..> NotificationService
+
+DevController ..> DevService
+
+
+DevService ..> ChangeRequestService
+
+
+ChangeRequestController ..> FlagService
+ChangeRequestController ..> MailService
+ChangeRequestController ..> ChangeRequestService
+
+
+
+ChangeRequestService ..> NotificationService
+
+
+
+
+MessageController ..> MessageService
+
+
+
+RegistrationController ..> RegistrationService
+
+
+UtilityController ..> MessageService
+UtilityController ..> NotificationService
+UtilityController ..> FlagService
+
+
+RegistrationService ..> MailService
+RegistrationService ..> NotificationService
+RegistrationService ..> RegistCodeNotExistException
+
+VerificationHelper ..> InvalidAccessException
+VerificationHelper ..> ResourceNotExistException
+
+@enduml

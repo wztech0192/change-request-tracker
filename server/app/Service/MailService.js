@@ -270,10 +270,10 @@ class MessageService {
         user.role
       } you has the ability to access the following features</p>
       <ul>
-      <li><a href="${url}">Enter CRTracker Website.</a></li>
-      <li>Use CRTracker notification system to track your action.</li>
-      <li>Use CRTracker message system to communicate with anyone in our system.</li>
-      <li>Submit Change Request.</li>
+      <li><a href="${url}">Click Me to Enter CRTracker Website.</a></li>
+      <li>Use CRTracker notification service to track your action.</li>
+      <li>Use CRTracker internal message service to communicate with anyone in our system.</li>
+      <li>Submit Change Request through CRTracker website.</li>
       <li>(Client Only) Submit Change Request via email. <a href="mailto:${submitEmail}">${submitEmail}</a></li>
       <li>Track Change Request.</li>
       <li>Track Change Request via email: <a href="mailto:${infoEmail}?subject=track || id">${infoEmail}</a> - with the subject: </li>
@@ -282,6 +282,8 @@ class MessageService {
       <li><a href="mailto:${infoEmail}?subject=id"><b>'id'</b></a> - track change request by id</li>
       </ul>
       </ul>
+      <hr>
+      <p>Read user manual for more information about CRTracker: <a href="${url}/document/manual">User Manual</a></p>
       </div>
       `;
 

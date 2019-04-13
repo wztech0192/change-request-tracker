@@ -30,6 +30,14 @@ class UtilityController {
   }
 
   /**
+   * Download User Manual
+   * @return {File}
+   */
+  async getUserManual({ response }) {
+    return response.download(Helpers.publicPath('/CRT_UserManual.pdf'));
+  }
+
+  /**
    * return list of flagged change request and devtask, and total number of change requests
    * @returns {ChangeRequest[], DevTask[], int, int}
    */

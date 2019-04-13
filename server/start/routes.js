@@ -42,6 +42,7 @@ Route.group(() => {
 
   /******  Utility Controller ******/
   Route.get('download/CRViewer.zip', 'UtilityController.getCRViewer');
+  Route.get('download/CRT_UserManual.pdf', 'UtilityController.getUserManual');
 }).prefix('api');
 
 /**

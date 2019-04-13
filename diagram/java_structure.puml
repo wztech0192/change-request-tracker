@@ -1,0 +1,68 @@
+@startuml server
+
+hide stereotype
+hide circle
+hide methods
+hide attributes
+
+left to right direction
+skinparam monochrome true
+
+skinparam linetype ortho
+package "tool"{
+    class CRTStyle
+    class HTTPController
+    class Loader
+    class Response
+}
+
+package "panel"{
+    class AppPanel
+    class CRPanel
+    class HomePanel
+    class LoginPanel
+
+    package "nested.cr"{
+    class CRHistory
+    class CRMessage
+    }
+
+    package "nested.home"{
+    class Avator
+    class CRTable
+    }
+}
+
+package "org.json"{
+    class JSONArray
+    class JSONObject
+}
+
+package "Main"{
+    class App
+    class Main
+    class User
+}
+
+Main ..> App
+
+App *-- panel
+App ..> HTTPController
+App ..> Response
+App ..> User
+
+
+AppPanel <|-- LoginPanel
+AppPanel <|-- HomePanel
+AppPanel <|-- CRPanel
+
+LoginPanel ..> CRTStyle
+HomePanel ..> CRTStyle
+HomePanel *-- nested.home
+
+CRPanel *-- nested.cr
+CRPanel ..> CRTStyle
+CRPanel ..> Loader
+CRPanel ..> Response
+CRPanel ..> org.json
+@enduml

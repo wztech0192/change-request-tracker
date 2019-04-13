@@ -106,6 +106,11 @@
                 <i class="fa fa-download"></i>Download CRViewer
               </router-link>
             </li>
+            <li>
+              <router-link to="/document/manual">
+                <i class="fa fa-book"></i>User Manual
+              </router-link>
+            </li>
           </ul>
         </li>
       </ul>

@@ -9,6 +9,7 @@ import About from './views/About.vue';
 import WebAPI from './views/Document/WebAPI.vue';
 import PageRoute from './views/Document/PageRoute.vue';
 import CRViewer from './views/Document/CRViewer.vue';
+import Manual from './views/Document/Manual.vue';
 import NotifyList from './views/NotificationList.vue';
 import UserList from './views/Admin/UserList.vue';
 import DataChart from './views/Admin/DataChart.vue';
@@ -127,6 +128,12 @@ export default new Router({
     {
       path: '/document/crviewer',
       component: CRViewer,
+      beforeEnter: Authenication
+    },
+
+    {
+      path: '/document/manual',
+      component: Manual,
       beforeEnter: Authenication
     },
 

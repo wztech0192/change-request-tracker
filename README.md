@@ -1,5 +1,5 @@
 # change-request-tracker
-This is a web application capstone project used to track change request from user.
+This is a fullstack web project that provide user multiple methods to submit and track change request. The project contains a RESTful API Server built with AdonisJS, Responsive Single Page Web Application built with VueJS and AdminLTE template, and a desktop application built with native Java.
 
 ## Getting Started
 

@@ -19,6 +19,7 @@ class MessageService {
         Message.create(receiveData);
       }
     }
+
     return receiverList;
   }
 
@@ -34,6 +35,7 @@ class MessageService {
     if (!message || message.receiverEmail !== user.email) return null;
     message.merge(data);
     await message.save();
+
     return message;
   }
 
@@ -59,6 +61,7 @@ class MessageService {
     const pageMax = filter.page * filter.limit;
     list.pages.end = pageMax > list.pages.total ? list.pages.total : pageMax;
     list.pages.start = pageMax + 1 - filter.limit;
+
     return list;
   }
 
@@ -78,7 +81,6 @@ class MessageService {
    * @param {Objecct} data {'list', 'isArchived'}
    */
   archiveMessage(user, data) {
-    const data = request.only(['list', 'isArchived']);
     if (!data.list || data.list.length <= 0) {
       return null;
     }
@@ -95,6 +97,7 @@ class MessageService {
     const unread = await Message.queryForUnreadList(user);
     const bookmark = await Message.queryForBookMarkList(user);
     const totalMsg = await Message.queryForTotalActive(user);
+
     return {
       unread,
       bookmark,

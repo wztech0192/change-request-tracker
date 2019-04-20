@@ -21,6 +21,7 @@ class FlagService {
     if (checkFlag > 0) {
       return true;
     }
+
     return false;
   }
 
@@ -61,6 +62,7 @@ class FlagService {
    */
   async getFlaggedCR(user) {
     const result = await FlagItem.queryForCR(user.id);
+
     return result.rows;
   }
 
@@ -75,6 +77,7 @@ class FlagService {
       result = await DevTodo.queryForFlag();
       return result.rows;
     }
+
     return result;
   }
 
@@ -93,6 +96,7 @@ class FlagService {
       user.role === 'Admin' || user.role === 'Developer'
         ? await ChangeRequest.getCount()
         : await user.change_requests().getCount();
+
     return {
       flagTask: flagTask,
       flagCR: flagCR,

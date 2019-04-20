@@ -37,6 +37,7 @@ class ChangeRequestService {
     if (!changeRequest) return null;
     //check if this change request is flagged
     changeRequest.isFlag = await this.flagService.isFlag(changeRequest, userID);
+
     return changeRequest;
   }
 
@@ -101,10 +102,10 @@ class ChangeRequestService {
     // if result list is null, return empty array
     if (requestList === null) {
       return [];
-    } else {
-      //else if requestList is not a array, arraylize it.
-      return requestList.rows ? requestList : [requestList];
     }
+
+    //else if requestList is not a array, arraylize it.
+    return requestList.rows ? requestList : [requestList];
   }
 
   /**
@@ -117,9 +118,9 @@ class ChangeRequestService {
     //get client if current user is a admin. Else client is current user.
     if (user.role === 'Admin' || user.role === 'Developer') {
       return User.findBy('email', client);
-    } else {
-      return user;
     }
+
+    return user;
   }
 
   /**
@@ -144,6 +145,7 @@ class ChangeRequestService {
     ) {
       return null;
     }
+
     //update change request data
     changeRequest.merge(requestData);
     //map history data
@@ -158,6 +160,7 @@ class ChangeRequestService {
     );
     // save change request changes
     await changeRequest.save();
+
     return changeRequest;
   }
 
@@ -170,6 +173,7 @@ class ChangeRequestService {
   async searchRequest(data, target) {
     const term = data.term || '';
     const list = await ChangeRequest.queryForPaginate(term, target, data.page);
+
     return {
       results: list.rows,
       pagination: {
@@ -211,6 +215,7 @@ class ChangeRequestService {
     if (message) {
       await this.createCRMessage(issuer, changeRequest, message, true);
     }
+
     return changeRequest;
   }
 
@@ -237,6 +242,7 @@ class ChangeRequestService {
     //increase total message by one and save changes
     changeRequest.totalMessage++;
     await changeRequest.save();
+
     return msg;
   }
 
@@ -291,6 +297,7 @@ class ChangeRequestService {
   async getChartData(dateRange) {
     //retrieve change request between required date
     const CRList = await ChangeRequest.queryByDateRange(dateRange);
+
     // return mapped chart data
     return MapHelper.mapChartDataFrom(CRList);
   }

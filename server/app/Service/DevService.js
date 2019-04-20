@@ -32,6 +32,7 @@ class DevService {
       const task = await todo.devTask().fetch();
       todo.tasks = task;
     }
+
     return todoList.rows;
   }
 
@@ -52,6 +53,7 @@ class DevService {
   async destroyTodo(id) {
     const devTodo = await DevTodo.find(id);
     if (!devTodo) return null;
+
     return devTodo.delete();
   }
 
@@ -64,6 +66,7 @@ class DevService {
     const devTodo = await DevTodo.find(id);
     if (!devTodo) return null;
     devTodo.merge(request.only(['content', 'percentage', 'isFlagged']));
+
     return devTodo.save();
   }
 
@@ -89,6 +92,7 @@ class DevService {
 
     const data = request.only('content');
     data.dev_todo_id = devTodo.id;
+
     return DevTask.create(data);
   }
 
@@ -132,6 +136,7 @@ class DevService {
     const devTask = await DevTask.find(id);
     if (!devTask) return null;
     devTask.merge(request.only(['content']));
+
     return devTask.save();
   }
 
@@ -201,6 +206,7 @@ class DevService {
         };
       }
       await User.createMany(usersList);
+
       return 'OK';
     }
   }

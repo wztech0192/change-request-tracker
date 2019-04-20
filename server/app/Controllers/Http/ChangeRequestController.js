@@ -37,6 +37,7 @@ class ChangeRequestController {
       ['Developer', 'Admin'],
       true
     );
+
     return changeRequest;
   }
 
@@ -50,6 +51,7 @@ class ChangeRequestController {
     const { tab } = request.only('tab');
     // use service to get request lists
     const list = await this.crService.getUserRequest(user.id, tab);
+
     return list;
   }
 
@@ -65,6 +67,7 @@ class ChangeRequestController {
     const filter = request.all();
     // use service to get request lists
     const list = await this.crService.getRequestList(filter);
+
     return list;
   }
 
@@ -89,6 +92,7 @@ class ChangeRequestController {
       user,
       message
     );
+
     return result;
   }
 
@@ -106,6 +110,7 @@ class ChangeRequestController {
     const result = await this.crService.updateRequest(params.id, data, user);
     //verify if resource exist, return 404 if failed
     VerificationHelper.verifyExistance(result);
+
     return result;
   }
 
@@ -126,6 +131,7 @@ class ChangeRequestController {
     const data = request.all();
     // use service to get change request list
     const list = await this.crService.searchRequest(data, target);
+
     return list;
   }
 
@@ -145,6 +151,7 @@ class ChangeRequestController {
     );
     //use service to get change request message list
     const list = await this.crService.getCRMessage(changeRequest, params.num);
+
     return list;
   }
 
@@ -172,6 +179,7 @@ class ChangeRequestController {
     );
     //verify if result exist, if failed return 404
     VerificationHelper.verifyExistance(result);
+
     return 'ok';
   }
 
@@ -191,6 +199,7 @@ class ChangeRequestController {
     );
     //use service to get change request history list
     const list = await this.crService.getCRHistory(changeRequest);
+
     return list;
   }
 
@@ -227,6 +236,7 @@ class ChangeRequestController {
     );
     // verify is result exist, if failed return 404
     VerificationHelper.verifyExistance(result);
+
     return 'ok';
   }
 
@@ -236,6 +246,7 @@ class ChangeRequestController {
   async unflagChangeRequest({ auth, params }) {
     const user = await auth.getUser();
     await this.flagService.unflagChangeRequest(params.id, user);
+
     return 'ok';
   }
 
@@ -253,6 +264,7 @@ class ChangeRequestController {
     const changeRequest = await this.crService.createFromMail(mailJSON, client);
     //send a success message
     this.mailService.requestMailApproved(mailJSON['sender'], changeRequest.id);
+
     return changeRequest;
   }
 
@@ -278,6 +290,7 @@ class ChangeRequestController {
       // else if crData contains only one change reuqest, return email with this change request detail
       this.mailService.trackCRID(user.email, crData);
     }
+
     return 'Ok';
   }
 }

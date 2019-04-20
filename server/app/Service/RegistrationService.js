@@ -33,6 +33,7 @@ class RegistrationService {
     if (!registrationCodes) {
       throw new RegistCodeNotExistException();
     }
+
     return registrationCodes;
   }
 
@@ -78,6 +79,7 @@ class RegistrationService {
   async removeCode(id) {
     const code = await RegistrationCode.find(id);
     code.delete();
+
     return code;
   }
 
@@ -105,6 +107,7 @@ class RegistrationService {
     this.removeCode(code.id);
     // notify new registerd user
     this.notificationService.newUser(user);
+
     return user;
   }
 }

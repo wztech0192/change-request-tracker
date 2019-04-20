@@ -52,9 +52,9 @@ class User extends Model {
 
     if (validation.fails()) {
       return validation.messages();
-    } else {
-      return 'pass';
     }
+
+    return 'pass';
   }
 
   /**

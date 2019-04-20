@@ -25,6 +25,7 @@ class UserController {
   async login({ request, auth }) {
     const { email, password } = request.all();
     const token = await auth.attempt(email, password);
+
     return token;
   }
 
@@ -37,6 +38,7 @@ class UserController {
     VerificationHelper.verifyExistance(user, ' user');
     const data = request.all();
     const result = await this.userService.searchUser(data, params);
+
     return result;
   }
 
@@ -47,6 +49,7 @@ class UserController {
   async self({ auth }) {
     const user = await auth.getUser();
     user.total = await this.userService.enterUser(user);
+
     return user;
   }
 
@@ -59,6 +62,7 @@ class UserController {
     VerificationHelper.verifyExistance(user);
     const targetUser = await this.userService.getUserByEmail(params.email);
     VerificationHelper.verifyExistance(targetUser);
+
     return targetUser;
   }
 
@@ -72,6 +76,7 @@ class UserController {
     VerificationHelper.verifyRole(user, ['Developer', 'Admin']);
     const data = request.all();
     const tableJSON = await this.userService.getDatatableJSON(data);
+
     return tableJSON;
   }
 
@@ -88,6 +93,7 @@ class UserController {
       'Admin'
     ]);
     await this.userService.deleteUser(targetUser, user);
+
     return targetUser;
   }
 
@@ -107,6 +113,7 @@ class UserController {
     );
     const { role } = request.only('role');
     await this.userService.updateRole(targetUser, user, role);
+
     return targetUser;
   }
 }

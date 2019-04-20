@@ -44,6 +44,7 @@ class UtilityController {
   async getFlaggedList({ auth }) {
     const user = await auth.getUser();
     const list = await this.flagService.getFlaggedList(user);
+
     return list;
   }
 
@@ -54,6 +55,7 @@ class UtilityController {
   async getMenuMsgList({ auth }) {
     const user = await auth.getUser();
     const list = await this.messageService.getMenuMsgList(user);
+
     return list;
   }
 
@@ -64,6 +66,7 @@ class UtilityController {
   async getNotificationList({ auth }) {
     const user = await auth.getUser();
     const list = await this.notificationService.getNotification(user);
+
     return list;
   }
 
@@ -74,6 +77,7 @@ class UtilityController {
   async updateNotification({ auth, params }) {
     const user = await auth.getUser();
     await this.notificationService.updateNotification(user, params.target);
+
     return 'OK';
   }
 
@@ -89,6 +93,7 @@ class UtilityController {
       user,
       data
     );
+
     return result;
   }
 }

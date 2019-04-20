@@ -67,6 +67,7 @@ class MessageService {
       );
       return true;
     }
+
     return false;
   }
 
@@ -199,6 +200,7 @@ class MessageService {
       );
       return true;
     }
+
     return false;
   }
 
@@ -306,6 +308,7 @@ class MessageService {
         title,
         content
       });
+
       return message;
     }
   }

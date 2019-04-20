@@ -26,6 +26,7 @@ class DevController {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer']);
     const list = await this.devService.getList();
+
     return list;
   }
 
@@ -41,6 +42,7 @@ class DevController {
     const result = await callback(params.id, request);
     //verify if resource exist, return 404 if failed
     VerificationHelper.verifyExistance(result);
+
     return result;
   }
 
@@ -53,6 +55,7 @@ class DevController {
     const user = await auth.getUser();
     VerificationHelper.verifyRole(user, ['Developer']);
     const result = await this.devService.createTodo(request.only('content'));
+
     return result;
   }
 
@@ -62,6 +65,7 @@ class DevController {
    */
   async destroyTodo(data) {
     const result = await this._baseCrud(data, this.devService.destroyTodo);
+
     return result;
   }
 
@@ -71,6 +75,7 @@ class DevController {
    */
   async updateTodo(data) {
     const result = await this._baseCrud(data, this.devService.updateTodo);
+
     return result;
   }
 
@@ -82,6 +87,7 @@ class DevController {
    */
   async createTask(data) {
     const result = await this._baseCrud(data, this.devService.createTask);
+
     return result;
   }
 
@@ -91,6 +97,7 @@ class DevController {
    */
   async destroyTask(data) {
     const result = await this._baseCrud(data, this.devService.destroyTask);
+
     return result;
   }
 
@@ -100,6 +107,7 @@ class DevController {
    */
   async updateTask(data) {
     const result = await this._baseCrud(data, this.devService.updateTask);
+
     return result;
   }
 
@@ -112,6 +120,7 @@ class DevController {
       data,
       this.devService.updateTaskComplete
     );
+
     return result;
   }
 

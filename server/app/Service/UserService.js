@@ -22,6 +22,7 @@ class UserService {
   async searchUser({ term, page }, { role }) {
     const searchData = term || '';
     const userList = await User.queryForSearch(searchData, page, role);
+
     return {
       results: userList.rows,
       pagination: {
@@ -83,6 +84,7 @@ class UserService {
   async deleteUser(targetUser, issuer) {
     await this.notificationService.userDelete(targetUser, issuer);
     await targetUser.delete();
+
     return targetUser;
   }
 
@@ -104,6 +106,7 @@ class UserService {
       targetUser.isDev = true;
     }
     await targetUser.save();
+
     return targetUser;
   }
 }

@@ -35,6 +35,7 @@ class MessageController {
         return result;
       }
     } catch (e) {}
+
     return response.status(406).send('Wrong Format');
   }
 
@@ -44,10 +45,9 @@ class MessageController {
    */
   async getMessage({ auth, params }) {
     const user = await auth.getUser();
-
     const message = await this.messageService.getMessage(user, params.id);
-
     VerificationHelper.verifyExistance(message, 'message');
+
     return message;
   }
 
@@ -70,6 +70,7 @@ class MessageController {
   async clearNewMessages({ auth }) {
     const user = await auth.getUser();
     const result = await this.messageService.clearNewMessages(user);
+
     return result;
   }
 
@@ -81,6 +82,7 @@ class MessageController {
     const user = await auth.getUser();
     const data = request.only(['list', 'isArchived']);
     const result = await this.messageService.archiveMessage(user, data);
+
     return result;
   }
   /**
@@ -96,6 +98,7 @@ class MessageController {
       user
     );
     VerificationHelper.verifyExistance(message, ' message');
+
     return message;
   }
 }

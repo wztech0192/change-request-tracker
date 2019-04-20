@@ -36,13 +36,14 @@ class RegistrationController {
     const validation = await this.registrationService.isUserValidate(userInfo);
     if (validation !== 'pass') {
       return validation;
-    } else {
-      //create new user
-      await this.registrationService.createNewUser(userInfo, code);
-      //pass arguments from this method to login
-      const result = await auth.attempt(userInfo.email, userInfo.password);
-      return result;
     }
+
+    //create new user
+    await this.registrationService.createNewUser(userInfo, code);
+    //pass arguments from this method to login
+    const result = await auth.attempt(userInfo.email, userInfo.password);
+
+    return result;
   }
 
   /**
@@ -65,6 +66,7 @@ class RegistrationController {
       user,
       data
     );
+
     return result;
   }
 
@@ -74,6 +76,7 @@ class RegistrationController {
    */
   async verifyRegistrationCode({ params }) {
     const result = await this.registrationService.getMatchCode(params.code);
+
     return result;
   }
 }

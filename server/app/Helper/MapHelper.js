@@ -40,6 +40,7 @@ class MapHelper {
         string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
       ).replace(/[\W\d]*/g, '');
     }
+
     return string;
   }
 
@@ -51,6 +52,7 @@ class MapHelper {
    */
   static mapReceiveData(user, request) {
     const { receiver, title, content } = request.all();
+
     return new Array(receiver.length).fill().map((a, i) => ({
       receiverEmail: receiver[i].substring(
         receiver[i].indexOf('(') + 1,
@@ -91,6 +93,7 @@ class MapHelper {
 
     userInfo.full_name = `${userInfo.first_name} ${userInfo.mid_initial ||
       ''} ${userInfo.last_name}`;
+
     return userInfo;
   }
 
@@ -113,6 +116,7 @@ class MapHelper {
       type = 'Edit Content';
       content = `Change Request content was modified by ${user.full_name}`;
     }
+
     return {
       type,
       content
@@ -132,6 +136,7 @@ class MapHelper {
     data.clientName = client.full_name;
     //fill in data
     changeRequest.fill(data);
+
     return changeRequest;
   }
 
@@ -192,6 +197,7 @@ class MapHelper {
     //replace < and > with unique character
     string = string.replace(/([\<])/g, '&#60;');
     string = string.replace(/([\>])/g, '&#62;');
+
     return string;
   }
 }

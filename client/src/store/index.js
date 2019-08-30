@@ -11,7 +11,7 @@ export default new Vuex.Store({
   strict: true,
   getters: {
     baseURL() {
-      return 'crt/api';
+      return '/crt/api';
     }
   },
   modules: {

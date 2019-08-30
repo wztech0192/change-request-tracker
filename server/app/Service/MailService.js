@@ -270,7 +270,7 @@ class MessageService {
       <p>${user.full_name}, welcome to CRTracker!</p>
       <p>As a ${
         user.role
-      } you has the ability to access the following features</p>
+      } you have the ability to access the following features</p>
       <ul>
       <li><a href="${url}">Click Me to Enter CRTracker Website.</a></li>
       <li>Use CRTracker notification service to track your action.</li>
@@ -303,7 +303,7 @@ class MessageService {
       //create insite message
       const message = await Message.create({
         receiverEmail: user.email,
-        senderEmail: 'no-reply@rsicrt.com',
+        senderEmail: noReplyEmail,
         senderName: '~ CRTracker ~',
         title,
         content

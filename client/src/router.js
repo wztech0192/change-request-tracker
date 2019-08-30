@@ -70,7 +70,7 @@ function resetToken(to, from, next) {
 
 export default new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: '/crt',
   routes: [
     {
       path: '/login',

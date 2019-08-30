@@ -24,20 +24,21 @@ class RegistrationController {
    */
   async register({ request, auth }) {
     let { code } = request.only('code');
-    //verify registration code, throw exceptions if failed
-    code = await this.registrationService.getMatchCode(code);
-    //map user information
+    if (code) {
+      //verify registration code, throw exceptions if failed
+      code = await this.registrationService.getMatchCode(code);
+      //map user information
+    }
+
     const userInfo = MapHelper.mapUserInfo(
       request.except(['code', 'password_retype']),
       code
     );
-
     //validate, return message if fails
     const validation = await this.registrationService.isUserValidate(userInfo);
     if (validation !== 'pass') {
       return validation;
     }
-
     //create new user
     await this.registrationService.createNewUser(userInfo, code);
     //pass arguments from this method to login

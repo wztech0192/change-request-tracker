@@ -104,7 +104,9 @@ class RegistrationService {
     //create welcome message
     this.mailService.sendWelcomeMail(user);
     //remove used code
-    this.removeCode(code.id);
+    if (code) {
+      this.removeCode(code.id);
+    }
     // notify new registerd user
     this.notificationService.newUser(user);
 

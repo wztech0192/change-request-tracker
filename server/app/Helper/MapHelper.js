@@ -73,7 +73,7 @@ class MapHelper {
    */
   static mapUserInfo(userInfo, code) {
     // if not allow edit, map user info from code
-    if (code.allowEdit == false) {
+    if (code && code.allowEdit == false) {
       userInfo.first_name = code.first_name;
       userInfo.last_name = code.last_name;
       userInfo.mid_initial = code.mid_initial;
@@ -83,11 +83,15 @@ class MapHelper {
     if (userInfo.mid_initial) {
       userInfo.mid_initial = this.formatString(userInfo.mid_initial) + '.';
     }
-    userInfo.role = code.role;
+    userInfo.role = code ? code.role : 'Client';
     if (userInfo.role === 'Developer') {
       userInfo.isDev = true;
     }
-    userInfo.email = code.email.toLowerCase();
+
+    if (code) {
+      userInfo.email = code.email;
+    }
+    userInfo.email = userInfo.email.toLowerCase();
     userInfo.last_name = this.formatString(userInfo.last_name);
     userInfo.first_name = this.formatString(userInfo.first_name);
 

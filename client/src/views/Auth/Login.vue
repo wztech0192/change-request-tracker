@@ -31,7 +31,7 @@
           placeholder="Email"
           autocomplete="username"
           v-model="login.email"
-        >
+        />
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
@@ -42,7 +42,7 @@
           placeholder="Password"
           autocomplete="new-password"
           v-model="login.password"
-        >
+        />
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
 
@@ -61,9 +61,11 @@
         </div>
         <!-- /.col -->
       </div>
-      <hr>
+      <hr />
 
-      <a @click.prevent="registrationCodeDialog" class="text-center">Register a new membership</a>
+      <a @click.prevent="registrationCodeDialog" class="text-center">Enter registration code</a>
+      <br />
+      <a @click.prevent="registrationEnter" class="text-center">Register new membership</a>
     </form>
   </div>
 </template>
@@ -104,6 +106,10 @@ export default {
     ...mapActions('errorStore', ['setGlobalError']),
     ...mapActions('userStore', ['loginUser']),
 
+    registrationEnter() {
+      router.push('/register?noCode=true');
+    },
+
     //show registration code dialog
     registrationCodeDialog() {
       this.$modal.show('dialog', {
@@ -114,7 +120,7 @@ export default {
         maxWidth: 300,
         buttons: [
           {
-            title: 'Confirm',
+            title: 'Confirm Code',
             default: true,
             handler: spinner => {
               spinner.loading = true;

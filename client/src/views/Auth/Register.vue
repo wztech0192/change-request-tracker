@@ -18,12 +18,12 @@
           name="email"
           type="email"
           class="form-control"
-          readonly="readonly"
+          :readonly="!this.noCode"
           placeholder="Email: example@domain.com"
           autocomplete="username"
           v-model="registerData.email"
           @blur="clearError('email')"
-        >
+        />
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
         <span class="help-block">&nbsp;{{error.email_error}}</span>
       </div>
@@ -38,7 +38,7 @@
             :readonly="!this.allowEdit"
             v-model="registerData.first_name"
             @blur="clearError('first_name')"
-          >
+          />
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.first_name_error}}</span>
         </div>
@@ -52,9 +52,9 @@
             :readonly="!this.allowEdit"
             v-model="registerData.mid_initial"
             @blur="clearError('mid_initial')"
-          >
+          />
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
-          <br>
+          <br />
         </div>
         <div class="form-group has-feedback" :class="{'has-error':error.last_name_error}">
           <input
@@ -66,7 +66,7 @@
             :readonly="!this.allowEdit"
             v-model="registerData.last_name"
             @blur="clearError('last_name')"
-          >
+          />
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.last_name_error}}</span>
         </div>
@@ -80,7 +80,7 @@
             placeholder="Password"
             autocomplete="new-password"
             v-model="registerData.password"
-          >
+          />
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           <span class="help-block">&nbsp;{{error.password_error}}</span>
         </div>
@@ -93,7 +93,7 @@
             placeholder="Retype password"
             autocomplete="new-password"
             v-model="registerData.password_retype"
-          >
+          />
           <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
         </div>
         <div class="row">
@@ -111,7 +111,7 @@
           </div>
           <!-- /.col -->
         </div>
-        <hr>
+        <hr />
         <router-link to="/login" class="text-center">I already have a membership</router-link>
       </div>
     </form>
@@ -130,6 +130,7 @@ import router from '@/router';
 export default {
   data() {
     return {
+      noCode: true,
       //empty object to be fill: registerData and error
       registerData: {
         first_name: null,
@@ -159,31 +160,34 @@ export default {
 
   //verify registration code before created
   created() {
-    // use registration in url if exist, else use registration in state
-    const code = this.$route.query.code
-      ? this.$route.query.code
-      : this.registrationCode;
+    this.noCode = !!this.$route.query.noCode;
+    if (!this.noCode) {
+      // use registration in url if exist, else use registration in state
+      const code = this.$route.query.code
+        ? this.$route.query.code
+        : this.registrationCode;
 
-    HTTP()
-      .get(`/regist-code/verify/${code}`)
-      .then(({ data }) => {
-        if (data) {
-          //fill in register data from the registration code
-          this.registerData.first_name = data.first_name;
-          this.registerData.last_name = data.last_name;
-          this.registerData.mid_initial = data.mid_initial;
-          this.registerData.email = data.email;
-          this.allowEdit = data.allowEdit === 1;
-          this.registerData.code = data.code;
-        } else {
-          this.setGlobalError('Registration code failed!');
+      HTTP()
+        .get(`/regist-code/verify/${code}`)
+        .then(({ data }) => {
+          if (data) {
+            //fill in register data from the registration code
+            this.registerData.first_name = data.first_name;
+            this.registerData.last_name = data.last_name;
+            this.registerData.mid_initial = data.mid_initial;
+            this.registerData.email = data.email;
+            this.allowEdit = data.allowEdit === 1;
+            this.registerData.code = data.code;
+          } else {
+            this.setGlobalError('Registration code failed!');
+            router.push('/login');
+          }
+        })
+        .catch(e => {
+          this.setGlobalError(e);
           router.push('/login');
-        }
-      })
-      .catch(e => {
-        this.setGlobalError(e);
-        router.push('/login');
-      });
+        });
+    }
   },
 
   computed: {

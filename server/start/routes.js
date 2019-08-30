@@ -43,7 +43,7 @@ Route.group(() => {
   /******  Utility Controller ******/
   Route.get('download/CRViewer.zip', 'UtilityController.getCRViewer');
   Route.get('download/CRT_UserManual.pdf', 'UtilityController.getUserManual');
-}).prefix('api');
+}).prefix('crt/api');
 
 /**
  * Authenticated routes that requires JWT Token
@@ -150,7 +150,7 @@ Route.group(() => {
   Route.get('change-request/:id/hist', 'ChangeRequestController.getCRHistory');
 })
   .middleware('auth')
-  .prefix('api');
+  .prefix('crt/api');
 
 Route.any('*', ({ response }) =>
   response.download(Helpers.publicPath('index.html'))

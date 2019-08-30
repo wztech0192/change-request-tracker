@@ -15,7 +15,7 @@
             Both CRViewer and CRTracker consumed the same API Service.
           </p>
 
-          <br>
+          <br />
           <h2>Features</h2>
           <ul>
             <li>Login Authentication</li>
@@ -26,7 +26,7 @@
             <li>View and send change request histories with real-time update</li>
             <li>(For Admin only) Adjust change request status</li>
           </ul>
-          <br>
+          <br />
           <h2>Requirement</h2>
           <p>
             Java version 8.0 or higher is required to run the app. If you do not have java installed, please visit
@@ -34,14 +34,14 @@
               href="https://www.java.com/en/download/"
             >here</a> for the instrutions on how to install java.
           </p>
-          <hr>
+          <hr />
 
           <a
-            href="/api/download/CRViewer.zip"
+            href="/crt/api/download/CRViewer.zip"
             download
             class="btn btn-primary btn-lg"
           >Download CRViewer</a>
-          <hr>
+          <hr />
           <ol>
             <li>Unzip the CRViewer.zip</li>
             <li>Extract CRViewer folder</li>
@@ -55,7 +55,7 @@
             src="@/assets/crv_example.png"
             style="width:100%; max-width:400px;"
             alt="CRViewer Image"
-          >
+          />
         </div>
       </div>
     </section>

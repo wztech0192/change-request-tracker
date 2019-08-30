@@ -4,12 +4,12 @@
       <h1>
         <i class="fa fa-book"></i>&nbsp;User Manual
         <small>
-          <a href="/api/download/CRT_UserManual.pdf">External Link</a>
+          <a href="/crt/api/download/CRT_UserManual.pdf">External Link</a>
         </small>
       </h1>
     </section>
     <section class="content">
-      <iframe style="width:100%;height:100vh;" src="/api/download/CRT_UserManual.pdf"></iframe>
+      <iframe style="width:100%;height:100vh;" src="/crt/api/download/CRT_UserManual.pdf"></iframe>
     </section>
   </div>
 </template>

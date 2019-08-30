@@ -25,5 +25,6 @@ module.exports = {
       }
     }
   },
-  publicPath: process.env.NODE_ENV === 'production' ? '/~weiZ/crt/public/' : '/'
+  publicPath:
+    process.env.NODE_ENV === 'production' ? '/change-request-tracker/' : '/'
 };
